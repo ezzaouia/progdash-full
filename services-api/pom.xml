@@ -14,4 +14,11 @@
 	<packaging>jar</packaging>
 	<description>PV Progdash services interfaces, model and core classes</description>
 
+	<dependencies>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+		</dependency>
+	</dependencies>
+
 </project>
