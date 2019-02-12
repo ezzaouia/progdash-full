@@ -13,9 +13,6 @@ eclipse/
 target/
 overlays/
 
-# Gradle
-build/
-
 # Android
 delivery/
 bin/
@@ -24,3 +21,4 @@ gen/
 # GWT
 .gwt
 .gwt-temp
+/.env
