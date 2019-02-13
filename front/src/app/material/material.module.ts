@@ -1,0 +1,68 @@
+import { NgModule } from '@angular/core';
+import { CdkTableModule } from '@angular/cdk/table';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import {
+  MatInputModule,
+  MatCardModule,
+  MatButtonModule,
+  MatSidenavModule,
+  MatListModule,
+  MatIconModule,
+  MatToolbarModule,
+  MatProgressSpinnerModule,
+  MatDividerModule,
+  MatMenuModule,
+  MatTooltipModule,
+  MatSliderModule,
+  MatRadioModule,
+  MatFormFieldModule,
+  MatSelectModule,
+  MatButtonToggleModule,
+  MatSlideToggleModule,
+  MatChipsModule,
+  MatSnackBarModule,
+  MatTableModule,
+  MatPaginatorModule,
+  MatSortModule,
+  MatCheckboxModule,
+  MatGridListModule,
+  MatDialogModule,
+  MatProgressBarModule,
+} from '@angular/material';
+
+const MODULES = [
+  CdkTableModule,
+  MatInputModule,
+  MatCardModule,
+  MatButtonModule,
+  MatSidenavModule,
+  MatListModule,
+  MatIconModule,
+  MatToolbarModule,
+  MatProgressSpinnerModule,
+  MatDividerModule,
+  MatMenuModule,
+  MatTooltipModule,
+  MatSliderModule,
+  MatRadioModule,
+  MatFormFieldModule,
+  MatSelectModule,
+  MatButtonToggleModule,
+  MatSlideToggleModule,
+  MatChipsModule,
+  MatSnackBarModule,
+  MatTableModule,
+  MatPaginatorModule,
+  MatSortModule,
+  MatCheckboxModule,
+  MatGridListModule,
+  MatDialogModule,
+  MatProgressBarModule,
+  DragDropModule,
+];
+
+@NgModule({
+  imports: [ ...MODULES ],
+  exports: [ ...MODULES ],
+})
+export class MaterialModule { }

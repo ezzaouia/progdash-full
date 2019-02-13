@@ -12,32 +12,20 @@ services:
     ports:
       - 8081:8081
 
-  java:
+  node:
+    container_name: progdash-dev-node
     build:
-      context: ./
-      dockerfile: ./build/dockerfiles/java/Dockerfile
-    command: >
-            /bin/bash -c "envsubst < /opt/progdash/application.properties > /opt/progdash/application.properties
-            && /usr/bin/java -jar /opt/progdash/webservices.jar"
-
-  nginx:
-    build:
-      context: ./
-      dockerfile: ./build/dockerfiles/nginx/Dockerfile
-    ports:
-      - 8090:80
-
-  cronjobs:
-    build:
-      context: ./
-      dockerfile: ./build/dockerfiles/cronjobs/Dockerfile
+      context: .
+      dockerfile: ./build/dockerfiles/dev/node/Dockerfile
+    command: ng serve --host 0.0.0.0 --configuration hmr
     volumes:
-      - progdash-mongo-backup:/data/backups
+      - ./front:/app
+      - /app/node_modules
+    ports:
+      - 4200:4200
 
 volumes:
   progdash-mongo-data:
     driver: local
   progdash-mongo-config:
-    driver: local
-  progdash-mongo-backup:
     driver: local

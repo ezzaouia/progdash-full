@@ -12,4 +12,4 @@ fi
 
 echo "DOCKER_TAG: $DOCKER_TAG"
 
-docker-compose --project-directory ../. --file docker-compose.yml --file docker-compose.dev.yml build --parallel
+docker-compose --project-directory ../. --file docker-compose.yml --file docker-compose.packaging.yml build --parallel

@@ -1,14 +1,14 @@
-FROM openjdk:11.0.2-jre-slim-stretch
+FROM openjdk:8u181-jre-slim-stretch
 
 ARG SERVICES_JAR=webservices-*-spring-boot.jar
 
 RUN apt-get update \
-    && apt-get install -y tzdata \
+    && apt-get install -y tzdata gettext \
     && apt-get clean autoclean \
     && apt-get autoremove -y --purge \
     && rm -rf /var/lib/{apt,dpkg,cache,log}/ \
     && mkdir /opt/progdash
 
-COPY ./webservices/target/${SERVICES_JAR} /opt/progdash/webservices.jar
+COPY ./back/webservices/target/${SERVICES_JAR} /opt/progdash/webservices.jar
 
-COPY ./application.properties /opt/progdash/application.properties
+COPY ./back/webservices/src/main/resources/application.properties /opt/progdash/application.properties

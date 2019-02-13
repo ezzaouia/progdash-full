@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+	<woonoz_profil id_profil="5" nom_profil="PROFIL_EXPERT_5"/>
+	<woonoz_statut id_statut="1" nom_statut="Actif"/>
+	<woonoz_membre id_membre="20561" pseudo_membre="test.formateur1" email_membre="email_membre" nom_membre="Nom Formateur1" prenom_membre="Pr&#233;nomFormateur1"
+	               password_hash="JDJhJDEwJHcvMlZzckRzMGhHQzV3Q3lyQjF3SC5nNVFsLmFOUmVYTERIS1U4c1BTVDlRbG1JZm11&#xA;N2t5" code_membre="GNA7KI2Y"
+	               statut_membre="1" date_inscrip="2007-09-13 10:05:29.0"
+	               com_membre="com_membre"
+	               id_profil="5" anonymous="0" last_connex_soft="2009-12-28 12:21:04.0"
+	               last_version_soft="PRO SPACE 3.42b" reinit_pwd="0" inherit_session_time_from_area="true" superadmin="false" ask_certificate="0" accounts_life_duration_inherit_from_area="1"/>
+</dataset>
