@@ -177,14 +177,6 @@
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>com.woonoz.core</groupId>
-				<artifactId>jersey2-dependencies</artifactId>
-				<version>${woonoz.core.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-
-			<dependency>
 				<!-- Import dependency management from Spring Boot, version 1.x sera dépréciée en août 2019. A changer dès qu'on ne souhaite plus utiliser spring 4.x -->
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-dependencies</artifactId>
@@ -395,7 +387,20 @@
 				<plugin>
 					<groupId>org.springframework.boot</groupId>
 					<artifactId>spring-boot-maven-plugin</artifactId>
-					<version>1.5.19</version>
+					<version>1.5.19.RELEASE</version>
+					<executions>
+						<execution>
+							<goals>
+								<goal>repackage</goal>
+							</goals>
+							<configuration>
+								<classifier>spring-boot</classifier>
+								<mainClass>
+									com.woonoz.pv.progdash.ProgdashApplication
+								</mainClass>
+							</configuration>
+						</execution>
+					</executions>
 				</plugin>
 			</plugins>
 		</pluginManagement>

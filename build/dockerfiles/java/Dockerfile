@@ -1,11 +1,14 @@
-FROM debian:stretch-slim
+FROM openjdk:11.0.2-jre-slim-stretch
 
-RUN printf "deb http://deb.debian.org/debian/ stretch-backports main" > /etc/apt/sources.list.d/backports.list \
-    && apt-get update \
-    && apt-get install -y -t stretch-backports openjdk-11-jre-headless \
+ARG SERVICES_JAR=webservices-*-spring-boot.jar
+
+RUN apt-get update \
+    && apt-get install -y tzdata \
     && apt-get clean autoclean \
     && apt-get autoremove -y --purge \
     && rm -rf /var/lib/{apt,dpkg,cache,log}/ \
-    && mkdir /opt/
+    && mkdir /opt/progdash
 
-ENTRYPOINT tail -f /dev/null
+COPY ./webservices/target/${SERVICES_JAR} /opt/progdash/webservices.jar
+
+COPY ./application.properties /opt/progdash/application.properties
