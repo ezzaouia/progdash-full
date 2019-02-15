@@ -32,6 +32,8 @@ services:
       - mongodb
     links:
       - mongodb:mongo
+    ports:
+      - 8080:8080
 
   nginx:
     image: rancher-registry.woonoz.com:5000/woonoz/progdash-nginx:${DOCKER_TAG}
