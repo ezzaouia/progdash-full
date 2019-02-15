@@ -1,6 +1,7 @@
 package com.woonoz.pv.progdash.configuration;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +12,7 @@ import com.zaxxer.hikari.HikariDataSource;
 
 @Configuration
 @PropertySource("application.properties")
+@AutoConfigureBefore(ProgdashMybatisConfig.class)
 public class ProgdashDatasourceConfig extends HikariConfig{
 
 	@Value("${progdash.datasource.driverclassname}")

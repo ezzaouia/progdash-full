@@ -22,12 +22,12 @@
 		<maven_build_timestamp>${maven.build.timestamp}</maven_build_timestamp>
 		<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
 		<maven.compiler.encoding>UTF-8</maven.compiler.encoding>
-		<maven.compiler.source>11</maven.compiler.source>
-		<maven.compiler.target>11</maven.compiler.target>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<!-- Sonar properties -->
-		<sonar.java.source>1.7</sonar.java.source>
+		<sonar.java.source>1.8</sonar.java.source>
 		<sonar.sourceEncoding>UTF-8</sonar.sourceEncoding>
 		<sonar.projectVersion>${project.version}</sonar.projectVersion>
 		<sonar.exclusions>maven/**</sonar.exclusions>
@@ -198,6 +198,13 @@
 				<version>1.5.19.RELEASE</version>
 				<type>pom</type>
 				<scope>import</scope>
+			</dependency>
+
+			<!-- compatible with spring 4 -->
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-data-mongodb</artifactId>
+				<version>1.5.19.RELEASE</version>
 			</dependency>
 
 			<!-- compatible with spring 4 -->
