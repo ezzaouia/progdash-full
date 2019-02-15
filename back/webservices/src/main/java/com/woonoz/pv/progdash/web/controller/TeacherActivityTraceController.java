@@ -10,13 +10,15 @@ import org.springframework.stereotype.Controller;
 
 import com.woonoz.pv.progdash.dto.TeacherActivityTraceDto;
 import com.woonoz.pv.progdash.service.TeacherActivityTraceService;
+import com.woonoz.web.controller.WoonozJerseyController;
 
 @Controller
-public class TeacherActivityTraceController {
+@Path("teacher")
+public class TeacherActivityTraceController implements WoonozJerseyController{
 
 	@Inject private TeacherActivityTraceService teacherActivityTraceService;
 
-	@Path("/teacher/trace")
+	@Path("trace")
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void saveTeacherActivitTrace(TeacherActivityTraceDto teacherActivityTraceDto) {
