@@ -34,7 +34,7 @@
 
 		<!-- Dependencies' version, alphabetically sorted -->
 		<pv.version>10.2.0-PV-7.2.1.0</pv.version>
-		<woonoz.core.version>1.1.7-SNAPSHOT</woonoz.core.version>
+		<woonoz.core.version>1.1.6.1</woonoz.core.version>
 
 		<!-- Tests with database -->
 
