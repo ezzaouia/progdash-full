@@ -14,6 +14,12 @@ public class TeacherActivityTraceDto {
 
 	private String traceId;
 
+	/**
+	 * Private constructor for deserialization only
+	 */
+	@SuppressWarnings("unused")
+	private TeacherActivityTraceDto() {}
+
 	public TeacherActivityTraceDto(String traceId, String traceMessage, int teacherId){
 		this.traceId = traceId;
 		this.traceMessage = traceMessage;
