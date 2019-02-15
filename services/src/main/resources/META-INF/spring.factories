@@ -1,5 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.woonoz.pv.progdash.configuration.ProgdashDatasourceConfig,\
-com.woonoz.pv.progdash.configuration.ProgdashMybatisConfig,\
-com.woonoz.pv.progdash.configuration.ProgdashMongodbConfig,\
-com.woonoz.pv.progdash.configuration.ProgdashServicesConfig
