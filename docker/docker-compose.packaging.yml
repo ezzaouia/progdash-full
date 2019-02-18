@@ -1,0 +1,45 @@
+version: '2'
+
+services:
+  mongodb:
+    build:
+      context: ./
+      dockerfile: ./build/dockerfiles/mongo/Dockerfile
+    volumes:
+      - progdash-mongo-data:/data/db
+      - progdash-mongo-config:/data/configdb
+    ports:
+      - 27017:27017
+
+  mongoadmin:
+    ports:
+      - 8081:8081
+
+  java:
+    build:
+      context: ./
+      dockerfile: ./build/dockerfiles/java/Dockerfile
+    ports:
+      - 8080:8080
+
+  nginx:
+    build:
+      context: ./
+      dockerfile: ./build/dockerfiles/nginx/Dockerfile
+    ports:
+      - 8090:80
+
+  cronjobs:
+    build:
+      context: ./
+      dockerfile: ./build/dockerfiles/cronjobs/Dockerfile
+    volumes:
+      - progdash-mongo-backup:/data/backups
+
+volumes:
+  progdash-mongo-data:
+    driver: local
+  progdash-mongo-config:
+    driver: local
+  progdash-mongo-backup:
+    driver: local
