@@ -38,6 +38,7 @@ import { StoreField, ClassData } from '../../store';
             Tableau de bord
         </button>
 
+
         <TimescaleMenu
           *ngIf="!isProgTableOpened && selectedClass"
           [selectedTimescale]="selectedTimescale"
@@ -45,6 +46,14 @@ import { StoreField, ClassData } from '../../store';
         </TimescaleMenu>
 
         <span class="fill"></span>
+
+        <button
+        *ngIf="!isProgTableOpened && selectedClass"
+          mat-stroked-button
+          (click)="openProgTableHandler.emit($event)">
+          Voir Détails
+          <mat-icon aria-label="menu">arrow_forward</mat-icon>
+        </button>
 
         <div class="class-picker">
           <button
@@ -103,24 +112,6 @@ import { StoreField, ClassData } from '../../store';
         <MoreMenu></MoreMenu>
       </mat-menu>
 
-      <div class="sidenav">
-        <UserList
-          [userListData]="(selectedClass ? usersByClass.byClassId[selectedClass] : [])"
-          [timescale]="selectedTimescale"
-          (userMoreMenuHandler)="onUserMoreMenuClick($event)">
-        </UserList>
-      </div>
-
-      <div class="prog-table">
-        <button
-          class="prog-table-btn mat-elevation-z2"
-          mat-button
-          (click)="openProgTableHandler.emit($event)">
-            Détail
-          <mat-icon aria-label="menu">arrow_forward</mat-icon>
-        </button>
-      </div>
-
       <div #board class="board">
 
         <ProgBoard
@@ -153,7 +144,8 @@ import { StoreField, ClassData } from '../../store';
 
           (sortColumnTraceHandler)="sortColumnTraceHandler.emit($event)"
           (filterColumnTraceHandler)="filterColumnTraceHandler.emit($event)"
-          (hoverWidgetTraceHandler)="hoverWidgetTraceHandler.emit($event)">
+          (hoverWidgetTraceHandler)="hoverWidgetTraceHandler.emit($event)"
+          (userMoreMenuHandler)="handleUserMoreMenuClick($event)">
         </ProgTable>
 
       </div>
@@ -256,6 +248,7 @@ export class ProgdashManagerComponent implements AfterContentInit {
   @Output() closePrintReportHandler = new EventEmitter();
   @Output() checkWidgetHandler = new EventEmitter();
   @Output() printReportHandler = new EventEmitter();
+  @Output() hotPrintWidgetHandler = new EventEmitter();
 
   @Output() sortColumnTraceHandler = new EventEmitter();
   @Output() filterColumnTraceHandler = new EventEmitter();
@@ -295,7 +288,7 @@ export class ProgdashManagerComponent implements AfterContentInit {
 
     // this.classes$.subscribe( _ => {
     //   if ( this.classes && this.classes.allIds ) {
-    //     this.classDialogRef.componentInstance.data = {
+    //     this.classDialogRef.comp        onentInstance.data = {
     //       ...this.classDialogRef.componentInstance.data,
     //       classes: this.classes.byId,
     //       selectClassHandler: this.onSelectClassDialog.bind( this ),
@@ -304,12 +297,19 @@ export class ProgdashManagerComponent implements AfterContentInit {
     // });
   }
 
-  onUserMoreMenuClick ({ user, /*action*/ }) {
+  handleUserMoreMenuClick ({ user, /*action*/ }) {
     this.dialog.open( Modal, {
       width: '70vw',
       height: '100vh',
-      data: { user, component: UserDetailComponent },
+      data: {
+        user,
+        component: UserDetailComponent,
+        modulesData: this.modulesData,
+        hoverWidgetTraceHandler: this.hoverWidgetTraceHandler,
+        hotPrintWidgetHandler: this.hotPrintWidgetHandler,
+      },
     });
+
     // Trace purpose
     this.openUserDialogTraceHandler.emit( user );
   }

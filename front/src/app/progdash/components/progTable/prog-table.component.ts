@@ -37,9 +37,9 @@ import { PrintWidgetComponent } from '../../../shared/components';
           [isStartPrintReport]="isStartPrintReport"
           [selectedWidgets]="selectedWidgets"
           (checkWidgetHandler)="checkWidgetHandler.emit($event)"
-
           (sortColumnTraceHandler)="sortColumnTraceHandler.emit($event)"
-          (filterColumnTraceHandler)="filterColumnTraceHandler.emit($event)">
+          (filterColumnTraceHandler)="filterColumnTraceHandler.emit($event)"
+          (userMoreMenuHandler)="userMoreMenuHandler.emit($event)">
         </TableViewManager>
       </mat-card-content>
     </mat-card>
@@ -50,7 +50,7 @@ import { PrintWidgetComponent } from '../../../shared/components';
       (mouseenter)="hoverWidgetTraceHandler.emit({event: 'mouseenter',id: 'line-chart'})"
       (mouseleave)="hoverWidgetTraceHandler.emit({event: 'mouseleave',id: 'table-view'})">
       <mat-card-header>
-        <mat-card-title>Ligne de temps de la progression</mat-card-title>
+        <mat-card-title>Progression dans le temps</mat-card-title>
       </mat-card-header>
       <mat-card-content #lineWidget>
         <MlineChart
@@ -122,6 +122,7 @@ export class ProgTableComponent implements OnInit, OnDestroy {
   @Output() sortColumnTraceHandler = new EventEmitter();
   @Output() filterColumnTraceHandler = new EventEmitter();
   @Output() hoverWidgetTraceHandler = new EventEmitter();
+  @Output() userMoreMenuHandler = new EventEmitter();
 
   updateSub: Subscription;
   userListData$ = new BehaviorSubject<any>({});
@@ -130,6 +131,13 @@ export class ProgTableComponent implements OnInit, OnDestroy {
   colDefaultWidth = 100;
   colDefaultHeight = 30;
   columns = {
+    moremenu: {
+      name: '',
+      histo: '',
+      encoding: 'NG',
+      width: 24,
+      topBottom: 0,
+    },
     fullName: {
       name: 'Apprenant',
       histo: '',
@@ -159,23 +167,22 @@ export class ProgTableComponent implements OnInit, OnDestroy {
       width: 80,
       topBottom: 0,
     },
-    'initialEval.cat': {
+    'initialEval.sum': {
       name: 'Eval. Initiale',
-      histo: 'categorical',
-      encoding: 'CAT',
-      width: 100,
+      histo: 'ordinal',
+      encoding: 'BAR',
+      width: 80,
       topBottom: 0,
-      color: initialEvalCatColors,
     },
     'initialLevel.sum': {
-      name: 'Niv. Initial',
+      name: 'Règles sues initialement',
       histo: 'ordinal',
       encoding: 'BAR',
       width: 80,
       topBottom: 0,
     },
     'time.sum': {
-      name: 'Temps',
+      name: 'Temps cumulé',
       hint: 'time.format',
       histo: 'ordinal',
       encoding: 'BAR',

@@ -20,6 +20,8 @@ export enum DashActionTypes {
   ClosePrintReport = '[Dash] Close Print Report',
   CheckWidget = '[Dash] Check Widget',
   PrintReport = '[Dash] Print Report',
+  HotPrintWidget = '[Dash] Hot Print Widget',
+
   PrintReportSuccess = '[Dash] Print Report Success',
   PrintReportFailure = '[Dash] Print Report Failure',
 
@@ -110,6 +112,12 @@ export class PrintReport implements Action {
   constructor ( public payload: string[]) {}
 }
 
+export class HotPrintWidget implements Action {
+  readonly type = DashActionTypes.HotPrintWidget;
+
+  constructor ( public payload: string ) {}
+}
+
 export class PrintReportSuccess implements Action {
   readonly type = DashActionTypes.PrintReportSuccess;
 
@@ -168,4 +176,5 @@ export type DashActionsUnion =
   | SortColumn
   | FilterColumn
   | OpenUserDialog
-  | HoverWidget;
+  | HoverWidget
+  | HotPrintWidget;

@@ -42,6 +42,7 @@ import { Timescale } from '../../utils/utils';
       (closePrintReportHandler)="onClosePrintReportHandler($event)"
       (checkWidgetHandler)="onCheckWidgetHandler($event)"
       (printReportHandler)="onPrintReportHandler($event)"
+      (hotPrintWidgetHandler)="onHotPrintWidgetHandler($event)"
 
       (sortColumnTraceHandler)="onSortColumnTraceHandler($event)"
       (filterColumnTraceHandler)="onFilterColumnTraceHandler($event)"
@@ -142,6 +143,10 @@ export class ProgdashViewPageComponent implements OnInit {
 
   onHoverWidgetTraceHandler ( payload ) {
     this.store.dispatch( new fromStore.HoverWidget( payload ));
+  }
+
+  onHotPrintWidgetHandler ( payload ) {
+    this.store.dispatch( new fromStore.HotPrintWidget( payload ));
   }
 
 }
