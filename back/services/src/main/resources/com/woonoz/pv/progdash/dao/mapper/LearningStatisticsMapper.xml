@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?><!--Converted at: Fri Oct 21 17:05:47 CEST 2016-->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.woonoz.pv.progdash.dao.mapper.LearningSessionStatisticsMapper">
+<mapper namespace="com.woonoz.pv.progdash.dao.mapper.LearningStatisticsMapper">
 
 	<select id="getLastSessionId" resultType="java.lang.Integer">
 		SELECT MAX(id)
 		FROM learning_session
 		WHERE user_id = #{userId}
+	</select>
+	
+	<select id="getGroups" resultType="com.woonoz.pv.progdash.dto.GroupDto">
+		SELECT id_groupe groupId, nom_groupe groupName
+		FROM woonoz_groupe
+		WHERE id_groupe_p = #{areaId};
 	</select>
 
 </mapper>
