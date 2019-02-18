@@ -1,16 +1,13 @@
 package com.woonoz.pv.progdash.dto;
 
+import java.util.Map;
+
 import com.google.common.base.MoreObjects;
 
 public class TeacherActivityTraceDto {
-	/**
-	 * We assume that we have a field in mongodb with this same name
-	 */
-	private String traceMessage;
-	/**
-	 * We assume that we have a field in mongodb with this same name : represent teacher user id in mariadb
-	 */
-	private int teacherId;
+	public Map<String, Object> payload;
+
+	public String actionType;
 
 	private String traceId;
 
@@ -20,29 +17,30 @@ public class TeacherActivityTraceDto {
 	@SuppressWarnings("unused")
 	private TeacherActivityTraceDto() {}
 
-	public TeacherActivityTraceDto(String traceId, String traceMessage, int teacherId){
+	public TeacherActivityTraceDto(String traceId, Map<String, Object> payload, String actionType){
 		this.traceId = traceId;
-		this.traceMessage = traceMessage;
-		this.teacherId = teacherId;
+		this.payload = payload;
+		this.actionType = actionType;
 	}
 
 	public String getTraceId() {
 		return traceId;
 	}
 
-	public String getTraceMessage() {
-		return traceMessage;
+	public Map<String, Object> getPayload() {
+		return payload;
 	}
 
-	public int getTeacherId() {
-		return teacherId;
+	public String getActionType() {
+		return actionType;
 	}
 
 	@Override
 	public String toString() {
 		return MoreObjects.toStringHelper(this)
-				.add("teacherId", teacherId)
-				.add("traceMessage", traceMessage)
+				.add("traceId", traceId)
+				.add("actionType", actionType)
+				.add("payload", payload)
 				.toString();
 	}
 }

@@ -14,7 +14,7 @@ export class TraceService {
 
     public createTrace(trace: Action) {
         return this.http
-            .post(API_URL + '/teacher/trace', trace)
+            .post(API_URL + '/teacher/trace', {actionType: trace.type, payload: (trace as any).payload})
             .pipe(
                 map(response => {
                     return trace;

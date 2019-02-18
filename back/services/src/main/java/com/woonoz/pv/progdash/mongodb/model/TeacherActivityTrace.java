@@ -1,5 +1,7 @@
 package com.woonoz.pv.progdash.mongodb.model;
 
+import java.util.Map;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -17,30 +19,27 @@ public class TeacherActivityTrace {
 	/**
 	 * We assume that we have a field in mongodb with this same name
 	 */
-	public String traceMessage;
-	/**
-	 * We assume that we have a field in mongodb with this same name : represent teacher user id in mariadb
-	 */
-	@Indexed
-	public int teacherId;
+	public Map<String, Object> payload;
 
-	public TeacherActivityTrace(String traceMessage, int teacherId){
-		this.traceMessage = traceMessage;
-		this.teacherId = teacherId;
+	public String actionType;
+
+	public TeacherActivityTrace(Map<String, Object> payload, String actionType){
+		this.payload = payload;
+		this.actionType = actionType;
 	}
 
-	public TeacherActivityTrace(String id, String traceMessage, int teacherId){
+	public TeacherActivityTrace(String id, Map<String, Object> payload, String actionType){
 		this.id = id;
-		this.traceMessage = traceMessage;
-		this.teacherId = teacherId;
+		this.payload = payload;
+		this.actionType = actionType;
 	}
 
 	@Override
 	public String toString() {
 		return MoreObjects.toStringHelper(this)
 				.add("id", id)
-				.add("teacherId", teacherId)
-				.add("traceMessage", traceMessage)
+				.add("payload", payload)
+				.add("actionType", actionType)
 				.toString();
 	}
 }
