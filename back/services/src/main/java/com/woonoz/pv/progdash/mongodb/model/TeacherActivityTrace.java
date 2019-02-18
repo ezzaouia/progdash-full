@@ -22,15 +22,22 @@ public class TeacherActivityTrace {
 	public Map<String, Object> payload;
 
 	public String actionType;
+	/**
+	 * We assume that we have a field in mongodb with this same name : represent teacher user id in mariadb
+	 */
+	@Indexed
+	public int teacherId;
 
-	public TeacherActivityTrace(Map<String, Object> payload, String actionType){
+	public TeacherActivityTrace(Map<String, Object> payload, int teacherId, String actionType){
 		this.payload = payload;
+		this.teacherId = teacherId;
 		this.actionType = actionType;
 	}
 
-	public TeacherActivityTrace(String id, Map<String, Object> payload, String actionType){
+	public TeacherActivityTrace(String id, Map<String, Object> payload, int teacherId, String actionType){
 		this.id = id;
 		this.payload = payload;
+		this.teacherId = teacherId;
 		this.actionType = actionType;
 	}
 
@@ -38,6 +45,7 @@ public class TeacherActivityTrace {
 	public String toString() {
 		return MoreObjects.toStringHelper(this)
 				.add("id", id)
+				.add("teacherId", teacherId)
 				.add("payload", payload)
 				.add("actionType", actionType)
 				.toString();

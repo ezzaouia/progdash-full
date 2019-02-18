@@ -5,11 +5,18 @@ import java.util.Map;
 import com.google.common.base.MoreObjects;
 
 public class TeacherActivityTraceDto {
-	public Map<String, Object> payload;
-
-	public String actionType;
+	/**
+	 * We assume that we have a field in mongodb with this same name
+	 */
+	private Map<String, Object> payload;
+	/**
+	 * We assume that we have a field in mongodb with this same name : represent teacher user id in mariadb
+	 */
+	private int teacherId;
 
 	private String traceId;
+
+	private String actionType;
 
 	/**
 	 * Private constructor for deserialization only
@@ -17,9 +24,10 @@ public class TeacherActivityTraceDto {
 	@SuppressWarnings("unused")
 	private TeacherActivityTraceDto() {}
 
-	public TeacherActivityTraceDto(String traceId, Map<String, Object> payload, String actionType){
+	public TeacherActivityTraceDto(String traceId, Map<String, Object> payload, int teacherId, String actionType){
 		this.traceId = traceId;
 		this.payload = payload;
+		this.teacherId = teacherId;
 		this.actionType = actionType;
 	}
 
@@ -31,6 +39,10 @@ public class TeacherActivityTraceDto {
 		return payload;
 	}
 
+	public int getTeacherId() {
+		return teacherId;
+	}
+
 	public String getActionType() {
 		return actionType;
 	}
@@ -38,9 +50,9 @@ public class TeacherActivityTraceDto {
 	@Override
 	public String toString() {
 		return MoreObjects.toStringHelper(this)
-				.add("traceId", traceId)
-				.add("actionType", actionType)
+				.add("teacherId", teacherId)
 				.add("payload", payload)
+				.add("actionType", actionType)
 				.toString();
 	}
 }
