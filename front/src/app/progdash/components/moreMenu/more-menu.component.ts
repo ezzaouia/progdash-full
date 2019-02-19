@@ -9,9 +9,9 @@ import { Component, OnInit, Output, Input, EventEmitter } from '@angular/core';
       Déconnexion
     </button>
     <button mat-menu-item>
-      <mat-icon>group_work</mat-icon>
-      Evaluations
-    </button>
+      <mat-icon>arrow_back</mat-icon>
+      Retour au portail
+  </button>
   `,
   styles: [ `
     :host {

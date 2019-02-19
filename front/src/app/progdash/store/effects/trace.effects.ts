@@ -34,7 +34,7 @@ export class TraceEffects {
       DashActionTypes.SelectClass,
       DashActionTypes.SelectTimescale,
       DashActionTypes.OpenProgTable,
-      DashActionTypes.CloseProgTable,
+      DashActionTypes.OpenProgBoard,
 
       // PRINT REPORT
       DashActionTypes.StartPrintReport,

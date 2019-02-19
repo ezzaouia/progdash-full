@@ -14,7 +14,7 @@ import { UserDetailComponent } from './userDetail';
 import { ClassManagerComponent } from './classManager';
 import { ProgTableComponent } from './progTable';
 import { UserTimelineWidgetComponent } from './userTimelineWidget';
-import { PrintWidgetComponent } from './printWidget';
+import { ProgEvaluationComponent } from './progEvaluation';
 import { ProgdashViewPageComponent } from '../containers';
 import { FormatAttrPipe } from '../pipes';
 
@@ -37,7 +37,7 @@ export const fromComponents: any[] = [
   UserTimelineWidgetComponent,
   FormatAttrPipe,
   ProgdashViewPageComponent,
-  // PrintWidgetComponent,
+  ProgEvaluationComponent,
 ];
 
 export const fromEntryComponents: any[] = [

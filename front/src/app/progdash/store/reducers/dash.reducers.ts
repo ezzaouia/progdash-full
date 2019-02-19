@@ -12,6 +12,7 @@ import {
 export interface State {
   isDataLoaded: boolean;
   isProgTableOpened: boolean;
+  isProgEvaluationOpened: boolean;
   isLoading: boolean;
   rawData: any[];
   usersByClass: StoreField<UserData>;
@@ -29,6 +30,7 @@ export interface State {
 const initialState: State = {
   isDataLoaded: false,
   isProgTableOpened: false,
+  isProgEvaluationOpened: false,
   isLoading: false,
   rawData: [],
   usersByClass: null,
@@ -96,13 +98,23 @@ export function reducers (
       return {
         ...state,
         isProgTableOpened: true,
+        isProgEvaluationOpened: false,
       };
     }
 
-    case DashActionTypes.CloseProgTable: {
+    case DashActionTypes.OpenProgEvaluation: {
+      return {
+        ...state,
+        isProgEvaluationOpened: true,
+        isProgTableOpened: false,
+      };
+    }
+
+    case DashActionTypes.OpenProgBoard: {
       return {
         ...state,
         isProgTableOpened: false,
+        isProgEvaluationOpened: false,
       };
     }
 
@@ -228,6 +240,7 @@ export const selectedClass = ( state: State ) => state.selectedClass;
 export const selectedTimescale = ( state: State ) => state.selectedTimescale;
 export const isDataLoaded = ( state: State ) => state.isDataLoaded;
 export const isProgTableOpened = ( state: State ) => state.isProgTableOpened;
+export const isProgEvaluationOpened = ( state: State ) => state.isProgEvaluationOpened;
 export const isStartPrintReport = ( state: State ) => state.isStartPrintReport;
 export const selectedRules = ( state: State ) => state.selectedRules;
 export const selectedWidgets = ( state: State ) => state.selectedWidgets;
