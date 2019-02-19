@@ -11,21 +11,21 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.woonoz.pv.progdash.dto.LearningSessionStatisticsDto;
-import com.woonoz.pv.progdash.service.LearningSessionStatisticsService;
+import com.woonoz.pv.progdash.service.LearningStatisticsService;
 import com.woonoz.pv.progdash.web.core.AbstractProgdashControllerTest;
 import com.woonoz.pv.progdash.web.core.ResponseAssert;
 
-public class LearningSessionStatisticsControllerTest extends AbstractProgdashControllerTest {
+public class LearningStatisticsControllerTest extends AbstractProgdashControllerTest {
 
 	private static final int USER_ID = 1;
 
 	@Autowired
-	private LearningSessionStatisticsService learningSessionStatisticsService;
+	private LearningStatisticsService learningStatisticsService;
 
 	@Test
 	public void getLearningSessionStatistics() throws JSONException {
 		//GIVEN
-		when(learningSessionStatisticsService.getLearningSessionStatistics(Mockito.eq(USER_ID), Mockito.anyString()))
+		when(learningStatisticsService.getLearningSessionStatistics(Mockito.eq(USER_ID), Mockito.anyString()))
 				.thenReturn(new LearningSessionStatisticsDto(1, "Hello World"));
 
 		//WHEN

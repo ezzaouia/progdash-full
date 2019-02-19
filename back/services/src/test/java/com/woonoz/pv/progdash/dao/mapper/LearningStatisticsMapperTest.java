@@ -10,15 +10,15 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.woonoz.pv.progdash.dao.AbstractProgdashDaoTest;
 
 @DatabaseSetup({ "woonoz-membre.xml", "learning-session.xml" })
-public class LearningSessionStatisticsMapperTest extends AbstractProgdashDaoTest {
+public class LearningStatisticsMapperTest extends AbstractProgdashDaoTest {
 
 	private final static int USER_ID = 20561;
 	private final static int SESSION_ID = 1;
 
-	@Inject private LearningSessionStatisticsMapper learningSessionStatisticsMapper;
+	@Inject private LearningStatisticsMapper learningStatisticsMapper;
 
 	@Test
 	public void getLastSessionId(){
-		assertThat(learningSessionStatisticsMapper.getLastSessionId(USER_ID)).isEqualTo(SESSION_ID);
+		assertThat(learningStatisticsMapper.getLastSessionId(USER_ID)).isEqualTo(SESSION_ID);
 	}
 }

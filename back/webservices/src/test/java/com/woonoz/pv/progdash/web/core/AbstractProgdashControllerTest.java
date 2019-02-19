@@ -19,7 +19,8 @@ import com.woonoz.pv.progdash.web.ProgdashApplication;
 		+ "com.woonoz.pv.progdash.configuration.ProgdashMybatisConfig,"
 		+ "com.woonoz.pv.progdash.configuration.ProgdashServicesConfig,"
 		+ "org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration,"
-		+ "org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration")
+		+ "org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration,"
+		+ "org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration")
 public abstract class AbstractProgdashControllerTest {
 
 	@Autowired

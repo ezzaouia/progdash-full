@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 
-import com.woonoz.pv.progdash.service.LearningSessionStatisticsService;
+import com.woonoz.pv.progdash.service.LearningStatisticsService;
 import com.woonoz.pv.progdash.service.TeacherActivityTraceService;
 
 @Profile("test")
@@ -17,8 +17,8 @@ public class MockServicesConfiguration {
 
 	@Bean
 	@Primary
-	public LearningSessionStatisticsService learningSessionStatisticsService() {
-		return Mockito.mock(LearningSessionStatisticsService.class);
+	public LearningStatisticsService learningSessionStatisticsService() {
+		return Mockito.mock(LearningStatisticsService.class);
 	}
 
 	@Bean
