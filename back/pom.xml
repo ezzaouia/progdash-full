@@ -213,13 +213,6 @@
 				<version>1.5.19.RELEASE</version>
 			</dependency>
 
-			<!-- compatible with spring 4 -->
-			<dependency>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-starter-web</artifactId>
-				<version>1.5.19.RELEASE</version>
-			</dependency>
-
 			<!-- compatible with existing mybatis dependencies and spring 4 -->
 			<dependency>
 				<groupId>org.mybatis.spring.boot</groupId>
@@ -258,24 +251,13 @@
 				<version>${woonoz.core.version}</version>
 				<scope>test</scope>
 			</dependency>
-			<!--<dependency>
-				<groupId>org.eclipse.jetty</groupId>
-				<artifactId>jetty-server</artifactId>
-				<version>9.4.14.v20181114</version>
+			<!-- compatible with spring 4 -->
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-test</artifactId>
+				<version>1.5.19.RELEASE</version>
 				<scope>test</scope>
 			</dependency>
-			<dependency>
-				<groupId>org.eclipse.jetty</groupId>
-				<artifactId>jetty-util</artifactId>
-				<version>9.4.14.v20181114</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.eclipse.jetty</groupId>
-				<artifactId>jetty-continuation</artifactId>
-				<version>9.4.14.v20181114</version>
-				<scope>test</scope>
-			</dependency>-->
 		</dependencies>
 	</dependencyManagement>
 

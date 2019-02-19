@@ -59,8 +59,8 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.woonoz.core</groupId>
-			<artifactId>webservices-core-test-jersey2</artifactId>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
 		</dependency>
 	</dependencies>
 
