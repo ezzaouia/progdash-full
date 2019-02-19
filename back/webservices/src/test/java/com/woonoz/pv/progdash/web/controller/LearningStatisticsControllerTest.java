@@ -17,17 +17,17 @@ import org.mockito.Mockito;
 
 import com.google.common.collect.ImmutableList;
 import com.woonoz.pv.progdash.dto.LearningSessionStatisticsDto;
-import com.woonoz.pv.progdash.service.LearningSessionStatisticsService;
+import com.woonoz.pv.progdash.service.LearningStatisticsService;
 import com.woonoz.pv.progdash.web.config.WebserviceUnitTestConfig;
 import com.woonoz.web.controller.AbstractUnitTestControllerTest;
 import com.woonoz.web.controller.ResponseAssert;
 
 @Ignore
-public class LearningSessionStatisticsControllerTest extends AbstractUnitTestControllerTest {
+public class LearningStatisticsControllerTest extends AbstractUnitTestControllerTest {
 
 	private static final int USER_ID = 1;
 
-	@Mock private LearningSessionStatisticsService learningSessionStatisticsService;
+	@Mock private LearningStatisticsService learningStatisticsService;
 
 	@Override
 	protected Class<?>[] springConfigurations() {
@@ -36,7 +36,7 @@ public class LearningSessionStatisticsControllerTest extends AbstractUnitTestCon
 
 	@Override
 	protected List<Object> getMockedControllers() {
-		return ImmutableList.of(new LearningSessionStatisticsController());
+		return ImmutableList.of(new LearningStatisticsController());
 	}
 
 	@Override
@@ -45,7 +45,7 @@ public class LearningSessionStatisticsControllerTest extends AbstractUnitTestCon
 
 			@Override
 			protected void configure() {
-				bind(learningSessionStatisticsService).to(LearningSessionStatisticsService.class);
+				bind(learningStatisticsService).to(LearningStatisticsService.class);
 			}
 		};
 	}
@@ -58,7 +58,7 @@ public class LearningSessionStatisticsControllerTest extends AbstractUnitTestCon
 	@Test
 	public void getLearningSessionStatistics() throws JSONException {
 		//GIVEN
-		when(learningSessionStatisticsService.getLearningSessionStatistics(Mockito.eq(USER_ID), Mockito.eq("hello")))
+		when(learningStatisticsService.getLearningSessionStatistics(Mockito.eq(USER_ID), Mockito.eq("hello")))
 				.thenReturn(new LearningSessionStatisticsDto(1, "Hello World"));
 
 		//WHEN
