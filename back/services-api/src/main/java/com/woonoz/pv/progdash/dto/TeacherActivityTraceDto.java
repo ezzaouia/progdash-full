@@ -12,11 +12,14 @@ public class TeacherActivityTraceDto {
 	/**
 	 * We assume that we have a field in mongodb with this same name : represent teacher user id in mariadb
 	 */
+
 	private int teacherId;
 
-	private String traceId;
-
 	private String actionType;
+
+	public String sessionId;
+
+	public int areaId;
 
 	/**
 	 * Private constructor for deserialization only
@@ -24,35 +27,42 @@ public class TeacherActivityTraceDto {
 	@SuppressWarnings("unused")
 	private TeacherActivityTraceDto() {}
 
-	public TeacherActivityTraceDto(String traceId, Object payload, int teacherId, String actionType){
-		this.traceId = traceId;
-		this.payload = payload;
+	public TeacherActivityTraceDto(int teacherId, Object payload, String actionType, String sessionId, int areaId){
 		this.teacherId = teacherId;
+		this.payload = payload;
 		this.actionType = actionType;
-	}
-
-	public String getTraceId() {
-		return traceId;
+		this.sessionId = sessionId;
+		this.areaId = areaId;
 	}
 
 	public Object getPayload() {
 		return payload;
 	}
 
-	public int getTeacherId() {
-		return teacherId;
-	}
-
 	public String getActionType() {
 		return actionType;
+	}
+
+	public String getSessionId() {
+		return sessionId;
+	}
+
+	public int getAreaId() {
+		return areaId;
+	}
+
+	public int getTeacherId() {
+		return teacherId;
 	}
 
 	@Override
 	public String toString() {
 		return MoreObjects.toStringHelper(this)
-				.add("teacherId", teacherId)
 				.add("payload", payload)
 				.add("actionType", actionType)
+				.add("sessionId", sessionId)
+				.add("areaId", areaId)
+				.add("teacherId", teacherId)
 				.toString();
 	}
 }

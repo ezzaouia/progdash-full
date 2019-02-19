@@ -19,6 +19,10 @@ public class TeacherActivityTraceServiceImpl implements TeacherActivityTraceServ
 	}
 
 	private static TeacherActivityTrace convertToTeacherActivityTraceModel(TeacherActivityTraceDto teacherActivityTraceDto){
-		return new TeacherActivityTrace(teacherActivityTraceDto.getTraceId(), teacherActivityTraceDto.getPayload(), teacherActivityTraceDto.getTeacherId(), teacherActivityTraceDto.getActionType());
+		return new TeacherActivityTrace(teacherActivityTraceDto.getPayload(),
+										teacherActivityTraceDto.getTeacherId(),
+										teacherActivityTraceDto.getActionType(),
+										teacherActivityTraceDto.getSessionId(),
+										teacherActivityTraceDto.getAreaId());
 	}
 }

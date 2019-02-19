@@ -28,17 +28,25 @@ public class TeacherActivityTrace {
 	@Indexed
 	public int teacherId;
 
-	public TeacherActivityTrace(Object payload, int teacherId, String actionType){
+	public String sessionId;
+
+	public int areaId;
+
+	public TeacherActivityTrace(Object payload, int teacherId, String actionType, String sessionId, int areaId){
 		this.payload = payload;
 		this.teacherId = teacherId;
 		this.actionType = actionType;
+		this.areaId = areaId;
+		this.sessionId = sessionId;
 	}
 
-	public TeacherActivityTrace(String id, Object payload, int teacherId, String actionType){
+	public TeacherActivityTrace(String id, Object payload, int teacherId, String actionType, String sessionId, int areaId){
 		this.id = id;
 		this.payload = payload;
 		this.teacherId = teacherId;
 		this.actionType = actionType;
+		this.areaId = areaId;
+		this.sessionId = sessionId;
 	}
 
 	@Override
@@ -48,6 +56,8 @@ public class TeacherActivityTrace {
 				.add("teacherId", teacherId)
 				.add("payload", payload)
 				.add("actionType", actionType)
+				.add("areaId", areaId)
+				.add("sessionId", sessionId)
 				.toString();
 	}
 }
