@@ -3,6 +3,7 @@ import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { DynamicModule } from 'ng-dynamic-component';
 import { GridsterModule } from 'angular-gridster2';
+import { HttpModule } from '@angular/http';
 
 
 import { MaterialModule } from '../material';
@@ -13,10 +14,12 @@ import { DashRoutingModule } from './progdash.routes';
 
 import { fromComponents, fromEntryComponents } from './components';
 import * as fromStore from './store';
+import { TraceService } from './services';
 
 
 @NgModule({
   imports: [
+    HttpModule,
     SharedModule,
 
     GridsterModule,
@@ -30,6 +33,7 @@ import * as fromStore from './store';
     StoreModule.forFeature( 'progdash', fromStore.reducers ),
     EffectsModule.forFeature( fromStore.effects ),
   ],
+  providers: [TraceService],
   entryComponents: [ ...fromEntryComponents ],
   declarations: [ ...fromComponents ],
   exports: [ ...fromComponents ],
