@@ -23,8 +23,17 @@ export class TraceService {
             sessionId: this.sessionId,
             areaId: 1
         };
+        let formData = new FormData();
+        formData.append('data', new Blob([JSON.stringify(data)], {
+            type: "application/json"
+        }));
+        if((trace as any).payload && (trace as any).payload.blob) {
+            formData.append('file', new Blob([(trace as any).payload.blob], {
+                type: "application/pdf"
+            }));
+        }
         return this.http
-            .post(API_URL + '/teacher/trace', data)
+            .post(API_URL + '/teacher/trace', formData)
             .pipe(
                 map(response => {
                     return trace;

@@ -32,21 +32,25 @@ public class TeacherActivityTrace {
 
 	public int areaId;
 
-	public TeacherActivityTrace(Object payload, int teacherId, String actionType, String sessionId, int areaId){
+	public byte[] file;
+
+	public TeacherActivityTrace(Object payload, int teacherId, String actionType, String sessionId, int areaId, byte[] file){
 		this.payload = payload;
 		this.teacherId = teacherId;
 		this.actionType = actionType;
 		this.areaId = areaId;
 		this.sessionId = sessionId;
+		this.file = file;
 	}
 
-	public TeacherActivityTrace(String id, Object payload, int teacherId, String actionType, String sessionId, int areaId){
+	public TeacherActivityTrace(String id, Object payload, int teacherId, String actionType, String sessionId, int areaId, byte[] file){
 		this.id = id;
 		this.payload = payload;
 		this.teacherId = teacherId;
 		this.actionType = actionType;
 		this.areaId = areaId;
 		this.sessionId = sessionId;
+		this.file = file;
 	}
 
 	@Override
