@@ -2,14 +2,14 @@ package com.woonoz.pv.progdash.dto;
 
 public class GroupDto {
 
-	int groupId;
-	String groupName;
+	private int id;
+	private String name;
 
-	public int getGroupId() {
-		return groupId;
+	public int getId() {
+		return id;
 	}
 
-	public String getGroupName() {
-		return groupName;
+	public String getName() {
+		return name;
 	}
 }

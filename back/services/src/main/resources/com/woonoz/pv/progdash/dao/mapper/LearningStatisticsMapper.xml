@@ -10,7 +10,7 @@
 	</select>
 	
 	<select id="getGroups" resultType="com.woonoz.pv.progdash.dto.GroupDto">
-		SELECT id_groupe groupId, nom_groupe groupName
+		SELECT id_groupe id, nom_groupe name
 		FROM woonoz_groupe
 		WHERE id_groupe_p = #{areaId};
 	</select>
