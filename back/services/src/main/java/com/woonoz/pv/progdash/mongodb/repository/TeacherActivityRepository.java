@@ -9,6 +9,6 @@ import com.woonoz.pv.progdash.mongodb.model.TeacherActivityTrace;
 // No need implementation, just one interface, and you have CRUD, thanks Spring Data
 public interface TeacherActivityRepository extends MongoRepository<TeacherActivityTrace, Integer> {
 
-	List<TeacherActivityTrace> findByTeacherId(int teacherId);
+	//List<TeacherActivityTrace> findByTeacherId(int teacherId);
 
 }

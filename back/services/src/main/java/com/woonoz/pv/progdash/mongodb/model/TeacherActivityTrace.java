@@ -1,5 +1,7 @@
 package com.woonoz.pv.progdash.mongodb.model;
 
+import java.util.Map;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -17,22 +19,38 @@ public class TeacherActivityTrace {
 	/**
 	 * We assume that we have a field in mongodb with this same name
 	 */
-	public String traceMessage;
+	public Object payload;
+
+	public String actionType;
 	/**
 	 * We assume that we have a field in mongodb with this same name : represent teacher user id in mariadb
 	 */
 	@Indexed
 	public int teacherId;
 
-	public TeacherActivityTrace(String traceMessage, int teacherId){
-		this.traceMessage = traceMessage;
+	public String sessionId;
+
+	public int areaId;
+
+	public byte[] file;
+
+	public TeacherActivityTrace(Object payload, int teacherId, String actionType, String sessionId, int areaId, byte[] file){
+		this.payload = payload;
 		this.teacherId = teacherId;
+		this.actionType = actionType;
+		this.areaId = areaId;
+		this.sessionId = sessionId;
+		this.file = file;
 	}
 
-	public TeacherActivityTrace(String id, String traceMessage, int teacherId){
+	public TeacherActivityTrace(String id, Object payload, int teacherId, String actionType, String sessionId, int areaId, byte[] file){
 		this.id = id;
-		this.traceMessage = traceMessage;
+		this.payload = payload;
 		this.teacherId = teacherId;
+		this.actionType = actionType;
+		this.areaId = areaId;
+		this.sessionId = sessionId;
+		this.file = file;
 	}
 
 	@Override
@@ -40,7 +58,10 @@ public class TeacherActivityTrace {
 		return MoreObjects.toStringHelper(this)
 				.add("id", id)
 				.add("teacherId", teacherId)
-				.add("traceMessage", traceMessage)
+				.add("payload", payload)
+				.add("actionType", actionType)
+				.add("areaId", areaId)
+				.add("sessionId", sessionId)
 				.toString();
 	}
 }
