@@ -5,12 +5,12 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import com.woonoz.pv.progdash.dto.GroupDto;
+import com.woonoz.pv.progdash.dao.dbo.GroupDbo;
 
 @Mapper
 public interface LearningStatisticsMapper {
 
 	Integer getLastSessionId(@Param("userId")int userId);
 
-	List<GroupDto> getGroups(@Param("areaId")int areaId);
+	List<GroupDbo> getGroups(@Param("areaId")int areaId);
 }
