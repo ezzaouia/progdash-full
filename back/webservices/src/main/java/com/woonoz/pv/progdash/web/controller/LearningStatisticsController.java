@@ -7,11 +7,13 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.woonoz.pv.progdash.dto.AllStatisticsDto;
 import com.woonoz.pv.progdash.dto.GroupDto;
 import com.woonoz.pv.progdash.dto.LearningSessionStatisticsDto;
 import com.woonoz.pv.progdash.service.LearningStatisticsService;
@@ -45,5 +47,13 @@ public class LearningStatisticsController implements WoonozJerseyController {
 	@Transactional(readOnly = true)
 	public List<GroupDto> getGroups(@PathParam("areaId") int areaId) {
 		return learningStatisticsService.getGroups(areaId);
+	}
+
+	@GET
+	@Path("{areaId}/allStatistics")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Transactional(readOnly = true)
+	public AllStatisticsDto getAllStatistics(@PathParam("areaId") int areaId, @QueryParam("groupId") Integer groupId) {
+		return learningStatisticsService.getAllStatistics(areaId, groupId);
 	}
 }
