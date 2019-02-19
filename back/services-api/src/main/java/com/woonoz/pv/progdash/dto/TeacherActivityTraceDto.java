@@ -8,7 +8,7 @@ public class TeacherActivityTraceDto {
 	/**
 	 * We assume that we have a field in mongodb with this same name
 	 */
-	private Map<String, Object> payload;
+	private Object payload;
 	/**
 	 * We assume that we have a field in mongodb with this same name : represent teacher user id in mariadb
 	 */
@@ -24,7 +24,7 @@ public class TeacherActivityTraceDto {
 	@SuppressWarnings("unused")
 	private TeacherActivityTraceDto() {}
 
-	public TeacherActivityTraceDto(String traceId, Map<String, Object> payload, int teacherId, String actionType){
+	public TeacherActivityTraceDto(String traceId, Object payload, int teacherId, String actionType){
 		this.traceId = traceId;
 		this.payload = payload;
 		this.teacherId = teacherId;
@@ -35,7 +35,7 @@ public class TeacherActivityTraceDto {
 		return traceId;
 	}
 
-	public Map<String, Object> getPayload() {
+	public Object getPayload() {
 		return payload;
 	}
 

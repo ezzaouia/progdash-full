@@ -19,7 +19,7 @@ public class TeacherActivityTrace {
 	/**
 	 * We assume that we have a field in mongodb with this same name
 	 */
-	public Map<String, Object> payload;
+	public Object payload;
 
 	public String actionType;
 	/**
@@ -28,13 +28,13 @@ public class TeacherActivityTrace {
 	@Indexed
 	public int teacherId;
 
-	public TeacherActivityTrace(Map<String, Object> payload, int teacherId, String actionType){
+	public TeacherActivityTrace(Object payload, int teacherId, String actionType){
 		this.payload = payload;
 		this.teacherId = teacherId;
 		this.actionType = actionType;
 	}
 
-	public TeacherActivityTrace(String id, Map<String, Object> payload, int teacherId, String actionType){
+	public TeacherActivityTrace(String id, Object payload, int teacherId, String actionType){
 		this.id = id;
 		this.payload = payload;
 		this.teacherId = teacherId;
