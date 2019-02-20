@@ -7,6 +7,7 @@ import { startsWith, filter, size } from 'lodash';
 import { saveAs } from 'file-saver';
 
 import { DataService } from '../../../shared/services';
+import { TeacherService } from '../../services';
 import { dataPrep, filename } from '../../utils/data.prep';
 import { cast } from '../../utils/mappers';
 import {
@@ -36,6 +37,7 @@ export class DashEffects {
   constructor (
     private actions$: Actions,
     private dataService: DataService,
+    private teacherService: TeacherService,
     private router: Router,
     private store: Store<fromStore.State>
   ) {
@@ -64,10 +66,13 @@ export class DashEffects {
   );
 
   @Effect({ dispatch: false })
-  launchPVLive$: Observable<Action> = this.actions$.pipe(
+  launchPVLive$: Observable<String> = this.actions$.pipe(
     ofType<LaunchPVLive>( DashActionTypes.LaunchPVLive ),
-    tap(() => this.router.navigate(
-      [ '/externalPVRedirect', { externalUrl: 'https://projet-voltaire.fr' } ],
+    switchMap((action: LaunchPVLive) => {
+      return this.teacherService.getLink(action.payload.lessons);
+    }),
+    tap((url: String) => this.router.navigate(
+      [ '/externalPVRedirect', { externalUrl: url } ],
       { skipLocationChange: true }
   )));
 

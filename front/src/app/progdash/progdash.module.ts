@@ -14,7 +14,7 @@ import { DashRoutingModule } from './progdash.routes';
 
 import { fromComponents, fromEntryComponents } from './components';
 import * as fromStore from './store';
-import { TraceService } from './services';
+import { TraceService, TeacherService } from './services';
 
 
 @NgModule({
@@ -33,7 +33,7 @@ import { TraceService } from './services';
     StoreModule.forFeature( 'progdash', fromStore.reducers ),
     EffectsModule.forFeature( fromStore.effects ),
   ],
-  providers: [TraceService],
+  providers: [TraceService, TeacherService],
   entryComponents: [ ...fromEntryComponents ],
   declarations: [ ...fromComponents ],
   exports: [ ...fromComponents ],
