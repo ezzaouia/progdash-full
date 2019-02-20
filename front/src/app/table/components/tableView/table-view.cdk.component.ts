@@ -47,9 +47,10 @@ import { omit } from '@ngrx/store/src/utils';
           <div class="header-title">
             {{columns[col].name}}
             <button
-              *ngIf=" col !== 'print' "
-              mat-icon-button>
+              *ngIf="col !== 'print' && col !== 'moremenu'"
+              class="mat-icon-button mat-24">
               <mat-icon
+                class="sort-mat-icon"
                 [ngClass]="{
                   'sort-asc' : (sort.active === col) && (sort.direction === 'asc'),
                   'sort-desc' : (sort.active === col) && (sort.direction === 'desc')
@@ -61,7 +62,7 @@ import { omit } from '@ngrx/store/src/utils';
             </button>
             <button
               *ngIf="columns[col].topBottom"
-              mat-icon-button>
+              class="mat-icon-button mat-24">
               <mat-icon
                 aria-label="horizontal_split"
                 (click)="onChangeTopBottom(col)">
@@ -92,6 +93,14 @@ import { omit } from '@ngrx/store/src/utils';
           *cdkCellDef="let element;">
           <mat-divider class="table-row-divider"></mat-divider>
 
+          <button
+            *ngIf="(col === 'moremenu')"
+            class="mat-icon-button mat-24 btn-learner-more"
+            matTooltip="Voir Détail Apprenant"
+            (click)="userMoreMenuHandler.emit({ user: element, action: 'detail' })">
+              <mat-icon class="mat-24" aria-label="menu">open_in_browser</mat-icon>
+          </button>
+
           <PrintWidget
             *ngIf="( (col === 'print') && isStartPrintReport )"
             [widgetId]="'table-row-' + element.id"
@@ -102,7 +111,7 @@ import { omit } from '@ngrx/store/src/utils';
           </PrintWidget>
 
           <CellChart
-            *ngIf=" col !== 'print' "
+            *ngIf=" col !== 'print' && col !== 'moremenu' "
             [data]="element"
             [extent]="columns[col].extent"
             [encoding]="columns[col].encoding"
@@ -130,6 +139,7 @@ import { omit } from '@ngrx/store/src/utils';
         *cdkRowDef="let row; columns: displayedColumns;">
       </cdk-row>
     </cdk-table>
+
     `,
   styles: [ `
   :host {
@@ -175,7 +185,7 @@ import { omit } from '@ngrx/store/src/utils';
     display: flex;
     align-items: center;
   }
-  .mat-icon-button {
+  .table-icon-button {
     width: 24px;
     height: 24px;
     line-height: 24px;
@@ -183,7 +193,7 @@ import { omit } from '@ngrx/store/src/utils';
   .icon-activate {
     color: lightblue !important;
   }
-  .mat-icon {
+  .sort-mat-icon {
    color: #7775;
   }
   .sort-asc {
@@ -219,6 +229,7 @@ export class CdkTableViewComponent implements AfterViewInit, OnInit, OnDestroy {
   @Output() checkWidgetHandler = new EventEmitter<{ isChecked: boolean; widgetId: string }>();
   @Output() sortColumnTraceHandler = new EventEmitter();
   @Output() filterColumnTraceHandler = new EventEmitter();
+  @Output() userMoreMenuHandler = new EventEmitter();
 
   cScale: any = scaleOrdinal().range( colors );
 

@@ -1,7 +1,0 @@
-version: "3.2"
-services:
-  app:
-    image: "progdash"
-    build: "."
-    ports:
-      - 4200:4200

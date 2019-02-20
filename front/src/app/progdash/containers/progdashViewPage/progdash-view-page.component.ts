@@ -17,6 +17,7 @@ import { Timescale } from '../../utils/utils';
       *ngIf="isDataLoaded$ | async"
       [isDataLoaded]="isDataLoaded$ | async"
       [isProgTableOpened]="isProgTableOpened$ | async"
+      [isProgEvaluationOpened]="isProgEvaluationOpened$ | async"
       [isStartPrintReport]="isStartPrintReport$ | async"
 
       [classes]="classes$ | async"
@@ -32,21 +33,23 @@ import { Timescale } from '../../utils/utils';
       (selectClassHandler)="onSelectClass($event)"
       (timescaleHandler)="onTimescaleChange($event)"
       (openProgTableHandler)="onOpenProgTable($event)"
-      (closeProgTableHandler)="onCloseProgTable($event)"
+      (openProgEvaluationHandler)="onOpenProgEvaluation($event)"
+      (openProgBoardHandler)="onOpenProgBoard($event)"
 
       (checkRuleHandler)="onCheckRule($event)"
       (launchPVLiveHandler)="onLaunchPVLive($event)"
       (cancelPVLiveHandler)="onCancelPVLive($event)"
 
-      (startPrintReportHandler)="onStartPrintReportHandler($event)"
-      (closePrintReportHandler)="onClosePrintReportHandler($event)"
-      (checkWidgetHandler)="onCheckWidgetHandler($event)"
-      (printReportHandler)="onPrintReportHandler($event)"
+      (startPrintReportHandler)="onStartPrintReport($event)"
+      (closePrintReportHandler)="onClosePrintReport($event)"
+      (checkWidgetHandler)="onCheckWidget($event)"
+      (printReportHandler)="onPrintReport($event)"
+      (hotPrintWidgetHandler)="onHotPrintWidget($event)"
 
-      (sortColumnTraceHandler)="onSortColumnTraceHandler($event)"
-      (filterColumnTraceHandler)="onFilterColumnTraceHandler($event)"
-      (openUserDialogTraceHandler)="onOpenUserDialogTraceHandler($event)"
-      (hoverWidgetTraceHandler)="onHoverWidgetTraceHandler($event)">
+      (sortColumnTraceHandler)="onSortColumnTrace($event)"
+      (filterColumnTraceHandler)="onFilterColumnTrace($event)"
+      (openUserDialogTraceHandler)="onOpenUserDialogTrace($event)"
+      (hoverWidgetTraceHandler)="onHoverWidgetTrace($event)">
     </ProgdashManager>
   `,
 })
@@ -55,6 +58,7 @@ export class ProgdashViewPageComponent implements OnInit {
   isDataLoaded$: Observable<boolean>;
   isStartPrintReport$: Observable<boolean>;
   isProgTableOpened$: Observable<boolean>;
+  isProgEvaluationOpened$: Observable<boolean>;
   classes$: Observable<StoreField<ClassData>>;
   usersByClass$: Observable<StoreField<UserData>>;
   insights$: Observable<StoreField<InsightData>>;
@@ -68,6 +72,7 @@ export class ProgdashViewPageComponent implements OnInit {
     this.isDataLoaded$ = this.store.pipe( select( fromStore.isDataLoaded ));
     this.isProgTableOpened$ = this.store.pipe( select( fromStore.isProgTableOpened ));
     this.isStartPrintReport$ = this.store.pipe( select( fromStore.isStartPrintReport ));
+    this.isProgEvaluationOpened$ = this.store.pipe( select( fromStore.isProgEvaluationOpened ));
 
     this.classes$ = this.store.pipe( select ( fromStore.classes ));
     this.usersByClass$ = this.store.pipe( select( fromStore.usersByClass ));
@@ -96,8 +101,12 @@ export class ProgdashViewPageComponent implements OnInit {
     this.store.dispatch( new fromStore.OpenProgTable( ));
   }
 
-  onCloseProgTable () {
-    this.store.dispatch( new fromStore.CloseProgTable( ));
+  onOpenProgBoard () {
+    this.store.dispatch( new fromStore.OpenProgBoard( ));
+  }
+
+  onOpenProgEvaluation () {
+    this.store.dispatch( new fromStore.OpenProgEvaluation( ));
   }
 
   onCheckRule ({ isChecked, ruleId }) {
@@ -112,36 +121,40 @@ export class ProgdashViewPageComponent implements OnInit {
     this.store.dispatch( new fromStore.CancelPVLive( ));
   }
 
-  onStartPrintReportHandler () {
+  onStartPrintReport () {
     this.store.dispatch( new fromStore.StartPrintReport( ));
   }
 
-  onClosePrintReportHandler () {
+  onClosePrintReport () {
     this.store.dispatch( new fromStore.ClosePrintReport( ));
   }
 
-  onCheckWidgetHandler ({ isChecked, widgetId }) {
+  onCheckWidget ({ isChecked, widgetId }) {
     this.store.dispatch( new fromStore.CheckWidget({ isChecked, widgetId }));
   }
 
-  onPrintReportHandler ( selectedWidgets ) {
+  onPrintReport ( selectedWidgets ) {
     this.store.dispatch( new fromStore.PrintReport( selectedWidgets ));
   }
 
-  onSortColumnTraceHandler ( payload ) {
+  onSortColumnTrace ( payload ) {
     this.store.dispatch( new fromStore.SortColumn( payload ));
   }
 
-  onFilterColumnTraceHandler ( payload ) {
+  onFilterColumnTrace ( payload ) {
     this.store.dispatch( new fromStore.FilterColumn( payload ));
   }
 
-  onOpenUserDialogTraceHandler ( payload ) {
+  onOpenUserDialogTrace ( payload ) {
     this.store.dispatch( new fromStore.OpenUserDialog( payload ));
   }
 
-  onHoverWidgetTraceHandler ( payload ) {
+  onHoverWidgetTrace ( payload ) {
     this.store.dispatch( new fromStore.HoverWidget( payload ));
+  }
+
+  onHotPrintWidget ( payload ) {
+    this.store.dispatch( new fromStore.HotPrintWidget( payload ));
   }
 
 }

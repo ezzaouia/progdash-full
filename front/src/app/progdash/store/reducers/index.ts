@@ -26,6 +26,7 @@ export const selectedClass = createSelector( _shared, fromDash.selectedClass );
 export const selectedTimescale = createSelector( _shared, fromDash.selectedTimescale );
 export const isDataLoaded = createSelector( _shared, fromDash.isDataLoaded );
 export const isProgTableOpened = createSelector( _shared, fromDash.isProgTableOpened );
+export const isProgEvaluationOpened = createSelector( _shared, fromDash.isProgEvaluationOpened );
 export const isStartPrintReport = createSelector( _shared, fromDash.isStartPrintReport );
 export const selectedRules = createSelector( _shared, fromDash.selectedRules );
 export const selectedWidgets = createSelector( _shared, fromDash.selectedWidgets );

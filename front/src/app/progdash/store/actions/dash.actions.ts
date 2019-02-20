@@ -10,7 +10,8 @@ export enum DashActionTypes {
   SelectClass = '[Dash] Select Class',
   SelectTimescale = '[Dash] Select Timescale',
   OpenProgTable = '[Dash] Open Prog Table',
-  CloseProgTable = '[Dash] Close Prog Table',
+  OpenProgBoard = '[Dash] Open Prog Board',
+  OpenProgEvaluation = '[Dash] Open Prog Evaluation',
 
   CheckRule = '[Dash] Check Rule',
   LaunchPVLive = '[Dash] Launch PV Live',
@@ -20,6 +21,8 @@ export enum DashActionTypes {
   ClosePrintReport = '[Dash] Close Print Report',
   CheckWidget = '[Dash] Check Widget',
   PrintReport = '[Dash] Print Report',
+  HotPrintWidget = '[Dash] Hot Print Widget',
+
   PrintReportSuccess = '[Dash] Print Report Success',
   PrintReportFailure = '[Dash] Print Report Failure',
 
@@ -66,8 +69,12 @@ export class OpenProgTable implements Action {
   readonly type = DashActionTypes.OpenProgTable;
 }
 
-export class CloseProgTable implements Action {
-  readonly type = DashActionTypes.CloseProgTable;
+export class OpenProgBoard implements Action {
+  readonly type = DashActionTypes.OpenProgBoard;
+}
+
+export class OpenProgEvaluation implements Action {
+  readonly type = DashActionTypes.OpenProgEvaluation;
 }
 
 export class SelectTimescale implements Action {
@@ -108,6 +115,12 @@ export class PrintReport implements Action {
   readonly type = DashActionTypes.PrintReport;
 
   constructor ( public payload: string[]) {}
+}
+
+export class HotPrintWidget implements Action {
+  readonly type = DashActionTypes.HotPrintWidget;
+
+  constructor ( public payload: string ) {}
 }
 
 export class PrintReportSuccess implements Action {
@@ -155,7 +168,8 @@ export type DashActionsUnion =
   | SelectClass
   | SelectTimescale
   | OpenProgTable
-  | CloseProgTable
+  | OpenProgBoard
+  | OpenProgEvaluation
   | CheckRule
   | LaunchPVLive
   | CancelPVLive
@@ -168,4 +182,5 @@ export type DashActionsUnion =
   | SortColumn
   | FilterColumn
   | OpenUserDialog
-  | HoverWidget;
+  | HoverWidget
+  | HotPrintWidget;
