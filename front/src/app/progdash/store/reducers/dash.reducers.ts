@@ -1,13 +1,7 @@
-import { indexOf, filter, startsWith } from 'lodash';
+import {filter, indexOf, startsWith} from 'lodash';
 
-import { DashActionTypes, DashActionsUnion } from '../actions';
-import {
-  StoreField,
-  UserData,
-  InsightData,
-  RuleData,
-  ClassData
-} from '../types';
+import {DashActionsUnion, DashActionTypes, LoadUserInfo} from '../actions';
+import {ClassData, InsightData, RuleData, StoreField, UserData} from '../types';
 
 export interface State {
   isDataLoaded: boolean;
@@ -25,6 +19,8 @@ export interface State {
   isStartPrintReport: boolean;
   selectedWidgets: string[];
   modulesData: {};
+  areaId: number;
+  userId: number;
 }
 
 const initialState: State = {
@@ -43,6 +39,8 @@ const initialState: State = {
   isStartPrintReport: false,
   selectedWidgets: [],
   modulesData: {},
+    areaId: null,
+  userId: null,
 };
 
 export function reducers (
@@ -50,6 +48,13 @@ export function reducers (
   action: DashActionsUnion
 ): State {
   switch ( action.type ) {
+      case DashActionTypes.LoadUserInfo: {
+        return {
+            ...state,
+            areaId: ( action as LoadUserInfo ).payload.areaId,
+            userId: ( action as LoadUserInfo ).payload.userId,
+        };
+      }
     case DashActionTypes.LoadData: {
       return {
         ...state,
@@ -245,3 +250,4 @@ export const isStartPrintReport = ( state: State ) => state.isStartPrintReport;
 export const selectedRules = ( state: State ) => state.selectedRules;
 export const selectedWidgets = ( state: State ) => state.selectedWidgets;
 export const modulesData = ( state: State ) => state.modulesData;
+export const userInfo = ( state: State ) => ({ userId: state.userId, areaId: state.areaId });

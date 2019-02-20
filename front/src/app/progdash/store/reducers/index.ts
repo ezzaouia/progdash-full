@@ -31,3 +31,4 @@ export const isStartPrintReport = createSelector( _shared, fromDash.isStartPrint
 export const selectedRules = createSelector( _shared, fromDash.selectedRules );
 export const selectedWidgets = createSelector( _shared, fromDash.selectedWidgets );
 export const modulesData = createSelector( _shared, fromDash.modulesData );
+export const userInfo = createSelector( _shared, fromDash.userInfo );
