@@ -12,6 +12,11 @@ public interface LearningStatisticsService {
 
 	List<GroupDto> getGroups(int areaId);
 
-	AllStatisticsDto getAllStatistics(int areaId, Integer groupId);
+	boolean isAreaUsersNumberWithinLimit(int areaId, int limit);
 
+	boolean isGroupUsersNumberWithinLimit(int groupId, int limit);
+
+	boolean isGroupInArea(int areaId, Integer groupId);
+
+	AllStatisticsDto getAllStatistics(int areaId, Integer groupId);
 }

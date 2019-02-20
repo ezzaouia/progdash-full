@@ -13,9 +13,11 @@ import javax.ws.rs.core.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.woonoz.exception.WoonozException;
 import com.woonoz.pv.progdash.dto.AllStatisticsDto;
 import com.woonoz.pv.progdash.dto.GroupDto;
 import com.woonoz.pv.progdash.dto.LearningSessionStatisticsDto;
+import com.woonoz.pv.progdash.exception.ProgdashConflictException;
 import com.woonoz.pv.progdash.service.LearningStatisticsService;
 import com.woonoz.web.controller.WoonozJerseyController;
 
@@ -24,6 +26,8 @@ import com.woonoz.web.controller.WoonozJerseyController;
 public class LearningStatisticsController implements WoonozJerseyController {
 
 	@Inject private LearningStatisticsService learningStatisticsService;
+
+	private static final int NB_USERS_LIMIT = 100;
 
 	@GET
 	@Path("coucou")
@@ -53,7 +57,23 @@ public class LearningStatisticsController implements WoonozJerseyController {
 	@Path("area/{areaId}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Transactional(readOnly = true)
-	public AllStatisticsDto getAllStatistics(@PathParam("areaId") int areaId, @QueryParam("groupId") Integer groupId) {
+	public AllStatisticsDto getAllStatistics(@PathParam("areaId") int areaId, @QueryParam("groupId") Integer groupId) throws WoonozException {
+		checkAreaAndGroup(areaId, groupId);
 		return learningStatisticsService.getAllStatistics(areaId, groupId);
+	}
+
+	private void checkAreaAndGroup(int areaId, Integer groupId) throws WoonozException {
+		if (groupId == null) {
+			if (!learningStatisticsService.isAreaUsersNumberWithinLimit(areaId, NB_USERS_LIMIT)) {
+				throw new ProgdashConflictException("too_many_users", "The area contains too many users, the server can handle only " + NB_USERS_LIMIT + ".");
+			}
+		} else {
+			if (!learningStatisticsService.isGroupInArea(areaId, groupId)) {
+				throw new ProgdashConflictException("group_not_in_area", "The group " + groupId + " is not in the area " + areaId +".");
+			}
+			if (!learningStatisticsService.isGroupUsersNumberWithinLimit(groupId, NB_USERS_LIMIT)) {
+				throw new ProgdashConflictException("too_many_users", "The group contains too many users, the server can handle only " + NB_USERS_LIMIT + ".");
+			}
+		}
 	}
 }
