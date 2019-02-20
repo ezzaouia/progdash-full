@@ -33,5 +33,15 @@
 		FROM woonoz_groupe
 		WHERE id_groupe = #{groupId};
 	</select>
+	
+	<select id="getUsersIdentity" resultType="com.woonoz.pv.progdash.dao.dbo.UserIdentityDbo">
+		SELECT
+		       wm.id_membre id,
+		       CONCAT(wm.prenom_membre, " ", wm.nom_membre) fullName
+		FROM  woonoz_groupe_p_membre wgpm
+		  JOIN woonoz_membre wm ON wm.id_membre = wgpm.id_membre
+		WHERE wgpm.id_groupe_p = #{areaId}
+		  AND wgpm.user_role = 'learner';
+	</select>
 
 </mapper>

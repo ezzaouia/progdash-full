@@ -1,18 +1,19 @@
 package com.woonoz.pv.progdash.dto;
 
+import java.util.Collection;
 import java.util.List;
 
 public class AllStatisticsDto {
 
-	private List<UserDataDto> users;
+	private Collection<UserDataDto> users;
 	private InsightDataDto insights;
 	private List<ModuleInfoDto> modules;
 
-	public List<UserDataDto> getUsers() {
+	public Collection<UserDataDto> getUsers() {
 		return users;
 	}
 
-	public void setUsers(List<UserDataDto> users) {
+	public void setUsers(Collection<UserDataDto> users) {
 		this.users = users;
 	}
 
