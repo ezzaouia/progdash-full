@@ -159,10 +159,10 @@ export class ProgBoardComponent implements OnInit, OnDestroy, AfterViewInit {
       displayGrid: DisplayGrid.OnDragAndResize,
       pushItems: true,
       draggable: {
-        enabled: true,
+        enabled: false,
       },
       resizable: {
-        enabled: true,
+        enabled: false,
       },
       fixedColWidth: Math.floor( this.boardWidth / 12 ),
       fixedRowHeight: 60,
