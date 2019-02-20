@@ -1,0 +1,15 @@
+version: '2'
+
+services:
+  maven:
+    container_name: progdash-maven
+    build:
+      context: ./
+      dockerfile: ./docker/dockerfiles/dev/maven/Dockerfile
+    environment:
+      MVN_NEXUS_USER: ${MVN_NEXUS_USER}
+      MVN_NEXUS_PASS: ${MVN_NEXUS_PASS}
+    volumes:
+      - $HOME/.m2:/root/.m2
+      - ./back:/usr/src/mymaven
+      - ./docker/jar:/jar

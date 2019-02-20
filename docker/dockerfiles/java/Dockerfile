@@ -1,7 +1,5 @@
 FROM openjdk:8u181-jre-slim-stretch
 
-ARG SERVICES_JAR=webservices-*-spring-boot.jar
-
 RUN apt-get update \
     && apt-get install -y tzdata gettext \
     && apt-get clean autoclean \
@@ -11,6 +9,6 @@ RUN apt-get update \
 
 ENV TZ=Europe/Paris
 
-COPY ./back/webservices/target/${SERVICES_JAR} /opt/progdash/webservices.jar
+COPY ./docker/jar/webservices.jar /opt/progdash/webservices.jar
 
 COPY ./back/application.properties.template /opt/progdash/application.properties.template
