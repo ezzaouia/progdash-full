@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.woonoz.pv.progdash.dao.dbo.GroupDbo;
 import com.woonoz.pv.progdash.dao.mapper.LearningStatisticsMapper;
+import com.woonoz.pv.progdash.dto.AllStatisticsDto;
 import com.woonoz.pv.progdash.dto.GroupDto;
 import com.woonoz.pv.progdash.dto.LearningSessionStatisticsDto;
 
@@ -37,5 +38,10 @@ public class LearningStatisticsServiceImpl implements LearningStatisticsService 
 			groupDtos.add(new GroupDto(groupDbo.getId(), groupDbo.getName()));
 		}
 		return groupDtos;
+	}
+
+	@Override
+	public AllStatisticsDto getAllStatistics(int areaId, Integer groupId) {
+		return new AllStatisticsDto();
 	}
 }
