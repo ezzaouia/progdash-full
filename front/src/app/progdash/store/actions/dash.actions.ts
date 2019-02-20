@@ -1,6 +1,8 @@
 import { Action } from '@ngrx/store';
 
 export enum DashActionTypes {
+  LoadUserInfo = '[Dash] Load User Info',
+
   LoadData = '[Dash] Load Data',
   LoadDataSuccess = '[Dash] Load Data Sucess',
   LoadDataFailure = '[Dash] Load Data Failure',
@@ -159,6 +161,12 @@ export class HoverWidget implements Action {
   constructor ( public payload: any ) {}
 }
 
+export class LoadUserInfo implements Action {
+    readonly type = DashActionTypes.LoadUserInfo;
+
+    constructor ( public payload: {userId: number, areaId: number} ) {}
+}
+
 export type DashActionsUnion =
   | LoadData
   | LoadDataSuccess
@@ -183,4 +191,5 @@ export type DashActionsUnion =
   | FilterColumn
   | OpenUserDialog
   | HoverWidget
-  | HotPrintWidget;
+  | HotPrintWidget
+    | LoadUserInfo;

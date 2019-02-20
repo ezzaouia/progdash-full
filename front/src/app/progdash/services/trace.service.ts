@@ -1,17 +1,20 @@
 import { Injectable } from '@angular/core';
 //import { environment } from 'environments/environment';
 import { Http } from '@angular/http';
-import { Observable } from 'rxjs';
+import {BehaviorSubject, Observable} from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
-import { Action } from '@ngrx/store';
+import {Action, select} from '@ngrx/store';
+import * as fromStore from '../store';
+import {UserService} from './user.service';
 
 //const API_URL = environment.apiUrl;
 const API_URL = 'http://localhost:8080';
 @Injectable()
 export class TraceService {
     private sessionId: String;
+    private userInfo$ = new BehaviorSubject<{userId: number, areaId: number}>( null);
 
-    constructor(private http: Http) { 
+    constructor(private http: Http, private userSevice: UserService) {
         this.sessionId = this.uuidv4();
     }
 
@@ -19,9 +22,9 @@ export class TraceService {
         const data = {
             actionType: trace.type, 
             payload: (trace as any).payload,
-            teacherId: 1,
+            teacherId: this.userSevice.getUserId(),
             sessionId: this.sessionId,
-            areaId: 1
+            areaId: this.userSevice.getAreaId()
         };
         let formData = new FormData();
         formData.append('data', new Blob([JSON.stringify(data)], {
