@@ -4,8 +4,13 @@ export enum DashActionTypes {
   LoadUserInfo = '[Dash] Load User Info',
 
   LoadData = '[Dash] Load Data',
-  LoadDataSuccess = '[Dash] Load Data Sucess',
+  LoadDataSuccess = '[Dash] Load Data Success',
   LoadDataFailure = '[Dash] Load Data Failure',
+
+  LoadGroupsData = '[Dash] Load Groups Data',
+  LoadGroupsDataSuccess = '[Dash] Load Groups Data Success',
+  LoadGroupsDataFailure = '[Dash] Load Groups Data Failure',
+
   RunDataPrep = '[Dash] Run Data Prep',
   RunDataPrepComplete = '[Dash] Run Data Prep Complete',
 
@@ -47,6 +52,22 @@ export class LoadDataSuccess implements Action {
 
 export class LoadDataFailure implements Action {
   readonly type = DashActionTypes.LoadDataFailure;
+
+  constructor ( public payload: any ) {}
+}
+
+export class LoadGroupsData implements Action {
+  readonly type = DashActionTypes.LoadGroupsData;
+}
+
+export class LoadGroupsDataSuccess implements Action {
+  readonly type = DashActionTypes.LoadGroupsDataSuccess;
+
+  constructor ( public payload: any ) {}
+}
+
+export class LoadGroupsDataFailure implements Action {
+  readonly type = DashActionTypes.LoadGroupsDataFailure;
 
   constructor ( public payload: any ) {}
 }
@@ -164,13 +185,16 @@ export class HoverWidget implements Action {
 export class LoadUserInfo implements Action {
     readonly type = DashActionTypes.LoadUserInfo;
 
-    constructor ( public payload: {userId: number, areaId: number} ) {}
+    constructor ( public payload: {userId: number, areaId: number}) {}
 }
 
 export type DashActionsUnion =
   | LoadData
   | LoadDataSuccess
   | LoadDataFailure
+  | LoadGroupsData
+  | LoadGroupsDataSuccess
+  | LoadGroupsDataFailure
   | RunDataPrep
   | RunDataPrepComplete
   | SelectClass
@@ -192,4 +216,4 @@ export type DashActionsUnion =
   | OpenUserDialog
   | HoverWidget
   | HotPrintWidget
-    | LoadUserInfo;
+  | LoadUserInfo;

@@ -1,60 +1,77 @@
-import { Injectable } from '@angular/core';
-//import { environment } from 'environments/environment';
+import { Injectable, Injector } from '@angular/core';
+// import { environment } from 'environments/environment';
 import { Http } from '@angular/http';
-import {BehaviorSubject, Observable} from 'rxjs';
+import { Location, LocationStrategy, PathLocationStrategy } from '@angular/common';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { v4 as uuid } from 'uuid';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
-import {Action, select} from '@ngrx/store';
-import * as fromStore from '../store';
-import {UserService} from './user.service';
+import { Action } from '@ngrx/store';
+import { DeviceDetectorService } from 'ngx-device-detector';
 
-//const API_URL = environment.apiUrl;
+import { UserService } from './user.service';
+
+// const API_URL = environment.apiUrl;
 const API_URL = 'http://localhost:8080';
 @Injectable()
 export class TraceService {
     private sessionId: String;
-    private userInfo$ = new BehaviorSubject<{userId: number, areaId: number}>( null);
+    private userInfo$ = new BehaviorSubject<{userId: number, areaId: number}>( null );
+    private httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/json',
+        // 'Authorization': 'my-auth-token'
+      }),
+    };
 
-    constructor(private http: Http, private userSevice: UserService) {
-        this.sessionId = this.uuidv4();
+    constructor (
+      private http: Http,
+      private userSevice: UserService,
+      private newHttp: HttpClient,
+      private injector: Injector,
+      private deviceService: DeviceDetectorService, ) {
+        this.sessionId = uuid();
     }
 
-    public createTrace(trace: Action) {
+    public createTrace ( trace: Action ) {
         const data = {
-            actionType: trace.type, 
-            payload: (trace as any).payload,
+            actionType: trace.type,
+            payload: ( trace as any ).payload,
             teacherId: this.userSevice.getUserId(),
             sessionId: this.sessionId,
-            areaId: this.userSevice.getAreaId()
+            areaId: this.userSevice.getAreaId(),
+            clientTimestamp: new Date().getTime(),
         };
-        let formData = new FormData();
-        formData.append('data', new Blob([JSON.stringify(data)], {
-            type: "application/json"
+        const formData = new FormData();
+        formData.append( 'data', new Blob([ JSON.stringify( data ) ], {
+            type: 'application/json',
         }));
-        if((trace as any).payload && (trace as any).payload.blob) {
-            formData.append('file', new Blob([(trace as any).payload.blob], {
-                type: "application/pdf"
+        if (( trace as any ).payload && ( trace as any ).payload.blob ) {
+            formData.append( 'file', new Blob([ ( trace as any ).payload.blob ], {
+                type: 'application/pdf',
             }));
         }
-        return this.http
-            .post(API_URL + '/teacher/trace', formData)
-            .pipe(
-                map(response => {
-                    return trace;
-                }),
-                catchError(this.handleError)
-            );
+        return this.http.post( API_URL + '/teacher/trace', formData );
     }
 
-    private handleError(error: Response | any) {
-        console.error('TraceService::handleError', error);
-        return Observable.throw(error);
+    public createAudit ( error ) {
+      const payload = this.addContextInfo( error );
+       return this.newHttp.post<any>( API_URL + '/audit/create', payload, this.httpOptions );
     }
 
-    private uuidv4() {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-          var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-          return v.toString(16);
-        });
-      }
+   /**
+   * Add needed context info to a trace OR error
+   */
+    private addContextInfo ( data ) {
+      const device = this.deviceService.getDeviceInfo();
+      const teacherId =  this.userSevice.getUserId();
+      const sessionId = this.sessionId;
+      const areaId = this.userSevice.getAreaId();
+      const clientTimestamp = new Date().getTime();
+      // maybe not as much important for now as we have only one route
+      const location = this.injector.get( LocationStrategy );
+      const url = location instanceof PathLocationStrategy ? location.path() : '';
+      return { ...data, teacherId, areaId, sessionId, clientTimestamp, location, url, device };
+    }
 
 }
