@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { tap, switchMap, catchError } from 'rxjs/operators';
 import { Action } from '@ngrx/store';
 import { Actions, Effect, ofType } from '@ngrx/effects';
@@ -73,7 +73,7 @@ export class TraceEffects {
     catchError(
       err => {
         console.error("impossible to save trace: " + err);
-        return Observable.throw(err);
+        return of(null);
       }
     )
   );
