@@ -20,7 +20,7 @@ import com.woonoz.pv.progdash.service.LearningStatisticsService;
 import com.woonoz.web.controller.WoonozJerseyController;
 
 @Controller
-@Path("learning/statistics")
+@Path("statistics")
 public class LearningStatisticsController implements WoonozJerseyController {
 
 	@Inject private LearningStatisticsService learningStatisticsService;
@@ -34,7 +34,7 @@ public class LearningStatisticsController implements WoonozJerseyController {
 	}
 
 	@GET
-	@Path("{userId}")
+	@Path("user/{userId}/session")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Transactional(readOnly = true)
 	public LearningSessionStatisticsDto getLearningSessionStatistics(@PathParam("userId") int userId) {
@@ -42,7 +42,7 @@ public class LearningStatisticsController implements WoonozJerseyController {
 	}
 
 	@GET
-	@Path("{areaId}/groups")
+	@Path("area/{areaId}/groups")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Transactional(readOnly = true)
 	public List<GroupDto> getGroups(@PathParam("areaId") int areaId) {
@@ -50,7 +50,7 @@ public class LearningStatisticsController implements WoonozJerseyController {
 	}
 
 	@GET
-	@Path("{areaId}/allStatistics")
+	@Path("area/{areaId}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Transactional(readOnly = true)
 	public AllStatisticsDto getAllStatistics(@PathParam("areaId") int areaId, @QueryParam("groupId") Integer groupId) {
