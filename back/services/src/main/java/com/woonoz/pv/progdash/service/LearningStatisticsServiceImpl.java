@@ -32,12 +32,27 @@ public class LearningStatisticsServiceImpl implements LearningStatisticsService 
 		return convertGroupDbosAsDto(groupsDbos);
 	}
 
-	public List<GroupDto> convertGroupDbosAsDto(List<GroupDbo> groupDbos) {
+	private List<GroupDto> convertGroupDbosAsDto(List<GroupDbo> groupDbos) {
 		List<GroupDto> groupDtos = new ArrayList<>();
 		for (GroupDbo groupDbo : groupDbos) {
 			groupDtos.add(new GroupDto(groupDbo.getId(), groupDbo.getName()));
 		}
 		return groupDtos;
+	}
+
+	@Override
+	public boolean isAreaUsersNumberWithinLimit(int areaId, int limit) {
+		return learningStatisticsMapper.countAreaUsers(areaId) <= limit;
+	}
+
+	@Override
+	public boolean isGroupUsersNumberWithinLimit(int groupId, int limit) {
+		return learningStatisticsMapper.countGroupUsers(groupId) <= limit;
+	}
+
+	@Override
+	public boolean isGroupInArea(int areaId, Integer groupId) {
+		return learningStatisticsMapper.getAreaFromGroup(groupId) == areaId;
 	}
 
 	@Override

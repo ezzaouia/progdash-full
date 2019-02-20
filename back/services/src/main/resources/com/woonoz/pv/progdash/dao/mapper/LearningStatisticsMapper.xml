@@ -15,4 +15,23 @@
 		WHERE id_groupe_p = #{areaId};
 	</select>
 
+	<select id="countAreaUsers" resultType="java.lang.Integer">
+		SELECT COUNT(*)
+		FROM woonoz_groupe_p_membre
+		WHERE id_groupe_p = #{areaId}
+		      AND user_role = 'learner';
+	</select>
+
+	<select id="countGroupUsers" resultType="java.lang.Integer">
+		SELECT COUNT(*)
+		FROM woonoz_groupe_membre
+		WHERE id_groupe = #{groupId};
+	</select>
+
+	<select id="getAreaFromGroup" resultType="java.lang.Integer">
+		SELECT id_groupe_p
+		FROM woonoz_groupe
+		WHERE id_groupe = #{groupId};
+	</select>
+
 </mapper>

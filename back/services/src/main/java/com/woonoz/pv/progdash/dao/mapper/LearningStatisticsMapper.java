@@ -13,4 +13,10 @@ public interface LearningStatisticsMapper {
 	Integer getLastSessionId(@Param("userId")int userId);
 
 	List<GroupDbo> getGroups(@Param("areaId")int areaId);
+
+	int countAreaUsers(@Param("areaId")int areaId);
+
+	int countGroupUsers(@Param("groupId") int groupId);
+
+	Integer getAreaFromGroup(@Param("groupId") int groupId);
 }
