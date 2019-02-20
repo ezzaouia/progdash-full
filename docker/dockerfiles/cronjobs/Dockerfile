@@ -11,9 +11,9 @@ RUN apt-get update \
 
 ENV TZ=Europe/Paris
 
-COPY ./build/scripts/cronjobs/ /scripts/
+COPY ./docker/scripts/cronjobs/ /scripts/
 
-COPY ./build/cron/cronjobs.txt /tmp/cronjobs.txt
+COPY ./docker/cron/cronjobs.txt /tmp/cronjobs.txt
 RUN touch /home/woonoz/.env \
     && chown woonoz. /home/woonoz/.env \
     && mkdir /logs \

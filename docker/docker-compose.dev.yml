@@ -4,7 +4,7 @@ services:
   mongodb:
     build:
       context: ./
-      dockerfile: ./build/dockerfiles/mongo/Dockerfile
+      dockerfile: ./docker/dockerfiles/mongo/Dockerfile
     volumes:
       - progdash-mongo-data:/data/db
       - progdash-mongo-config:/data/configdb
@@ -19,7 +19,7 @@ services:
     container_name: progdash-dev-node
     build:
       context: .
-      dockerfile: ./build/dockerfiles/dev/node/Dockerfile
+      dockerfile: ./docker/dockerfiles/dev/node/Dockerfile
     command: ng serve --host 0.0.0.0 --configuration hmr
     volumes:
       - ./front:/app

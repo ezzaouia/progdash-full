@@ -4,7 +4,7 @@ services:
   mongodb:
     build:
       context: ./
-      dockerfile: ./build/dockerfiles/mongo/Dockerfile
+      dockerfile: ./docker/dockerfiles/mongo/Dockerfile
     volumes:
       - progdash-mongo-data:/data/db
       - progdash-mongo-config:/data/configdb
@@ -18,21 +18,21 @@ services:
   java:
     build:
       context: ./
-      dockerfile: ./build/dockerfiles/java/Dockerfile
+      dockerfile: ./docker/dockerfiles/java/Dockerfile
     ports:
       - 8080:8080
 
   nginx:
     build:
       context: ./
-      dockerfile: ./build/dockerfiles/nginx/Dockerfile
+      dockerfile: ./docker/dockerfiles/nginx/Dockerfile
     ports:
       - 8090:80
 
   cronjobs:
     build:
       context: ./
-      dockerfile: ./build/dockerfiles/cronjobs/Dockerfile
+      dockerfile: ./docker/dockerfiles/cronjobs/Dockerfile
     volumes:
       - progdash-mongo-backup:/data/backups
 

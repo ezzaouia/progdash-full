@@ -24,8 +24,8 @@ ENV TZ=Europe/Paris
 
 WORKDIR /var/www/html
 
-COPY ./build/etc/nginx/snippets /etc/nginx/snippets
-COPY ./build/etc/nginx/conf.d /etc/nginx/conf.d
-COPY ./build/etc/nginx/nginx.conf /etc/nginx/nginx.conf
+COPY ./docker/etc/nginx/snippets /etc/nginx/snippets
+COPY ./docker/etc/nginx/conf.d /etc/nginx/conf.d
+COPY ./docker/etc/nginx/nginx.conf /etc/nginx/nginx.conf
 
 COPY --from=builder /app/dist/angular-pvstats /var/www/html
