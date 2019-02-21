@@ -50,7 +50,7 @@ export const AppRoutes: Routes = [
   imports: [
     RouterModule.forRoot( AppRoutes, {
       useHash: true,
-      enableTracing: environment.production ? false : true,
+      enableTracing: !environment.production,
     }),
   ],
   exports: [ RouterModule ],
