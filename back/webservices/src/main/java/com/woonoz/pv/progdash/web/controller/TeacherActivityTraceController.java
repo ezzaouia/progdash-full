@@ -1,5 +1,6 @@
 package com.woonoz.pv.progdash.web.controller;
 
+import javax.annotation.security.PermitAll;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -14,6 +15,7 @@ import com.woonoz.web.controller.WoonozJerseyController;
 
 @Controller
 @Path("teacher")
+@PermitAll
 public class TeacherActivityTraceController implements WoonozJerseyController{
 
 	@Inject private TeacherActivityTraceService teacherActivityTraceService;

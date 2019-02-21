@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.woonoz</groupId>
+	<groupId>com.woonoz.pv.progdash</groupId>
 	<artifactId>pv-progdash-parent</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
@@ -34,6 +34,7 @@
 
 		<!-- Dependencies' version, alphabetically sorted -->
 		<pv.version>10.2.0-PV-7.2.1.0</pv.version>
+		<woonoz.auth.version>1.0.0-SNAPSHOT</woonoz.auth.version>
 		<woonoz.core.version>1.1.6.1</woonoz.core.version>
 
 		<!-- Tests with database -->
@@ -177,6 +178,7 @@
 
 	<dependencyManagement>
 		<dependencies>
+
 			<dependency>
 				<groupId>com.woonoz.core</groupId>
 				<artifactId>jersey2-dependencies</artifactId>
@@ -189,6 +191,28 @@
 				<groupId>com.woonoz.core</groupId>
 				<artifactId>webservices-core-jersey2</artifactId>
 				<version>${woonoz.core.version}</version>
+			</dependency>
+
+			<!-- Woonoz authent -->
+			<dependency>
+				<groupId>com.woonoz.auth</groupId>
+				<artifactId>authentication-api</artifactId>
+				<version>${woonoz.auth.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.woonoz.auth</groupId>
+				<artifactId>authentication-services</artifactId>
+				<version>${woonoz.auth.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.woonoz.auth.session</groupId>
+				<artifactId>authentication-session-api</artifactId>
+				<version>${woonoz.auth.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.woonoz.auth.session.cookie</groupId>
+				<artifactId>woonoz-session-cookie</artifactId>
+				<version>${woonoz.auth.version}</version>
 			</dependency>
 
 			<dependency>

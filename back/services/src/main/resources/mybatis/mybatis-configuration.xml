@@ -22,4 +22,8 @@
 		<setting name="defaultExecutorType" value="REUSE"/>
 		<setting name="jdbcTypeForNull" value="NULL"/>
 	</settings>
+
+	<typeHandlers>
+		<typeHandler handler="com.woonoz.auth.dao.handlers.DefaultUserIdTypeHandler"/>
+	</typeHandlers>
 </configuration>

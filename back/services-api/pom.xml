@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<parent>
 		<artifactId>pv-progdash-parent</artifactId>
-		<groupId>com.woonoz</groupId>
+		<groupId>com.woonoz.pv.progdash</groupId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
@@ -18,6 +18,11 @@
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.woonoz.auth</groupId>
+			<artifactId>authentication-api</artifactId>
+			<version>${woonoz.auth.version}</version>
 		</dependency>
 	</dependencies>
 

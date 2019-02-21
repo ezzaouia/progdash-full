@@ -2,6 +2,7 @@ package com.woonoz.pv.progdash.web.controller;
 
 import java.util.List;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -14,11 +15,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.woonoz.pv.progdash.dto.GroupDto;
 import com.woonoz.pv.progdash.dto.LearningSessionStatisticsDto;
+import com.woonoz.pv.progdash.model.UserRoleConst;
 import com.woonoz.pv.progdash.service.LearningStatisticsService;
 import com.woonoz.web.controller.WoonozJerseyController;
 
 @Controller
 @Path("learning/statistics")
+@RolesAllowed(UserRoleConst.USER_ADMIN)
 public class LearningStatisticsController implements WoonozJerseyController {
 
 	@Inject private LearningStatisticsService learningStatisticsService;

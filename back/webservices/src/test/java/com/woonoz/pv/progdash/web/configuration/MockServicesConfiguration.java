@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 
+import com.woonoz.auth.services.UserCredentialsService;
+import com.woonoz.auth.session.services.UserActivityService;
 import com.woonoz.pv.progdash.service.LearningStatisticsService;
 import com.woonoz.pv.progdash.service.TeacherActivityTraceService;
 
@@ -25,5 +27,17 @@ public class MockServicesConfiguration {
 	@Primary
 	public TeacherActivityTraceService teacherActivityTraceService() {
 		return Mockito.mock(TeacherActivityTraceService.class);
+	}
+
+	@Bean
+	@Primary
+	public UserActivityService userActivityService() {
+		return Mockito.mock(UserActivityService.class);
+	}
+
+	@Bean
+	@Primary
+	public UserCredentialsService userCredentialsService() {
+		return Mockito.mock(UserCredentialsService.class);
 	}
 }

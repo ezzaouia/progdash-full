@@ -15,12 +15,13 @@ import com.woonoz.pv.progdash.web.ProgdashApplication;
 @SpringBootTest(classes = ProgdashApplication.class,
 		webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
 		, properties="spring.autoconfigure.exclude=com.woonoz.pv.progdash.configuration.ProgdashDatasourceConfig,"
-		+ "com.woonoz.pv.progdash.configuration.ProgdashMongodbConfig,"
 		+ "com.woonoz.pv.progdash.configuration.ProgdashMybatisConfig,"
+		+ "com.woonoz.pv.progdash.configuration.ProgdashMongodbConfig,"
 		+ "com.woonoz.pv.progdash.configuration.ProgdashServicesConfig,"
 		+ "org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration,"
 		+ "org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration,"
-		+ "org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration")
+		+ "org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration,"
+		+ "org.springframework.boot.autoconfigure.security.SecurityAutoConfiguration")
 public abstract class AbstractProgdashControllerTest {
 
 	@Autowired
