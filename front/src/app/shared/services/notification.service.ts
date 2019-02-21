@@ -8,6 +8,7 @@ export class NotificationService {
   constructor ( private injector: Injector , private deviceService: DeviceDetectorService ) {}
 
   notify ( ...args ) {
+    // Sent To Server errors
     alert( `Notify ${args.join( ' , ' )} ` );
   }
 
@@ -24,7 +25,7 @@ export class NotificationService {
     console.error( '[originError]', originError );
     const _error = this.addContextInfo ( error );
     // TODO
-    // Sent To Server
+    //     // Sent To Server
   }
 
   /**
