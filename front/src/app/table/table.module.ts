@@ -17,7 +17,7 @@ import { fromComponents } from './components';
 
     MaterialModule,
     VisualizationModule,
-    TableRoutingModule,
+    // TableRoutingModule, // use this if you want to test table module standalone
   ],
   declarations: [ ...fromComponents ],
   exports: [ ...fromComponents ],
