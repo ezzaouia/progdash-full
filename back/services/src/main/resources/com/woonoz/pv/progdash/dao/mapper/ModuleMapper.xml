@@ -3,5 +3,28 @@
 		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.woonoz.pv.progdash.dao.mapper.ModuleMapper">
 
+	<select id="getModulesInfo" resultType="com.woonoz.pv.progdash.dao.dbo.ModuleInfoDbo">
+		SELECT pr.nom AS `key`, pr.regles AS `nbrOfRules`
+		FROM route_element ro_el
+		INNER JOIN application_product app_pr ON app_pr.product_id = ro_el.product_id
+		INNER JOIN pv_produit pr ON app_pr.product_id = pr.id
+		WHERE ro_el.route_id =
+		(SELECT max_route.route_id FROM
+		(
+			SELECT counts.route_id, MAX(counts.count_id) FROM
+			(
+			    SELECT ro_el.route_id AS route_id, ro_el.product_id, sum(IFNULL(pr.regles, 0)) AS count_id
+			    FROM woonoz_groupe_p sphere
+			    LEFT JOIN scenario sc ON sc.id = sphere.scenario_id
+			    LEFT JOIN scenario_element sc_el ON sc_el.scenario_id = sc.id
+				LEFT JOIN route ro ON sc_el.route_id = ro.id
+				LEFT JOIN route_element ro_el ON ro_el.route_id = ro.id
+				LEFT JOIN pv_produit pr ON ro_el.product_id = pr.id
+				WHERE sphere.id_groupe_p = #{areaId}
+				GROUP BY ro.id
+			) AS counts
+		) AS max_route)
+		ORDER BY app_pr.position;
+	</select>
 
 </mapper>
