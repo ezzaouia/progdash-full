@@ -1,7 +1,10 @@
 package com.woonoz.pv.progdash.service;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -10,10 +13,13 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.woonoz.pv.progdash.dao.dbo.GroupDbo;
+import com.woonoz.pv.progdash.dao.dbo.ReachedProductDbo;
+import com.woonoz.pv.progdash.dao.dbo.UserIdentityDbo;
 import com.woonoz.pv.progdash.dao.mapper.LearningStatisticsMapper;
 import com.woonoz.pv.progdash.dto.AllStatisticsDto;
 import com.woonoz.pv.progdash.dto.GroupDto;
 import com.woonoz.pv.progdash.dto.LearningSessionStatisticsDto;
+import com.woonoz.pv.progdash.dto.UserDataDto;
 
 @Service
 @Transactional(propagation = Propagation.MANDATORY)
@@ -57,6 +63,18 @@ public class LearningStatisticsServiceImpl implements LearningStatisticsService 
 
 	@Override
 	public AllStatisticsDto getAllStatistics(int areaId, Integer groupId) {
-		return new AllStatisticsDto();
+		AllStatisticsDto allStats = new AllStatisticsDto();
+
+		Map<Integer, UserDataDto> usersMap = new HashMap<>();
+		for (UserIdentityDbo userIdentityDbo : learningStatisticsMapper.getUsersIdentity(areaId)) {
+			usersMap.put(userIdentityDbo.getId(), new UserDataDto(userIdentityDbo.getId(), userIdentityDbo.getFullName()));
+		}
+		for (ReachedProductDbo reachedProductDbo : learningStatisticsMapper.getReachedProduct(areaId)) {
+			usersMap.get(reachedProductDbo.getUserId()).setLastModule(reachedProductDbo.getProductName());
+		}
+
+		Collection<UserDataDto> userDataDtos = usersMap.values();
+		allStats.setUsers(userDataDtos);
+		return allStats;
 	}
 }
