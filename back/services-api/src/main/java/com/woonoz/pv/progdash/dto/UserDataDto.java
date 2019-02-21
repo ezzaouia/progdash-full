@@ -18,6 +18,8 @@ public class UserDataDto {
 	public UserDataDto(int id, String fullName) {
 		this.id = id;
 		this.fullName = fullName;
+		this.time = 0;
+		this.connectionsNbr = 0;
 	}
 
 	public int getId() {
