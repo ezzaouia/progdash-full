@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 
 import com.woonoz.pv.progdash.dao.dbo.GroupDbo;
 import com.woonoz.pv.progdash.dao.dbo.ReachedProductDbo;
+import com.woonoz.pv.progdash.dao.dbo.TrainingConnectionsDbo;
 import com.woonoz.pv.progdash.dao.dbo.UserIdentityDbo;
 
 @Mapper
@@ -25,4 +26,6 @@ public interface LearningStatisticsMapper {
 	List<UserIdentityDbo> getUsersIdentity(@Param("areaId")int areaId);
 
 	List<ReachedProductDbo> getReachedProduct(@Param("areaId")int areaId);
+
+	List<TrainingConnectionsDbo> getTrainingConnections(@Param("areaId")int areaId);
 }

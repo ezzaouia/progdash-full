@@ -74,4 +74,18 @@
 		    ON p.id = products_with_training.product_id;
 	</select>
 
+	<select id="getTrainingConnections" resultType="com.woonoz.pv.progdash.dao.dbo.TrainingConnectionsDbo">
+		SELECT
+			wgpm.id_membre userId,
+			DATE(MAX(ls.start_date)) lastUsage,
+			COUNT(ls.id) nbSessions,
+			SUM(ls.time_spent_on) / 60 totalTrainingTime
+		FROM woonoz_groupe_p_membre wgpm
+		  LEFT JOIN learning_session ls ON ls.user_id = wgpm.id_membre
+		WHERE wgpm.id_groupe_p = #{areaId}
+		  AND wgpm.user_role= 'learner'
+		  AND ls.mode = 'learn'
+		GROUP BY wgpm.id_membre;
+	</select>
+
 </mapper>

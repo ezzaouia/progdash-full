@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.woonoz.pv.progdash.dao.dbo.GroupDbo;
 import com.woonoz.pv.progdash.dao.dbo.ReachedProductDbo;
+import com.woonoz.pv.progdash.dao.dbo.TrainingConnectionsDbo;
 import com.woonoz.pv.progdash.dao.dbo.UserIdentityDbo;
 import com.woonoz.pv.progdash.dao.mapper.LearningStatisticsMapper;
 import com.woonoz.pv.progdash.dto.AllStatisticsDto;
@@ -71,6 +72,12 @@ public class LearningStatisticsServiceImpl implements LearningStatisticsService 
 		}
 		for (ReachedProductDbo reachedProductDbo : learningStatisticsMapper.getReachedProduct(areaId)) {
 			usersMap.get(reachedProductDbo.getUserId()).setLastModule(reachedProductDbo.getProductName());
+		}
+		for (TrainingConnectionsDbo trainingDbo : learningStatisticsMapper.getTrainingConnections(areaId)) {
+			UserDataDto userData = usersMap.get(trainingDbo.getUserId());
+			userData.setLastConnection(trainingDbo.getLastUsage());
+			userData.setConnectionsNbr(trainingDbo.getNbSessions());
+			userData.setTime(Math.round(trainingDbo.getTotalTrainingTime()));
 		}
 
 		Collection<UserDataDto> userDataDtos = usersMap.values();
