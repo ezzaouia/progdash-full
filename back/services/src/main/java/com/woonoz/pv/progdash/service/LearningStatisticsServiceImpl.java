@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.woonoz.pv.progdash.dao.dbo.GroupDbo;
 import com.woonoz.pv.progdash.dao.dbo.ReachedProductDbo;
+import com.woonoz.pv.progdash.dao.dbo.ScoreInitialEvalDbo;
 import com.woonoz.pv.progdash.dao.dbo.TrainingConnectionsDbo;
 import com.woonoz.pv.progdash.dao.dbo.UserIdentityDbo;
 import com.woonoz.pv.progdash.dao.mapper.LearningStatisticsMapper;
@@ -78,6 +79,9 @@ public class LearningStatisticsServiceImpl implements LearningStatisticsService 
 			userData.setLastConnection(trainingDbo.getLastUsage());
 			userData.setConnectionsNbr(trainingDbo.getNbSessions());
 			userData.setTime(Math.round(trainingDbo.getTotalTrainingTime()));
+		}
+		for (ScoreInitialEvalDbo initialEvalDbo : learningStatisticsMapper.getScoreInitialEval(areaId)) {
+			usersMap.get(initialEvalDbo.getUserId()).setInitialEval(initialEvalDbo.getScore());
 		}
 
 		Collection<UserDataDto> userDataDtos = usersMap.values();

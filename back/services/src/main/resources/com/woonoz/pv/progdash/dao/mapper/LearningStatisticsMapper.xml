@@ -88,4 +88,18 @@
 		GROUP BY wgpm.id_membre;
 	</select>
 
+	<select id="getScoreInitialEval" resultType="com.woonoz.pv.progdash.dao.dbo.ScoreInitialEvalDbo">
+		SELECT
+			wgpm.id_membre userId,
+			ls.progression score
+		FROM woonoz_groupe_p_membre wgpm
+		  JOIN learning_evaluation_user leu ON leu.user_id = wgpm.id_membre
+		  JOIN learning_evaluation_session les ON les.id = leu.learning_evaluation_session_id
+		  JOIN learning_evaluation le ON le.id = les.evaluation_id AND le.mode = 'INSCENARIO_INITIAL'
+		  JOIN learning_session ls ON ls.id = leu.learning_session_id
+		WHERE wgpm.id_groupe_p = #{areaId}
+		  AND wgpm.user_role= 'learner'
+		GROUP BY wgpm.id_membre;
+	</select>
+
 </mapper>
