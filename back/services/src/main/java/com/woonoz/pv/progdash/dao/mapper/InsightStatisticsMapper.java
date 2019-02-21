@@ -12,4 +12,6 @@ public interface InsightStatisticsMapper {
 
 	float sumKeypoints(@Param("areaId") int areaId, @Param("startDate") Date startDate, @Param("endDate") Date endDate);
 
+	float avgTrainingTime(@Param("areaId") int areaId, @Param("startDate") Date startDate, @Param("endDate") Date endDate);
+
 }

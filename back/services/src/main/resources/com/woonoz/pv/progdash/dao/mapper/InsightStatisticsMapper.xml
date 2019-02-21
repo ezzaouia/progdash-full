@@ -29,4 +29,24 @@
 		) list_keypoints;
 	</select>
 
+	<select id="avgTrainingTime" resultType="_float">
+		SELECT AVG(IFNULL(user_training, 0)) / 60 avgTrainingTime
+		FROM (
+			SELECT wm.id_membre, SUM(IFNULL(ls.time_spent_on, 0)) user_training
+			FROM woonoz_groupe_p_membre wgpm_active
+			  JOIN woonoz_membre wm ON wm.id_membre = wgpm_active.id_membre
+			  JOIN learning_session ls ON ls.user_id = wm.id_membre
+			WHERE wgpm_active.id_groupe_p = #{areaId}
+			  AND wgpm_active.user_role= 'learner'
+			  AND ls.mode = 'learn'
+			  AND ls.time_spent_on IS NOT NULL
+			  AND ls.start_date > #{startDate}
+			  AND #{endDate} > ls.start_date
+			GROUP BY ls.user_id
+		) active_users_training
+		RIGHT JOIN woonoz_groupe_p_membre wgpm_all ON wgpm_all.id_membre = active_users_training.id_membre
+		WHERE wgpm_all.id_groupe_p = #{areaId}
+		  AND wgpm_all.user_role= 'learner';
+	</select>
+
 </mapper>

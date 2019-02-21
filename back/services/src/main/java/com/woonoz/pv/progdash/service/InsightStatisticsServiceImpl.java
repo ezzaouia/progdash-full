@@ -33,7 +33,11 @@ public class InsightStatisticsServiceImpl implements InsightStatisticsService {
 		InsightInfoDto insightInfoDto = new InsightInfoDto();
 		int rulesMainPeriod = Math.round(insightStatisticsMapper.sumKeypoints(areaId, mainPeriodStartDay.toDate(), today.toDate()) / nbUsers);
 		int rulesPreviousPeriod = Math.round(insightStatisticsMapper.sumKeypoints(areaId, previousPeriodStartDay.toDate(), mainPeriodStartDay.toDate()) / nbUsers);
-		insightInfoDto.setScore(new DifferentialDto(rulesMainPeriod, rulesPreviousPeriod-rulesMainPeriod));
+		insightInfoDto.setScore(new DifferentialDto(rulesMainPeriod, rulesMainPeriod-rulesPreviousPeriod));
+
+		int trainingTimeMainPeriod = Math.round(insightStatisticsMapper.avgTrainingTime(areaId, mainPeriodStartDay.toDate(), today.toDate()));
+		int trainingTimePreviousPeriod = Math.round(insightStatisticsMapper.avgTrainingTime(areaId, previousPeriodStartDay.toDate(), mainPeriodStartDay.toDate()));
+		insightInfoDto.setTime(new DifferentialDto(trainingTimeMainPeriod, trainingTimeMainPeriod-trainingTimePreviousPeriod));
 
 		return insightInfoDto;
 	}
