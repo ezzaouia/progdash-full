@@ -51,18 +51,19 @@ export class TraceService {
                 type: 'application/pdf',
             }));
         }
-        return this.http.post( API_URL + '/teacher/trace', formData );
+        this.newHttp.post<any>( API_URL + '/teacher/trace', formData )
+            .subscribe(() => {}); // mandatory to trigger post
     }
 
     public createAudit ( error ) {
-      const payload = this.addContextInfo( error );
-       return this.newHttp.post<any>( API_URL + '/audit/create', payload, this.httpOptions );
+      const payload = { error: error, context: this.getContextInfo() };
+       return this.newHttp.post<any>( API_URL + '/audit/error', payload, this.httpOptions );
     }
 
    /**
    * Add needed context info to a trace OR error
    */
-    private addContextInfo ( data ) {
+    private getContextInfo () {
       const device = this.deviceService.getDeviceInfo();
       const teacherId =  this.userSevice.getUserId();
       const sessionId = this.sessionId;
@@ -71,7 +72,7 @@ export class TraceService {
       // maybe not as much important for now as we have only one route
       const location = this.injector.get( LocationStrategy );
       const url = location instanceof PathLocationStrategy ? location.path() : '';
-      return { ...data, teacherId, areaId, sessionId, clientTimestamp, location, url, device };
+      return { teacherId, areaId, sessionId, clientTimestamp, location, url, device };
     }
 
 }

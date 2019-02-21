@@ -1,5 +1,6 @@
 package com.woonoz.pv.progdash.mongodb.model;
 
+import java.util.Date;
 import java.util.Map;
 
 import org.springframework.data.annotation.Id;
@@ -22,6 +23,8 @@ public class TeacherActivityTrace {
 	public Object payload;
 
 	public String actionType;
+
+	public Date clientTimestamp;
 	/**
 	 * We assume that we have a field in mongodb with this same name : represent teacher user id in mariadb
 	 */
@@ -34,16 +37,17 @@ public class TeacherActivityTrace {
 
 	public byte[] file;
 
-	public TeacherActivityTrace(Object payload, int teacherId, String actionType, String sessionId, int areaId, byte[] file){
+	public TeacherActivityTrace(Object payload, int teacherId, String actionType, String sessionId, int areaId, byte[] file, Date clientTimestamp){
 		this.payload = payload;
 		this.teacherId = teacherId;
 		this.actionType = actionType;
 		this.areaId = areaId;
 		this.sessionId = sessionId;
 		this.file = file;
+		this.clientTimestamp = clientTimestamp;
 	}
 
-	public TeacherActivityTrace(String id, Object payload, int teacherId, String actionType, String sessionId, int areaId, byte[] file){
+	public TeacherActivityTrace(String id, Object payload, int teacherId, String actionType, String sessionId, int areaId, byte[] file, Date clientTimestamp){
 		this.id = id;
 		this.payload = payload;
 		this.teacherId = teacherId;
@@ -51,6 +55,7 @@ public class TeacherActivityTrace {
 		this.areaId = areaId;
 		this.sessionId = sessionId;
 		this.file = file;
+		this.clientTimestamp = clientTimestamp;
 	}
 
 	@Override
@@ -62,6 +67,7 @@ public class TeacherActivityTrace {
 				.add("actionType", actionType)
 				.add("areaId", areaId)
 				.add("sessionId", sessionId)
+				.add("clientTimestamp", clientTimestamp)
 				.toString();
 	}
 }
