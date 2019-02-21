@@ -12,6 +12,59 @@ public class InsightInfoDto {
 	private TopNRulesDto topNRules;
 	private TopNUsersDto topNUsers;
 
+	public DifferentialDto getTime() {
+		return time;
+	}
 
+	public void setTime(DifferentialDto time) {
+		this.time = time;
+	}
 
+	public DifferentialDto getScore() {
+		return score;
+	}
+
+	public void setScore(DifferentialDto score) {
+		this.score = score;
+	}
+
+	public DifferentialDto getActiveUsers() {
+		return activeUsers;
+	}
+
+	public void setActiveUsers(DifferentialDto activeUsers) {
+		this.activeUsers = activeUsers;
+	}
+
+	public DifferentialDto getInactiveUsers() {
+		return inactiveUsers;
+	}
+
+	public void setInactiveUsers(DifferentialDto inactiveUsers) {
+		this.inactiveUsers = inactiveUsers;
+	}
+
+	public List<ConnectionDto> getConnections() {
+		return connections;
+	}
+
+	public void setConnections(List<ConnectionDto> connections) {
+		this.connections = connections;
+	}
+
+	public TopNRulesDto getTopNRules() {
+		return topNRules;
+	}
+
+	public void setTopNRules(TopNRulesDto topNRules) {
+		this.topNRules = topNRules;
+	}
+
+	public TopNUsersDto getTopNUsers() {
+		return topNUsers;
+	}
+
+	public void setTopNUsers(TopNUsersDto topNUsers) {
+		this.topNUsers = topNUsers;
+	}
 }

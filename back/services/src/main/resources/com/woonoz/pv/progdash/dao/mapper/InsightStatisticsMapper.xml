@@ -3,5 +3,30 @@
 		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.woonoz.pv.progdash.dao.mapper.InsightStatisticsMapper">
 
+	<select id="countUsers" resultType="_int">
+		SELECT COUNT(*)
+		FROM woonoz_groupe_p_membre
+		WHERE id_groupe_p = #{areaId};
+	</select>
+
+	<select id="sumKeypoints" resultType="_float">
+		SELECT IFNULL(SUM(max_weight), 0)
+		FROM (
+			SELECT
+			       wgpm.id_membre   as user_id,
+			       ukps.keypoint_id as keypoint_id,
+			       ukps.max_weight as max_weight
+			FROM woonoz_groupe_p_membre wgpm
+			  JOIN user_keypoint_state ukps ON ukps.user_id = wgpm.id_membre
+			  JOIN learning_group_reference lgr ON lgr.learning_group_id_reference = ukps.keypoint_id
+			  JOIN learning_session ls ON ls.user_id = wgpm.id_membre AND ls.mode = 'learn'
+			  JOIN module_element me ON me.module_id = ls.learning_activity_id AND me.chapter_id = lgr.learning_group_id
+			WHERE wgpm.id_groupe_p = #{areaId}
+			  AND wgpm.user_role = 'learner'
+			  AND ls.start_date > #{startDate}
+			  AND #{endDate} > ls.start_date
+			GROUP BY user_id, keypoint_id
+		) list_keypoints;
+	</select>
 
 </mapper>
