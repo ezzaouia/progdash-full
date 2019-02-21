@@ -75,6 +75,15 @@ public class LearningStatisticsServiceImpl implements LearningStatisticsService 
 		for (UserIdentityDbo userIdentityDbo : learningStatisticsMapper.getUsersIdentity(areaId)) {
 			usersMap.put(userIdentityDbo.getId(), new UserDataDto(userIdentityDbo.getId(), userIdentityDbo.getFullName()));
 		}
+		fillUsersMap(usersMap, areaId);
+
+		Collection<UserDataDto> userDataDtos = usersMap.values();
+		allStats.setUsers(userDataDtos);
+		return allStats;
+	}
+
+	private void fillUsersMap(Map<Integer, UserDataDto> usersMap, int areaId) {
+
 		for (ReachedProductDbo reachedProductDbo : learningStatisticsMapper.getReachedProduct(areaId)) {
 			usersMap.get(reachedProductDbo.getUserId()).setLastModule(reachedProductDbo.getProductName());
 		}
@@ -97,13 +106,9 @@ public class LearningStatisticsServiceImpl implements LearningStatisticsService 
 			userData.setInitialLevel(new RatioDto(knownRulesDbo.getInitiallyKnownRules(), knownRulesDbo.getEvaluatedRules()));
 			userData.setScore(new RatioDto(knownRulesDbo.getKnownRules(), totalNbKeypoints));
 		}
-
-		Collection<UserDataDto> userDataDtos = usersMap.values();
-		allStats.setUsers(userDataDtos);
-		return allStats;
 	}
 
-	int countUserKeypoints(List<Integer> userProductIds, List<Integer> optionalProducts, Map<Integer, ProductNbKeypoints> productNbKeypointsMap) {
+	private int countUserKeypoints(List<Integer> userProductIds, List<Integer> optionalProducts, Map<Integer, ProductNbKeypoints> productNbKeypointsMap) {
 		List<Integer> userProducts = new ArrayList<>();
 		userProducts.addAll(userProductIds);
 		userProducts.addAll(optionalProducts);
