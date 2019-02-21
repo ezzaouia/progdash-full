@@ -59,9 +59,9 @@ export class ProgdashViewPageComponent implements OnInit {
   isStartPrintReport$: Observable<boolean>;
   isProgTableOpened$: Observable<boolean>;
   isProgEvaluationOpened$: Observable<boolean>;
-  classes$: Observable<StoreField<ClassData>>;
-  usersByClass$: Observable<StoreField<UserData>>;
-  insights$: Observable<StoreField<InsightData>>;
+  classes$: Observable<any>;
+  usersByClass$: Observable<any>;
+  insights$: Observable<any>;
   modulesData$: Observable<{}>;
   selectedClass$: Observable<string>;
   selectedTimescale$: Observable<string> = from( 'lastWeek' );

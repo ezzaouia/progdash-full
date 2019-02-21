@@ -122,7 +122,7 @@ export class ProgBoardComponent implements OnInit, OnDestroy, AfterViewInit {
   boardGrid: any; // Array<GridsterItem>;
 
   updateSup: Subscription;
-  classes$ = new BehaviorSubject<StoreField<ClassData>>({ byId: null, allIds: null });
+  classes$ = new BehaviorSubject<any>({ byId: null, allIds: null });
   selectedClass$ = new BehaviorSubject<string>( '' );
   selectedTimescale$ = new BehaviorSubject<string>( '' );
   selectedRules$ = new BehaviorSubject<string[]>([]);
