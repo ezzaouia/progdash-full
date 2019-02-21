@@ -13,14 +13,18 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.woonoz.pv.progdash.dao.dbo.GroupDbo;
+import com.woonoz.pv.progdash.dao.dbo.KnownRulesDbo;
+import com.woonoz.pv.progdash.dao.dbo.ProductNbKeypoints;
 import com.woonoz.pv.progdash.dao.dbo.ReachedProductDbo;
 import com.woonoz.pv.progdash.dao.dbo.ScoreInitialEvalDbo;
 import com.woonoz.pv.progdash.dao.dbo.TrainingConnectionsDbo;
 import com.woonoz.pv.progdash.dao.dbo.UserIdentityDbo;
+import com.woonoz.pv.progdash.dao.dbo.UserRouteProductsDbo;
 import com.woonoz.pv.progdash.dao.mapper.LearningStatisticsMapper;
 import com.woonoz.pv.progdash.dto.AllStatisticsDto;
 import com.woonoz.pv.progdash.dto.GroupDto;
 import com.woonoz.pv.progdash.dto.LearningSessionStatisticsDto;
+import com.woonoz.pv.progdash.dto.RatioDto;
 import com.woonoz.pv.progdash.dto.UserDataDto;
 
 @Service
@@ -83,9 +87,31 @@ public class LearningStatisticsServiceImpl implements LearningStatisticsService 
 		for (ScoreInitialEvalDbo initialEvalDbo : learningStatisticsMapper.getScoreInitialEval(areaId)) {
 			usersMap.get(initialEvalDbo.getUserId()).setInitialEval(initialEvalDbo.getScore());
 		}
+		Map<Integer, UserRouteProductsDbo> userRouteProductDbos = learningStatisticsMapper.getRouteProducts(areaId);
+		List<Integer> optionalProducts = learningStatisticsMapper.getAreaOptionalProducts(areaId);
+		Map<Integer, ProductNbKeypoints> productNbKeypointsMap = learningStatisticsMapper.getProductNbKeypoints(areaId);
+		for (KnownRulesDbo knownRulesDbo :learningStatisticsMapper.getKnownRules(areaId)) {
+			UserDataDto userData = usersMap.get(knownRulesDbo.getUserId());
+			List<Integer> userProductIds = userRouteProductDbos.get(knownRulesDbo.getUserId()).getProductIds();
+			int totalNbKeypoints = countUserKeypoints(userProductIds, optionalProducts, productNbKeypointsMap);
+			userData.setInitialLevel(new RatioDto(knownRulesDbo.getInitiallyKnownRules(), knownRulesDbo.getEvaluatedRules()));
+			userData.setScore(new RatioDto(knownRulesDbo.getKnownRules(), totalNbKeypoints));
+		}
 
 		Collection<UserDataDto> userDataDtos = usersMap.values();
 		allStats.setUsers(userDataDtos);
 		return allStats;
 	}
+
+	int countUserKeypoints(List<Integer> userProductIds, List<Integer> optionalProducts, Map<Integer, ProductNbKeypoints> productNbKeypointsMap) {
+		List<Integer> userProducts = new ArrayList<>();
+		userProducts.addAll(userProductIds);
+		userProducts.addAll(optionalProducts);
+		int nbKeyPoints = 0;
+		for (Integer productId : userProducts) {
+			nbKeyPoints += productNbKeypointsMap.get(productId).getNbKeypoints();
+		}
+		return nbKeyPoints;
+	}
+
 }

@@ -102,4 +102,76 @@
 		GROUP BY wgpm.id_membre;
 	</select>
 
+	<resultMap id="userProducts" type="com.woonoz.pv.progdash.dao.dbo.UserRouteProductsDbo">
+		<id property="userId" column="userId"/>
+		<collection property="productIds" resultMap="productIdMap"/>
+	</resultMap>
+
+	<resultMap id="productIdMap" type="java.lang.Integer">
+		<id column="productId"/>
+	</resultMap>
+
+	<select id="getRouteProducts" resultMap="userProducts">
+		SELECT
+		       wgpm.id_membre userId,
+		       re.product_id productId /* null if user did not pass initial eval yet */
+		FROM woonoz_groupe_p_membre wgpm
+			     LEFT JOIN route_user ru ON ru.user_id = wgpm.id_membre
+			     LEFT JOIN route_element re on re.route_id = ru.route_id
+		WHERE wgpm.id_groupe_p = #{areaId}
+		  AND user_role = 'learner';
+	</select>
+
+	<select id="getAreaOptionalProducts" resultType="java.lang.Integer">
+		SELECT product_id
+		FROM optional_product_history oph
+		  JOIN optional_product_groupe_p opgp ON oph.id = opgp.optional_product_history_id
+		WHERE opgp.groupe_p_id = #{areaId};
+	</select>
+
+	<resultMap id="productNbKeypoints" type="com.woonoz.pv.progdash.dao.dbo.ProductNbKeypoints">
+		<constructor>
+			<idArg column="productId" javaType="java.lang.Integer"/>
+			<arg column="nbKeypoints" javaType="java.lang.Integer"/>
+		</constructor>
+	</resultMap>
+
+	<select id="getProductNbKeypoints" resultMap="productNbKeypoints">
+		SELECT
+		       products.product_id productId,
+		       count(*) nbKeypoints
+		FROM (
+		     SELECT
+			     opgp.groupe_p_id area_id,
+			     product_id
+		     FROM optional_product_history oph
+		       JOIN optional_product_groupe_p opgp ON oph.id = opgp.optional_product_history_id
+		     WHERE opgp.groupe_p_id = #{areaId}
+		     UNION
+		     SELECT
+			     wgp.id_groupe_p area_id,
+			     product_id
+		     FROM route_element re
+		       JOIN scenario_element se ON re.route_id = se.route_id
+		       JOIN woonoz_groupe_p wgp ON se.scenario_id = wgp.scenario_id
+		     WHERE wgp.id_groupe_p = #{areaId}
+	     ) as products
+		     JOIN module m ON m.module_type_id IN (1, 6) AND m.product_id = products.product_id
+		     JOIN module_element me ON me.module_id = m.id
+		GROUP BY products.product_id;
+	</select>
+
+	<select id="getKnownRules" resultType="com.woonoz.pv.progdash.dao.dbo.KnownRulesDbo">
+		SELECT
+			wgpm.id_membre userId,
+			IFNULL(SUM(ukps.max_weight), 0) knownRules,
+			IFNULL(SUM(ukps.initial_weight), 0) initiallyKnownRules,
+			IFNULL(SUM(ukps.max_weight), 0) evaluatedRules
+		FROM woonoz_groupe_p_membre wgpm
+		  LEFT JOIN user_keypoint_state ukps ON ukps.user_id = wgpm.id_membre
+		WHERE wgpm.id_groupe_p = #{areaId}
+		  AND wgpm.user_role= 'learner'
+		GROUP BY wgpm.id_membre;
+	</select>
+
 </mapper>
