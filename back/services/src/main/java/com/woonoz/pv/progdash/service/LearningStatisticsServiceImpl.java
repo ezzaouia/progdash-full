@@ -23,6 +23,8 @@ import com.woonoz.pv.progdash.dao.dbo.UserRouteProductsDbo;
 import com.woonoz.pv.progdash.dao.mapper.LearningStatisticsMapper;
 import com.woonoz.pv.progdash.dto.AllStatisticsDto;
 import com.woonoz.pv.progdash.dto.GroupDto;
+import com.woonoz.pv.progdash.dto.InsightDataDto;
+import com.woonoz.pv.progdash.dto.InsightInfoDto;
 import com.woonoz.pv.progdash.dto.LearningSessionStatisticsDto;
 import com.woonoz.pv.progdash.dto.RatioDto;
 import com.woonoz.pv.progdash.dto.UserDataDto;
@@ -32,6 +34,7 @@ import com.woonoz.pv.progdash.dto.UserDataDto;
 public class LearningStatisticsServiceImpl implements LearningStatisticsService {
 
 	@Inject private LearningStatisticsMapper learningStatisticsMapper;
+	@Inject private InsightStatisticsService insightStatisticsService;
 	@Inject private ModuleService moduleService;
 
 	@Override
@@ -77,10 +80,14 @@ public class LearningStatisticsServiceImpl implements LearningStatisticsService 
 			usersMap.put(userIdentityDbo.getId(), new UserDataDto(userIdentityDbo.getId(), userIdentityDbo.getFullName()));
 		}
 		fillUsersMap(usersMap, areaId);
-
 		Collection<UserDataDto> userDataDtos = usersMap.values();
-		allStats.setModules(moduleService.getModulesInfo(areaId));
 		allStats.setUsers(userDataDtos);
+
+		InsightInfoDto lastWeek = insightStatisticsService.createInsightsInfo(7);
+		InsightInfoDto lastMonth = insightStatisticsService.createInsightsInfo(30);
+		allStats.setInsights(new InsightDataDto());
+
+		allStats.setModules(moduleService.getModulesInfo(areaId));
 		return allStats;
 	}
 
