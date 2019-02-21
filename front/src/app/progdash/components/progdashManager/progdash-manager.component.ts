@@ -23,8 +23,9 @@ import { StoreField, ClassData } from '../../store';
     <ProgdashView [isSidenavOpened]="!isProgTableOpened">
       <app-navbar class="toolbar mat-elevation-z3">
         <div class="logo">
-          <mat-icon aria-label="menu">graphic_eq</mat-icon>
-          <span>Progdash</span>
+          <!-- mat-icon aria-label="menu">graphic_eq</mat-icon -->
+          <img src="assets/icon/voltaire-logo.jpg" alt="">
+          <span>Suivi Voltaire</span>
         </div>
 
 

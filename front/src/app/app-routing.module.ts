@@ -12,12 +12,12 @@ export const AppRoutes: Routes = [
     component: HomePageComponent,
     children: [
       {
-        path: 'dash',
+        path: 'suivi',
         loadChildren: './progdash/progdash.module#ProgdashModule',
       },
       {
         path: '',
-        redirectTo: 'dash',
+        redirectTo: 'suivi',
         pathMatch: 'full',
       },
       {

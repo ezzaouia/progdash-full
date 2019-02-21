@@ -7,13 +7,13 @@ import { NotFoundComponent } from '../shared/components';
 const externalUrlProvider = new InjectionToken( 'externalUrlRedirectResolver' );
 
 export const dashRoutes: Routes = [
+  // {
+  //   path: '',
+  //   redirectTo: 'prog',
+  //   pathMatch: 'full',
+  // },
   {
     path: '',
-    redirectTo: 'prog',
-    pathMatch: 'full',
-  },
-  {
-    path: 'prog',
     component: ProgdashViewPageComponent,
   },
 ];
