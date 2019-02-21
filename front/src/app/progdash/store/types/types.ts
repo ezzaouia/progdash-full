@@ -62,4 +62,5 @@ export interface ClassData {
 export interface StoreField<T> {
   byId: { [ key: string ]: T };
   allIds: Array<string>;
+  tmpAllIds: Array<any>;
 }

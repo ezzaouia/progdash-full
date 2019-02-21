@@ -19,16 +19,18 @@ export class ErrorsHandler implements ErrorHandler {
     const notificationService = this.injector.get( NotificationService );
     const router = this.injector.get( Router );
     const errorsService = this.injector.get( ErrorsService );
-
     if ( error instanceof HttpErrorResponse ) {
       // Server or connection error happened
       if ( !navigator.onLine ) {
         // Handle offline error
         return notificationService.notify( 'No Internet Connection' );
+      } else if (error.status === 401) {
+        // TODO : if the error status function, redirect the user in home page '/'
+        console.log(" error not authorised")
       } else {
         // Handle Http Error (error.status === 403, 404...)
         errorsService.log( error );
-        return notificationService.notify( `${error.status} - ${error.message}` );
+        // return notificationService.notify( `${error.status} - ${error.message}` );
       }
     } else {
       // Handle Client Error (Angular Error, ReferenceError...)

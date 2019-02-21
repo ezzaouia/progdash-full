@@ -14,11 +14,17 @@ public class TeacherActivityTraceServiceImpl implements TeacherActivityTraceServ
 	@Inject private TeacherActivityRepository teacherActivityRepository;
 
 	@Override
-	public void saveTeacherActivityTrace(TeacherActivityTraceDto teacherActivityTraceDto) {
-		teacherActivityRepository.save(convertToTeacherActivityTraceModel(teacherActivityTraceDto));
+	public void saveTeacherActivityTrace(TeacherActivityTraceDto teacherActivityTraceDto, byte[] file) {
+		teacherActivityRepository.save(convertToTeacherActivityTraceModel(teacherActivityTraceDto, file));
 	}
 
-	private static TeacherActivityTrace convertToTeacherActivityTraceModel(TeacherActivityTraceDto teacherActivityTraceDto){
-		return new TeacherActivityTrace(teacherActivityTraceDto.getTraceId(), teacherActivityTraceDto.getTraceMessage(), teacherActivityTraceDto.getTeacherId());
+	private static TeacherActivityTrace convertToTeacherActivityTraceModel(TeacherActivityTraceDto teacherActivityTraceDto, byte[] file){
+		return new TeacherActivityTrace(teacherActivityTraceDto.getPayload(),
+										teacherActivityTraceDto.getTeacherId(),
+										teacherActivityTraceDto.getActionType(),
+										teacherActivityTraceDto.getSessionId(),
+										teacherActivityTraceDto.getAreaId(),
+										file,
+										teacherActivityTraceDto.getClientTimestamp());
 	}
 }

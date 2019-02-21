@@ -23,28 +23,33 @@ import { StoreField, ClassData } from '../../store';
     <ProgdashView [isSidenavOpened]="!isProgTableOpened">
       <app-navbar class="toolbar mat-elevation-z3">
         <div class="logo">
-          <mat-icon aria-label="menu">graphic_eq</mat-icon>
-          <span>Progdash</span>
+          <!-- mat-icon aria-label="menu">graphic_eq</mat-icon -->
+          <img src="assets/icon/voltaire-logo.jpg" alt="">
+          <span>Suivi Voltaire</span>
         </div>
+
 
         <span class="fill"></span>
 
         <!-- from table -> back to dash -->
         <button
-          *ngIf="isProgTableOpened"
+          *ngIf="isProgTableOpened || isProgEvaluationOpened"
           mat-stroked-button
-          (click)="closeProgTableHandler.emit($event)">
+          (click)="openProgBoardHandler.emit($event)">
             <mat-icon aria-label="menu">arrow_back</mat-icon>
             Tableau de bord
         </button>
 
+
         <TimescaleMenu
-          *ngIf="!isProgTableOpened && selectedClass"
+          *ngIf="!(isProgTableOpened || isProgEvaluationOpened) && selectedClass"
           [selectedTimescale]="selectedTimescale"
           (timescaleHandler)="timescaleHandler.emit($event)">
         </TimescaleMenu>
 
         <span class="fill"></span>
+
+
 
         <div class="class-picker">
           <button
@@ -58,6 +63,20 @@ import { StoreField, ClassData } from '../../store';
               <mat-icon>arrow_drop_down</mat-icon>
           </button>
         </div>
+
+        <button
+          mat-button
+          (click)="openProgTableHandler.emit($event)">
+          <mat-icon aria-label="menu">multiline_chart</mat-icon>
+          Détails
+        </button>
+
+        <button
+          mat-button
+          (click)="openProgEvaluationHandler.emit($event)">
+          <mat-icon aria-label="menu">bubble_chart</mat-icon>
+          Evaluations
+        </button>
 
         <div class="print-container">
           <button
@@ -103,29 +122,11 @@ import { StoreField, ClassData } from '../../store';
         <MoreMenu></MoreMenu>
       </mat-menu>
 
-      <div class="sidenav">
-        <UserList
-          [userListData]="(selectedClass ? usersByClass.byClassId[selectedClass] : [])"
-          [timescale]="selectedTimescale"
-          (userMoreMenuHandler)="onUserMoreMenuClick($event)">
-        </UserList>
-      </div>
-
-      <div class="prog-table">
-        <button
-          class="prog-table-btn mat-elevation-z2"
-          mat-button
-          (click)="openProgTableHandler.emit($event)">
-            Détail
-          <mat-icon aria-label="menu">arrow_forward</mat-icon>
-        </button>
-      </div>
-
       <div #board class="board">
 
         <ProgBoard
           id="progboard"
-          *ngIf="boardWidth && !isProgTableOpened"
+          *ngIf="boardWidth && !(isProgTableOpened || isProgEvaluationOpened)"
           [boardWidth]="boardWidth"
           [classes]="classes"
           [isStartPrintReport]="isStartPrintReport"
@@ -153,8 +154,22 @@ import { StoreField, ClassData } from '../../store';
 
           (sortColumnTraceHandler)="sortColumnTraceHandler.emit($event)"
           (filterColumnTraceHandler)="filterColumnTraceHandler.emit($event)"
-          (hoverWidgetTraceHandler)="hoverWidgetTraceHandler.emit($event)">
+          (hoverWidgetTraceHandler)="hoverWidgetTraceHandler.emit($event)"
+          (userMoreMenuHandler)="handleUserMoreMenuClick($event)">
         </ProgTable>
+
+        <ProgEvaluation
+          *ngIf="isProgEvaluationOpened"
+          [isStartPrintReport]="isStartPrintReport"
+          [selectedWidgets]="selectedWidgets"
+          [userListData]="(selectedClass ? usersByClass.byClassId[selectedClass] : [])"
+          (checkWidgetHandler)="checkWidgetHandler.emit($event)"
+          (closeProgTableHandler)="closeProgTableHandler.emit($event)"
+
+          (sortColumnTraceHandler)="sortColumnTraceHandler.emit($event)"
+          (filterColumnTraceHandler)="filterColumnTraceHandler.emit($event)"
+          (hoverWidgetTraceHandler)="hoverWidgetTraceHandler.emit($event)">
+        </ProgEvaluation>
 
       </div>
 
@@ -223,6 +238,11 @@ import { StoreField, ClassData } from '../../store';
       .print-container {
         margin: 0 5px;
       }
+      .logo img {
+        width: 46px;
+        height: 46px;
+        margin-right: 12px;
+      }
     `,
   ],
 })
@@ -231,6 +251,7 @@ export class ProgdashManagerComponent implements AfterContentInit {
 
   @Input() isDataLoaded;
   @Input() isProgTableOpened;
+  @Input() isProgEvaluationOpened;
   @Input() isStartPrintReport;
 
   @Input() usersByClass;
@@ -246,7 +267,8 @@ export class ProgdashManagerComponent implements AfterContentInit {
   @Output() selectClassHandler = new EventEmitter();
   @Output() userMoreMenuHandler = new EventEmitter();
   @Output() openProgTableHandler = new EventEmitter();
-  @Output() closeProgTableHandler = new EventEmitter();
+  @Output() openProgEvaluationHandler = new EventEmitter();
+  @Output() openProgBoardHandler = new EventEmitter();
 
   @Output() checkRuleHandler = new EventEmitter();
   @Output() launchPVLiveHandler = new EventEmitter();
@@ -256,13 +278,14 @@ export class ProgdashManagerComponent implements AfterContentInit {
   @Output() closePrintReportHandler = new EventEmitter();
   @Output() checkWidgetHandler = new EventEmitter();
   @Output() printReportHandler = new EventEmitter();
+  @Output() hotPrintWidgetHandler = new EventEmitter();
 
   @Output() sortColumnTraceHandler = new EventEmitter();
   @Output() filterColumnTraceHandler = new EventEmitter();
   @Output() openUserDialogTraceHandler = new EventEmitter();
   @Output() hoverWidgetTraceHandler = new EventEmitter();
 
-  classes$ = new BehaviorSubject<StoreField<ClassData>>({
+  classes$ = new BehaviorSubject<any>({
     byId: {},
     allIds: [],
   });
@@ -295,7 +318,7 @@ export class ProgdashManagerComponent implements AfterContentInit {
 
     // this.classes$.subscribe( _ => {
     //   if ( this.classes && this.classes.allIds ) {
-    //     this.classDialogRef.componentInstance.data = {
+    //     this.classDialogRef.comp        onentInstance.data = {
     //       ...this.classDialogRef.componentInstance.data,
     //       classes: this.classes.byId,
     //       selectClassHandler: this.onSelectClassDialog.bind( this ),
@@ -304,12 +327,19 @@ export class ProgdashManagerComponent implements AfterContentInit {
     // });
   }
 
-  onUserMoreMenuClick ({ user, /*action*/ }) {
+  handleUserMoreMenuClick ({ user, /*action*/ }) {
     this.dialog.open( Modal, {
       width: '70vw',
       height: '100vh',
-      data: { user, component: UserDetailComponent },
+      data: {
+        user,
+        component: UserDetailComponent,
+        modulesData: this.modulesData,
+        hoverWidgetTraceHandler: this.hoverWidgetTraceHandler,
+        hotPrintWidgetHandler: this.hotPrintWidgetHandler,
+      },
     });
+
     // Trace purpose
     this.openUserDialogTraceHandler.emit( user );
   }

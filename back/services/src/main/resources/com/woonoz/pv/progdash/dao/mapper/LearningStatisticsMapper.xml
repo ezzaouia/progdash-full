@@ -9,10 +9,69 @@
 		WHERE user_id = #{userId}
 	</select>
 	
-	<select id="getGroups" resultType="com.woonoz.pv.progdash.dto.GroupDto">
+	<select id="getGroups" resultType="com.woonoz.pv.progdash.dao.dbo.GroupDbo">
 		SELECT id_groupe id, nom_groupe name
 		FROM woonoz_groupe
 		WHERE id_groupe_p = #{areaId};
+	</select>
+
+	<select id="countAreaUsers" resultType="java.lang.Integer">
+		SELECT COUNT(*)
+		FROM woonoz_groupe_p_membre
+		WHERE id_groupe_p = #{areaId}
+		      AND user_role = 'learner';
+	</select>
+
+	<select id="countGroupUsers" resultType="java.lang.Integer">
+		SELECT COUNT(*)
+		FROM woonoz_groupe_membre
+		WHERE id_groupe = #{groupId};
+	</select>
+
+	<select id="getAreaFromGroup" resultType="java.lang.Integer">
+		SELECT id_groupe_p
+		FROM woonoz_groupe
+		WHERE id_groupe = #{groupId};
+	</select>
+	
+	<select id="getUsersIdentity" resultType="com.woonoz.pv.progdash.dao.dbo.UserIdentityDbo">
+		SELECT
+		       wm.id_membre id,
+		       CONCAT(wm.prenom_membre, " ", wm.nom_membre) fullName
+		FROM  woonoz_groupe_p_membre wgpm
+		  JOIN woonoz_membre wm ON wm.id_membre = wgpm.id_membre
+		WHERE wgpm.id_groupe_p = #{areaId}
+		  AND wgpm.user_role = 'learner';
+	</select>
+	
+	<sql id="products_with_training">
+		SELECT
+		       wgpm.id_membre user_id,
+			   ap.product_id,
+			   ap.position
+		FROM woonoz_groupe_p_membre wgpm
+		  JOIN learning_session ls ON ls.user_id = wgpm.id_membre AND ls.mode = 'learn'
+		  JOIN module m ON m.module_type_id IN (1, 6) AND m.id = ls.learning_activity_id
+		  JOIN application_product ap ON ap.product_id = m.product_id
+		WHERE wgpm.id_groupe_p = #{areaId}
+		GROUP BY wgpm.id_membre, ap.product_id
+	</sql>
+
+	<select id="getReachedProduct" resultType="com.woonoz.pv.progdash.dao.dbo.ReachedProductDbo">
+		SELECT
+		       products_with_training.user_id userId,
+		       p.id productId,
+		       p.nom productName
+		FROM (
+		    SELECT user_id, MAX(position) top_position
+		    FROM (<include refid="products_with_training"/>) products_with_training_1
+		    GROUP BY user_id
+		  ) top_positions
+		  JOIN (<include refid="products_with_training"/>) products_with_training
+		    ON products_with_training.user_id = top_positions.user_id
+		    AND products_with_training.position = top_positions.top_position
+		  JOIN pv_produit p
+		    ON p.id = products_with_training.product_id;
 	</select>
 
 </mapper>

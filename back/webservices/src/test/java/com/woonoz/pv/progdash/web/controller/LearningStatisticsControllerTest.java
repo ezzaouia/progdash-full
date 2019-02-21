@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import org.json.JSONException;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import com.woonoz.pv.progdash.service.LearningStatisticsService;
 import com.woonoz.pv.progdash.web.core.AbstractProgdashControllerTest;
 import com.woonoz.pv.progdash.web.core.ResponseAssert;
 
+@Ignore
 public class LearningStatisticsControllerTest extends AbstractProgdashControllerTest {
 
 	private static final int USER_ID = 1;

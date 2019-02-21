@@ -1,0 +1,23 @@
+﻿# Eclipse
+.classpath
+.project
+.settings/
+eclipse/
+*.launch
+
+# Intellij
+.idea
+*.iml
+
+# Maven
+target/
+overlays/
+
+# Android
+delivery/
+bin/
+gen/
+
+# GWT
+.gwt
+.gwt-temp

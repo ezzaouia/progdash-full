@@ -9,6 +9,7 @@ import org.springframework.context.annotation.PropertySource;
 
 import com.woonoz.auth.services.UserCredentialsService;
 import com.woonoz.auth.session.services.UserActivityService;
+import com.woonoz.pv.progdash.service.AuditService;
 import com.woonoz.pv.progdash.service.LearningStatisticsService;
 import com.woonoz.pv.progdash.service.TeacherActivityTraceService;
 
@@ -39,5 +40,11 @@ public class MockServicesConfiguration {
 	@Primary
 	public UserCredentialsService userCredentialsService() {
 		return Mockito.mock(UserCredentialsService.class);
+	}
+
+	@Bean
+	@Primary
+	public AuditService auditService() {
+		return Mockito.mock(AuditService.class);
 	}
 }

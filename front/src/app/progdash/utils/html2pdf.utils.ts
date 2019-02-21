@@ -6,6 +6,10 @@ export const a4WidgetsStyles = {
     width: 746,
     height: 200,
   },
+  'svg-mline-chart': {
+    width: 700,
+    height: 300,
+  },
 };
 
 
@@ -49,8 +53,6 @@ export const printPdfReport = ( selectedWidgets ): PrintStatus => {
   if ( !selectedWidgets ) {
     return PrintStatus.Empty;
   }
-
-  console.log( 'Printing ===> ', selectedWidgets );
 
   let widgetEl, cloneEl, tmpWrapper;
   // TODO replace tmpContainer div by a iframe
@@ -102,9 +104,5 @@ export const printPdfReport = ( selectedWidgets ): PrintStatus => {
 
 export const printPdfReportCleanup = () => {
   const tmpContainer = document.getElementById( 'pdf-container' );
-
-  console.log( '=========> printPdfReportCleanup ', tmpContainer );
-
-
   tmpContainer.parentNode.removeChild( tmpContainer );
 };

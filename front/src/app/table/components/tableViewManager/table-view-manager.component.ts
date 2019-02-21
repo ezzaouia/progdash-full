@@ -47,7 +47,8 @@ export enum RowTableMode {
       [selectedWidgets]="selectedWidgets"
       (checkWidgetHandler)="checkWidgetHandler.emit($event)"
       (sortColumnTraceHandler)="sortColumnTraceHandler.emit($event)"
-      (filterColumnTraceHandler)="filterColumnTraceHandler.emit($event)">
+      (filterColumnTraceHandler)="filterColumnTraceHandler.emit($event)"
+      (userMoreMenuHandler)="userMoreMenuHandler.emit($event)">
     </CdkTableView>
 
     <CdkMColTableView
@@ -82,6 +83,7 @@ export class TableViewManagerComponent
   @Output() checkWidgetHandler = new EventEmitter<{ isChecked: boolean; widgetId: string }>();
   @Output() sortColumnTraceHandler = new EventEmitter();
   @Output() filterColumnTraceHandler = new EventEmitter();
+  @Output() userMoreMenuHandler = new EventEmitter();
 
   options$ = new BehaviorSubject<any>({});
   data$ = new BehaviorSubject<any>([]);

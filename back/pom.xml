@@ -216,6 +216,17 @@
 			</dependency>
 
 			<dependency>
+				<groupId>org.glassfish.jersey.media</groupId>
+				<artifactId>jersey-media-multipart</artifactId>
+			</dependency>
+
+			<dependency>
+				<groupId>com.woonoz.core</groupId>
+				<artifactId>services-core</artifactId>
+				<version>${woonoz.core.version}</version>
+			</dependency>
+
+			<dependency>
 				<groupId>com.zaxxer</groupId>
 				<artifactId>HikariCP</artifactId>
 				<version>3.3.1</version>

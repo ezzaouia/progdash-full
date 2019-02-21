@@ -4,5 +4,5 @@ import com.woonoz.pv.progdash.dto.TeacherActivityTraceDto;
 
 public interface TeacherActivityTraceService {
 
-	void saveTeacherActivityTrace(TeacherActivityTraceDto teacherActivityTraceDto);
+	void saveTeacherActivityTrace(TeacherActivityTraceDto teacherActivityTraceDto, byte[] file);
 }

@@ -4,9 +4,9 @@ import { switchMap, map, tap, catchError, withLatestFrom , delay } from 'rxjs/op
 import { select, Action, Store } from '@ngrx/store';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { startsWith, filter, size } from 'lodash';
-import { select as d3Select, selectAll as d3SelectAll } from 'd3';
 import { saveAs } from 'file-saver';
 
+import { ProgdashDataService } from '../../services';
 import { DataService } from '../../../shared/services';
 import { dataPrep, filename } from '../../utils/data.prep';
 import { cast } from '../../utils/mappers';
@@ -21,6 +21,10 @@ import {
   PrintReportFailure,
   PrintReportSuccess,
   StartPrintReport,
+  HotPrintWidget,
+  LoadGroupsData,
+  LoadGroupsDataSuccess,
+  LoadGroupsDataFailure,
 } from '../actions';
 import { Router } from '@angular/router';
 import * as html2pdf from 'html2pdf.js';
@@ -36,6 +40,7 @@ export class DashEffects {
   constructor (
     private actions$: Actions,
     private dataService: DataService,
+    private progdashDataService: ProgdashDataService,
     private router: Router,
     private store: Store<fromStore.State>
   ) {
@@ -54,6 +59,17 @@ export class DashEffects {
         .loadCSV$( filename, cast )
         .pipe( map( data => new LoadDataSuccess( data )));
     })
+  );
+
+  @Effect()
+  loadGroupsData$: Observable<Action> = this.actions$.pipe(
+    ofType<LoadGroupsData>( DashActionTypes.LoadGroupsData ),
+    withLatestFrom( this.store.pipe( select( fromStore.userInfo ))),
+    switchMap(([ _, userInfo ]) => {
+        return this.progdashDataService.loadGroupsData$({ areaId: userInfo.areaId });
+      }
+    ),
+    map( payload => new LoadGroupsDataSuccess( payload ))
   );
 
   @Effect()
@@ -192,6 +208,69 @@ export class DashEffects {
   @Effect()
   printReport$: Observable<Action> = this.actions$.pipe(
     ofType<PrintReport>( DashActionTypes.PrintReport ),
+    map(() => {
+      this.tmpPdfContainer.setAttribute( 'style', `display: flex;` );
+      return null;
+    }),
+    delay( 200 ),
+    switchMap(() => {
+      const promise = html2pdf()
+        .from( this.tmpPdfContainer )
+        .set({
+          filename: 'rapport-' + +new Date() + '.pdf',
+          pagebreak: { mode: [ 'avoid-all' ] },
+          jsPDF:  {  format: 'letter' },
+        });
+
+      return from(
+        promise.toPdf().output( 'blob' ) // .save()
+      )
+      .pipe(
+        map( blob => {
+           // TODO to check if we want to open
+           // files or not
+            // const newWin = window.open( URL.createObjectURL( blob ), '_blank' );
+            // if ( !newWin || newWin.closed || typeof newWin.closed === 'undefined' ) {
+            //   // POPUP BLOCKED
+            //   console.log( 'POPUP BLOCKED' );
+            // }
+
+            saveAs( blob, 'rapport-' + +new Date() + '.pdf' );
+
+            return blob;
+        }),
+        map( blob => new PrintReportSuccess({ blob })),
+        catchError( err => {
+          return of( new PrintReportFailure( 'Print_Pdf_Report_Failure' ));
+        })
+      );
+
+    })
+  );
+
+  @Effect()
+  hotPrintWidget$: Observable<Action> = this.actions$.pipe(
+    ofType<HotPrintWidget>( DashActionTypes.HotPrintWidget ),
+    map( action => {
+      const widgetId = action.payload;
+      const widgetEl = document.getElementById( widgetId );
+      const cloneEl = widgetEl.cloneNode( true );
+
+      copyComputedStyle( widgetEl, cloneEl );
+
+      const tmpWrapper = document.createElement( 'div' );
+      tmpWrapper.setAttribute( 'style', `margin: 6px;` );
+      tmpWrapper.setAttribute( 'id', `print-${widgetId}` );
+      tmpWrapper.appendChild( cloneEl );
+      this.tmpPdfContainer.appendChild( tmpWrapper );
+
+
+      const svg = document.querySelector( '#pdf-container #svg-mline-chart' );
+      // svg.setAttribute( 'viewBox', '0 0 2000 200'  );
+      svg.setAttribute( 'width', `${ a4WidgetsStyles[ 'svg-mline-chart' ].width }` );
+      svg.setAttribute( 'height', `${ a4WidgetsStyles[ 'svg-mline-chart' ].height }` );
+      return;
+    }),
     map(() => {
       this.tmpPdfContainer.setAttribute( 'style', `display: flex;` );
       return null;

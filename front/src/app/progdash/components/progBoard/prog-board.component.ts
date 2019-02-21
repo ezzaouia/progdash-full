@@ -91,7 +91,7 @@ enum Timescale {
       gridster {
         background: #eee;
         box-sizing: border-box;
-        width: calc(100vw - 300px);
+        width: 100vw; /*calc(100vw - 300px);*/
       }
       .pv-launcher {
         position: fixed;
@@ -122,7 +122,7 @@ export class ProgBoardComponent implements OnInit, OnDestroy, AfterViewInit {
   boardGrid: any; // Array<GridsterItem>;
 
   updateSup: Subscription;
-  classes$ = new BehaviorSubject<StoreField<ClassData>>({ byId: null, allIds: null });
+  classes$ = new BehaviorSubject<any>({ byId: null, allIds: null });
   selectedClass$ = new BehaviorSubject<string>( '' );
   selectedTimescale$ = new BehaviorSubject<string>( '' );
   selectedRules$ = new BehaviorSubject<string[]>([]);
@@ -159,10 +159,10 @@ export class ProgBoardComponent implements OnInit, OnDestroy, AfterViewInit {
       displayGrid: DisplayGrid.OnDragAndResize,
       pushItems: true,
       draggable: {
-        enabled: true,
+        enabled: false,
       },
       resizable: {
-        enabled: true,
+        enabled: false,
       },
       fixedColWidth: Math.floor( this.boardWidth / 12 ),
       fixedRowHeight: 60,
@@ -174,7 +174,7 @@ export class ProgBoardComponent implements OnInit, OnDestroy, AfterViewInit {
         grid: { cols: 3, rows: 3, y: 0, x: 0 },
         component: InfoWidgetComponent,
         data: {
-          title: 'Avancement Règles',
+          title: 'Règles acquises',
           infoLabel: 'en moyenne par apprenant',
         },
       },
@@ -182,7 +182,7 @@ export class ProgBoardComponent implements OnInit, OnDestroy, AfterViewInit {
         grid: { cols: 3, rows: 3, y: 0, x: 3 },
         component: InfoWidgetComponent,
         data: {
-          title: 'Avancement Temps',
+          title: 'Temps d’entrainement',
           infoLabel: 'en moyenne par apprenant',
         },
       },
@@ -206,7 +206,7 @@ export class ProgBoardComponent implements OnInit, OnDestroy, AfterViewInit {
         grid: { cols: 3 * 4, rows: 4, y: 3, x: 0 },
         component: TimelineWidgetComponent,
         data: {
-          title: 'Ligne de Temps des Connexions',
+          title: 'Nombre de connexions cumulées par jour',
         },
       },
       'topNUsers.score': {
@@ -241,7 +241,7 @@ export class ProgBoardComponent implements OnInit, OnDestroy, AfterViewInit {
         grid: { cols: 4, rows: 6, y: 13, x: 0 },
         component: TopNRulesWidgetComponent,
         data: {
-          title: 'Règles en Focus',
+          title: 'Règles en cours d’apprentissage',
           checkRuleHandler: this.checkRuleHandler,
         },
       },
@@ -257,7 +257,7 @@ export class ProgBoardComponent implements OnInit, OnDestroy, AfterViewInit {
         grid: { cols: 4, rows: 6, y: 13, x: 8 },
         component: TopNRulesWidgetComponent,
         data: {
-          title: 'Règles Sues',
+          title: 'Règles sues initialement',
           checkRuleHandler: this.checkRuleHandler,
         },
       },

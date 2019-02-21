@@ -1,34 +1,32 @@
-import { indexOf, filter, startsWith } from 'lodash';
+import { filter, indexOf, startsWith } from 'lodash';
 
-import { DashActionTypes, DashActionsUnion } from '../actions';
-import {
-  StoreField,
-  UserData,
-  InsightData,
-  RuleData,
-  ClassData
-} from '../types';
+import { DashActionsUnion, DashActionTypes, LoadUserInfo } from '../actions';
+import { ClassData, InsightData, RuleData, StoreField, UserData } from '../types';
 
 export interface State {
   isDataLoaded: boolean;
   isProgTableOpened: boolean;
+  isProgEvaluationOpened: boolean;
   isLoading: boolean;
   rawData: any[];
-  usersByClass: StoreField<UserData>;
-  insights: StoreField<InsightData>;
-  rules: StoreField<RuleData>;
-  classes: StoreField<ClassData>;
+  usersByClass: any ; /*StoreField<UserData>;*/
+  insights: any; /* StoreField<InsightData>;*/
+  rules: any; /*StoreField<RuleData>;*/
+  classes: any; /*StoreField<ClassData>*/
   selectedClass: string;
   selectedTimescale: string;
   selectedRules: string[];
   isStartPrintReport: boolean;
   selectedWidgets: string[];
   modulesData: {};
+  areaId: number;
+  userId: number;
 }
 
 const initialState: State = {
   isDataLoaded: false,
   isProgTableOpened: false,
+  isProgEvaluationOpened: false,
   isLoading: false,
   rawData: [],
   usersByClass: null,
@@ -41,6 +39,8 @@ const initialState: State = {
   isStartPrintReport: false,
   selectedWidgets: [],
   modulesData: {},
+  areaId: 26880,
+  userId: null,
 };
 
 export function reducers (
@@ -48,6 +48,13 @@ export function reducers (
   action: DashActionsUnion
 ): State {
   switch ( action.type ) {
+    case DashActionTypes.LoadUserInfo: {
+      return {
+          ...state,
+          areaId: ( action as LoadUserInfo ).payload.areaId,
+          userId: ( action as LoadUserInfo ).payload.userId,
+      };
+    }
     case DashActionTypes.LoadData: {
       return {
         ...state,
@@ -64,6 +71,32 @@ export function reducers (
     }
 
     case DashActionTypes.LoadDataFailure: {
+      return {
+        ...state,
+        isLoading: false,
+      };
+    }
+
+    case DashActionTypes.LoadGroupsData: {
+      return {
+        ...state,
+        isLoading: true,
+      };
+    }
+
+    case DashActionTypes.LoadGroupsDataSuccess: {
+      return {
+        ...state,
+        isLoading: false,
+        // rawData: action.payload,
+        classes: {
+          ...state.classes,
+          tmpAllIds: action.payload,
+        },
+      };
+    }
+
+    case DashActionTypes.LoadGroupsDataFailure: {
       return {
         ...state,
         isLoading: false,
@@ -96,13 +129,23 @@ export function reducers (
       return {
         ...state,
         isProgTableOpened: true,
+        isProgEvaluationOpened: false,
       };
     }
 
-    case DashActionTypes.CloseProgTable: {
+    case DashActionTypes.OpenProgEvaluation: {
+      return {
+        ...state,
+        isProgEvaluationOpened: true,
+        isProgTableOpened: false,
+      };
+    }
+
+    case DashActionTypes.OpenProgBoard: {
       return {
         ...state,
         isProgTableOpened: false,
+        isProgEvaluationOpened: false,
       };
     }
 
@@ -228,7 +271,9 @@ export const selectedClass = ( state: State ) => state.selectedClass;
 export const selectedTimescale = ( state: State ) => state.selectedTimescale;
 export const isDataLoaded = ( state: State ) => state.isDataLoaded;
 export const isProgTableOpened = ( state: State ) => state.isProgTableOpened;
+export const isProgEvaluationOpened = ( state: State ) => state.isProgEvaluationOpened;
 export const isStartPrintReport = ( state: State ) => state.isStartPrintReport;
 export const selectedRules = ( state: State ) => state.selectedRules;
 export const selectedWidgets = ( state: State ) => state.selectedWidgets;
 export const modulesData = ( state: State ) => state.modulesData;
+export const userInfo = ( state: State ) => ({ userId: state.userId, areaId: state.areaId });

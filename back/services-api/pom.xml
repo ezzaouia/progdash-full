@@ -24,6 +24,10 @@
 			<artifactId>authentication-api</artifactId>
 			<version>${woonoz.auth.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.woonoz.core</groupId>
+			<artifactId>services-core</artifactId>
+		</dependency>
 	</dependencies>
 
 </project>

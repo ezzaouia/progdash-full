@@ -1,8 +1,8 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { BehaviorSubject, merge, of, from } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { flatMap, get } from 'lodash';
-import { scaleLinear, scaleTime, extent, scaleOrdinal, timeFormat, max } from 'd3';
+import { scaleLinear, scaleTime, extent, scaleOrdinal, timeFormat, max, select } from 'd3';
 import * as moment from 'moment';
 import 'moment-duration-format';
 moment.locale( 'fr' );
@@ -20,9 +20,10 @@ enum FilterName {
   selector: 'MlineChart',
   template: `
       <svg
-          [attr.width]="width + 10"
-          [attr.height]="height"
-          class="no-select">
+          #svg
+          id="svg-mline-chart"
+          class="no-select"
+          preserveAspectRatio="xMidYMid meet">
         <g Axis
             [position]="'top'"
             [scale]="xScale"
@@ -74,6 +75,8 @@ enum FilterName {
 })
 export class MlineChartComponent implements OnInit, OnDestroy {
 
+  @ViewChild( 'svg' ) svgRef: ElementRef;
+
   @Input() modulesData: {};
   @Input() width;
   @Input() height;
@@ -115,6 +118,10 @@ export class MlineChartComponent implements OnInit, OnDestroy {
   constructor ( private interactionService: InteractionsService ) { }
 
   ngOnInit (): void {
+
+    select( this.svgRef.nativeElement )
+    .attr( 'viewBox', `0 0 ${ this.width + 10} ${ this.height }` );
+
     this.updateSub = this.updateSub$
       .pipe( debounceTime( 300 ))
       .subscribe( _ => {

@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { tap, switchMap, catchError } from 'rxjs/operators';
 import { Action } from '@ngrx/store';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 
 import { DashActionTypes } from '../actions';
-import { NotificationService } from '../../../shared/services/notification.service';
+import { TraceService } from '../../services/trace.service';
 
 /**
  * Effect to collecte all traces (users' interactions)
@@ -19,7 +19,7 @@ import { NotificationService } from '../../../shared/services/notification.servi
 export class TraceEffects {
   constructor (
     private actions$: Actions,
-    private notificationService: NotificationService
+    private traceService: TraceService
   ) {}
 
   @Effect({ dispatch: false })
@@ -34,7 +34,7 @@ export class TraceEffects {
       DashActionTypes.SelectClass,
       DashActionTypes.SelectTimescale,
       DashActionTypes.OpenProgTable,
-      DashActionTypes.CloseProgTable,
+      DashActionTypes.OpenProgBoard,
 
       // PRINT REPORT
       DashActionTypes.StartPrintReport,
@@ -63,7 +63,7 @@ export class TraceEffects {
       // ...,
     ),
     tap( action => {
-      this.notificationService.trace( action );
+      this.traceService.createTrace( action );
     })
   );
 }

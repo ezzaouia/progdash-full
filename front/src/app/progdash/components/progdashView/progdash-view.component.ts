@@ -12,10 +12,10 @@ import { Component, OnInit, Input } from '@angular/core';
       mode="side"
       [opened]="isSidenavOpened"
       class="sidenav mat-elevation-z2">
-      <!-- user list content -->
-      <ng-content select=".sidenav"></ng-content>
-      <!-- sidebar users detail -->
-      <ng-content select=".prog-table"></ng-content>
+      <!-- user list content
+      <ng-content select=".sidenav"></ng-content> -->
+      <!-- sidebar users detail
+      <ng-content select=".prog-table"></ng-content> -->
     </mat-drawer>
     <mat-drawer-content
       class="content"
@@ -39,11 +39,11 @@ import { Component, OnInit, Input } from '@angular/core';
       margin-top: 46px;
     }
     .sidenav {
-      width: 300px;
+      width: 0px; /* 300px;*/
       height: 100vh;
     }
     .content {
-      width: calc(100vw - 300px);
+      width: 100vw;/*calc(100vw - 300px);*/
     }
   ` ],
 })
