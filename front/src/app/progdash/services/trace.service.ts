@@ -51,7 +51,8 @@ export class TraceService {
                 type: 'application/pdf',
             }));
         }
-        return this.http.post( API_URL + '/teacher/trace', formData );
+        this.newHttp.post<any>( API_URL + '/teacher/trace', formData )
+            .subscribe(() => {}); // mandatory to trigger post
     }
 
     public createAudit ( error ) {

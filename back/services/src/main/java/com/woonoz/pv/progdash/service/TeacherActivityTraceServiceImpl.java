@@ -24,6 +24,7 @@ public class TeacherActivityTraceServiceImpl implements TeacherActivityTraceServ
 										teacherActivityTraceDto.getActionType(),
 										teacherActivityTraceDto.getSessionId(),
 										teacherActivityTraceDto.getAreaId(),
-										file);
+										file,
+										teacherActivityTraceDto.getClientTimestamp());
 	}
 }
