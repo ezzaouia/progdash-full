@@ -32,6 +32,7 @@ import com.woonoz.pv.progdash.dto.UserDataDto;
 public class LearningStatisticsServiceImpl implements LearningStatisticsService {
 
 	@Inject private LearningStatisticsMapper learningStatisticsMapper;
+	@Inject private ModuleService moduleService;
 
 	@Override
 	public LearningSessionStatisticsDto getLearningSessionStatistics(Integer userId, String message) {
@@ -78,6 +79,7 @@ public class LearningStatisticsServiceImpl implements LearningStatisticsService 
 		fillUsersMap(usersMap, areaId);
 
 		Collection<UserDataDto> userDataDtos = usersMap.values();
+		allStats.setModules(moduleService.getModulesInfo(areaId));
 		allStats.setUsers(userDataDtos);
 		return allStats;
 	}
