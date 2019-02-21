@@ -4,6 +4,7 @@ import { Component, OnInit } from '@angular/core';
   selector: 'app-error',
   template: `
     <h2>🚚 Something very bad..!</h2>
+
   `,
   styles: [ `` ],
 })

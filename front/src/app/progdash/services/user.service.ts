@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable} from 'rxjs';
+import { Observable } from 'rxjs';
 import { select, Store } from '@ngrx/store';
 import { take } from 'rxjs/operators';
 import * as fromStore from '../store';

@@ -87,6 +87,8 @@ export class ProgdashViewPageComponent implements OnInit {
 
   ngOnInit (): void {
     this.store.dispatch( new fromStore.LoadData());
+
+    this.store.dispatch( new fromStore.LoadGroupsData());
   }
 
   onTimescaleChange ( timescale: string ) {

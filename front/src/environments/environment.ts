@@ -8,6 +8,7 @@ export const environment = {
   hmr: false,
   apiUrl: 'http://woonoz.api-url',
   pvApiUrl: 'http://woonoz.pv.api-url',
+  API_URL: 'http://192.168.3.67:8080',
 };
 
 /*

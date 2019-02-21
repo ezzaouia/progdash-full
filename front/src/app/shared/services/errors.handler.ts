@@ -28,7 +28,7 @@ export class ErrorsHandler implements ErrorHandler {
       } else {
         // Handle Http Error (error.status === 403, 404...)
         errorsService.log( error );
-        return notificationService.notify( `${error.status} - ${error.message}` );
+        // return notificationService.notify( `${error.status} - ${error.message}` );
       }
     } else {
       // Handle Client Error (Angular Error, ReferenceError...)
