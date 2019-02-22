@@ -15,9 +15,9 @@ import {
   curveMonotoneX
 } from 'd3';
 import { indexOf, get, each, size } from 'lodash';
+import { BehaviorSubject, Subscription } from 'rxjs';
 
 import { colors, newModuleScale } from '../../../utils/chart.util';
-import { BehaviorSubject, Subscription } from 'rxjs';
 import { dayParseTime } from 'src/app/progdash/utils/mappers';
 
 enum CellChartEncoding {
@@ -112,6 +112,8 @@ export class CellChartComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() key?;
   @Input() keys?;
   @Input() hint?;
+  @Input() formatter?;
+  @Input() compositeHint?;
   @Input() isCompact ? = true;
   @Input() extent = [];
   @Input() color?;
@@ -298,7 +300,9 @@ export class CellChartComponent implements OnInit, OnDestroy, AfterViewInit {
 
         this.line
           .x(( d: any ) => this.xScale( d[ this.options.xkey || 'x' ]))
-          .y(( d: any ) => this.yScale( d[ this.options.ykey || 'y' ] + newModuleScale[get( d, 'moduleName' )]));
+          .y(( d: any ) => this.yScale( d[ this.options.ykey || 'y' ] +
+            newModuleScale[get( d, 'moduleName' )]
+          ));
 
         if ( scaleType === 'time' ) {
           this.line.x(( d: any ) => this.xScale( dayParseTime( d[ this.options.xkey || 'x' ])));
@@ -347,7 +351,19 @@ export class CellChartComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   get dataHint () {
-    return get( this.data, this.hint || this.key );
+    let info;
+    if ( this.compositeHint ) {
+      info = '' + get( this.data, this.compositeHint[0], '' ) +
+       '/' + get( this.data, this.compositeHint[1], '' );
+    } else { 
+      info = get( this.data, this.hint || this.key );
+    }
+
+    if ( this.formatter ) {
+      info = this.formatter( info );
+    }
+
+    return info;
   }
 
   get styles () {

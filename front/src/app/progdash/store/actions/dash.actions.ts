@@ -11,6 +11,10 @@ export enum DashActionTypes {
   LoadGroupsDataSuccess = '[Dash] Load Groups Data Success',
   LoadGroupsDataFailure = '[Dash] Load Groups Data Failure',
 
+  LoadGroupData = '[Dash] Load Group Data',
+  LoadGroupDataSuccess = '[Dash] Load Group Data Success',
+  LoadGroupDataFailure = '[Dash] Load Group Data Failure',
+
   RunDataPrep = '[Dash] Run Data Prep',
   RunDataPrepComplete = '[Dash] Run Data Prep Complete',
 
@@ -72,6 +76,22 @@ export class LoadGroupsDataFailure implements Action {
   constructor ( public payload: any ) {}
 }
 
+export class LoadGroupData implements Action {
+  readonly type = DashActionTypes.LoadGroupData;
+}
+
+export class LoadGroupDataSuccess implements Action {
+  readonly type = DashActionTypes.LoadGroupDataSuccess;
+
+  constructor ( public payload: any ) {}
+}
+
+export class LoadGroupDataFailure implements Action {
+  readonly type = DashActionTypes.LoadGroupDataFailure;
+
+  constructor ( public payload: any ) {}
+}
+
 export class RunDataPrep implements Action {
   readonly type = DashActionTypes.RunDataPrep;
 }
@@ -85,7 +105,7 @@ export class RunDataPrepComplete implements Action {
 export class SelectClass implements Action {
   readonly type = DashActionTypes.SelectClass;
 
-  constructor ( public payload: string ) {}
+  constructor ( public payload: any ) {}
 }
 
 export class OpenProgTable implements Action {
@@ -195,6 +215,11 @@ export type DashActionsUnion =
   | LoadGroupsData
   | LoadGroupsDataSuccess
   | LoadGroupsDataFailure
+
+  | LoadGroupData
+  | LoadGroupDataSuccess
+  | LoadGroupDataFailure
+
   | RunDataPrep
   | RunDataPrepComplete
   | SelectClass

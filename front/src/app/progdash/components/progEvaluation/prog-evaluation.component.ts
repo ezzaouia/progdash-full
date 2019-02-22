@@ -3,6 +3,9 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 import { values } from 'lodash';
 import { initialEvalCatColors, moduleCatColors } from '../../../utils/chart.util';
 import { PrintWidgetComponent } from '../../../shared/components';
+import * as moment from 'moment';
+import 'moment-duration-format';
+moment.locale( 'fr' );
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -18,7 +21,6 @@ import { PrintWidgetComponent } from '../../../shared/components';
       (mouseenter)="hoverWidgetTraceHandler.emit({event: 'mouseenter',id: 'table-view'})"
       (mouseleave)="hoverWidgetTraceHandler.emit({event: 'mouseleave',id: 'table-view'})">
       <mat-card-header>
-      <mat-card-title>Table des évaluations</mat-card-title>
         <PrintWidget
           *ngIf="isStartPrintReport"
           [widgetId]="'table-view'"
@@ -111,27 +113,27 @@ export class ProgEvaluationComponent implements OnInit, OnDestroy {
       width: 120,
       topBottom: 0,
     },
-    moduleName: {
-      name: 'Evaluation',
-      histo: 'categorical',
-      encoding: 'CAT',
-      width: 120,
-      topBottom: 0,
-      color: moduleCatColors,
-    },
-    'time.sum': {
+    // moduleName: {
+    //   name: 'Evaluation',
+    //   histo: 'categorical',
+    //   encoding: 'CAT',
+    //   width: 120,
+    //   topBottom: 0,
+    //   color: moduleCatColors,
+    // },
+    'time': {
       name: 'Temps',
-      hint: 'time.format',
       histo: 'ordinal',
       encoding: 'BAR',
       width: 120,
+      formatter: this.timeFormatter,
       topBottom: 0,
     },
     'score.sum': {
       name: 'Score',
       histo: 'ordinal',
       encoding: 'BAR',
-      hint: 'score.format',
+      compositeHint: [ 'score.sum', 'score.count' ],
       width: 120,
       topBottom: 0,
     },
@@ -164,6 +166,10 @@ export class ProgEvaluationComponent implements OnInit, OnDestroy {
 
   get userListData () {
     return this.userListData$.getValue();
+  }
+
+  timeFormatter ( time ) {
+    return moment.duration( time, 'minutes' ).format( 'h[h]mm[min]' );
   }
 
 }

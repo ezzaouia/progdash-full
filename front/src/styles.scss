@@ -125,6 +125,16 @@ svg {
   font-size: 32px;
 }
 
+.loading {
+  width: 100%;
+  display: flex;
+  align-content: center;
+  flex-direction: column;
+  justify-content: center;
+  position: absolute;
+  z-index: 1000;
+}
+
 // Mode fixed Prog Table
 progtable {
   position: fixed;

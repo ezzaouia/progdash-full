@@ -10,19 +10,17 @@ import { Timescale } from '../../utils/utils';
 @Component({
   selector: 'ProgdashViewPage',
   template: `
-    <span *ngIf="!(isDataLoaded$ | async)">
-      Chargement...
-    </span>
+    <div class="loading" *ngIf="isLoading$ | async">
+      <mat-progress-bar mode="indeterminate" color="#ffd740"></mat-progress-bar>
+    </div>
     <ProgdashManager
-      *ngIf="isDataLoaded$ | async"
+      *ngIf="!(isLoading$ | async) && classes$ | async"
       [isDataLoaded]="isDataLoaded$ | async"
       [isProgTableOpened]="isProgTableOpened$ | async"
       [isProgEvaluationOpened]="isProgEvaluationOpened$ | async"
       [isStartPrintReport]="isStartPrintReport$ | async"
 
       [classes]="classes$ | async"
-      [usersByClass]="usersByClass$ | async"
-      [insights]="insights$ | async"
       [modulesData]="modulesData$ | async"
 
       [selectedClass]="selectedClass$ | async"
@@ -56,12 +54,13 @@ import { Timescale } from '../../utils/utils';
 export class ProgdashViewPageComponent implements OnInit {
 
   isDataLoaded$: Observable<boolean>;
+  isLoading$: Observable<boolean>;
   isStartPrintReport$: Observable<boolean>;
   isProgTableOpened$: Observable<boolean>;
   isProgEvaluationOpened$: Observable<boolean>;
   classes$: Observable<any>;
-  usersByClass$: Observable<any>;
-  insights$: Observable<any>;
+  // usersByClass$: Observable<any>;
+  // insights$: Observable<any>;
   modulesData$: Observable<{}>;
   selectedClass$: Observable<string>;
   selectedTimescale$: Observable<string> = from( 'lastWeek' );
@@ -70,13 +69,14 @@ export class ProgdashViewPageComponent implements OnInit {
 
   constructor ( private store: Store<fromStore.State> ) {
     this.isDataLoaded$ = this.store.pipe( select( fromStore.isDataLoaded ));
+    // this.isLoading$ = this.store.pipe( select( fromStore.isLoading ));
     this.isProgTableOpened$ = this.store.pipe( select( fromStore.isProgTableOpened ));
     this.isStartPrintReport$ = this.store.pipe( select( fromStore.isStartPrintReport ));
     this.isProgEvaluationOpened$ = this.store.pipe( select( fromStore.isProgEvaluationOpened ));
 
     this.classes$ = this.store.pipe( select ( fromStore.classes ));
-    this.usersByClass$ = this.store.pipe( select( fromStore.usersByClass ));
-    this.insights$ = this.store.pipe( select ( fromStore.insights ));
+    // this.usersByClass$ = this.store.pipe( select( fromStore.usersByClass ));
+    // this.insights$ = this.store.pipe( select ( fromStore.insights ));
 
     this.selectedClass$ = this.store.pipe( select ( fromStore.selectedClass ));
     this.selectedTimescale$ = this.store.pipe( select ( fromStore.selectedTimescale ));
@@ -86,7 +86,8 @@ export class ProgdashViewPageComponent implements OnInit {
   }
 
   ngOnInit (): void {
-    this.store.dispatch( new fromStore.LoadData());
+    // MOCK FROM CSV
+    // this.store.dispatch( new fromStore.LoadData());
 
     this.store.dispatch( new fromStore.LoadGroupsData());
   }
@@ -95,7 +96,7 @@ export class ProgdashViewPageComponent implements OnInit {
     this.store.dispatch( new fromStore.SelectTimescale( timescale ));
   }
 
-  onSelectClass ( className: string ) {
+  onSelectClass ( className: any ) {
     this.store.dispatch( new fromStore.SelectClass( className ));
   }
 
