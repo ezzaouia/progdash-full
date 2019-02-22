@@ -29,6 +29,9 @@ export class TeacherService {
             .post<{status: String, data: String}>( pathApi, body.toString(), httpOptions )
             .pipe(
                 map( response => {
+                    if ( response.status === 'error' ) {
+                        throw new Error( 'impossible d\'obtenir le mode présentiel' );
+                    }
                     return response.data;
                 })
             );
