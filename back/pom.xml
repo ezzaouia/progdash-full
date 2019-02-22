@@ -33,8 +33,8 @@
 		<sonar.exclusions>maven/**</sonar.exclusions>
 
 		<!-- Dependencies' version, alphabetically sorted -->
-		<pv.version>10.2.0-PV-7.2.1.0</pv.version>
-		<woonoz.auth.version>1.0.0-SNAPSHOT</woonoz.auth.version>
+		<pv.version>10.2.1-PV-7.2.1.1</pv.version>
+		<woonoz.auth.version>1.0.0</woonoz.auth.version>
 		<woonoz.core.version>1.1.6.1</woonoz.core.version>
 
 		<!-- Tests with database -->
