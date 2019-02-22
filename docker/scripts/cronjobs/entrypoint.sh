@@ -13,8 +13,9 @@ chown woonoz. /logs
 chown woonoz. /home/woonoz/.env
 
 echo ":: Export Mongodb User / Password"
-echo "export MONGO_USER='${MONGODB_ROOT_USERNAME}'" > /home/woonoz/.env
-echo "export MONGO_PASS='${MONGODB_ROOT_PASSWORD}'" >> /home/woonoz/.env
+echo "export MONGO_PROGDASH_DB='${MONGO_PROGDASH_DB}'" > /home/woonoz/.env
+echo "export MONGO_PROGDASH_USER='${MONGO_PROGDASH_USER}'" >> /home/woonoz/.env
+echo "export MONGO_PROGDASH_PASS='${MONGO_PROGDASH_PASS}'" >> /home/woonoz/.env
 
 echo ":: Cron job install"
 crontab -u woonoz /tmp/cronjobs.txt

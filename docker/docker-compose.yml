@@ -51,8 +51,6 @@ services:
     container_name: progdash-nginx
     depends_on:
       - java
-    links:
-      - java
 
   cronjobs:
     image: rancher-registry.woonoz.com:5000/woonoz/progdash-cronjobs:${DOCKER_TAG}
@@ -62,3 +60,5 @@ services:
       LOCAL_USER_ID: ${LOCAL_USER_ID}
     depends_on:
       - mongodb
+    links:
+      - mongodb:mongo
