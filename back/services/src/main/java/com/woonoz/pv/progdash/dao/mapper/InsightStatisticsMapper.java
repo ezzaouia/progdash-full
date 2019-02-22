@@ -11,8 +11,6 @@ import com.woonoz.pv.progdash.dao.dbo.SessionOnDateDbo;
 @Mapper
 public interface InsightStatisticsMapper {
 
-	int countUsers(@Param("areaId") int areaId);
-
 	float sumKeypoints(@Param("areaId") int areaId, @Param("startDate") Date startDate, @Param("endDate") Date endDate);
 
 	float avgTrainingTime(@Param("areaId") int areaId, @Param("startDate") Date startDate, @Param("endDate") Date endDate);

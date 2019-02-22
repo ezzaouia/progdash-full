@@ -4,5 +4,5 @@ import com.woonoz.pv.progdash.dto.InsightInfoDto;
 
 public interface InsightStatisticsService {
 
-	InsightInfoDto createInsightsInfo(int areaId, int nbDays, int nbExpectedConnections);
+	InsightInfoDto createInsightsInfo(int areaId, int nbUsers, int nbDays, int nbExpectedConnections);
 }

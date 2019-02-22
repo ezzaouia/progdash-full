@@ -8,19 +8,6 @@
 		FROM learning_session
 		WHERE user_id = #{userId}
 	</select>
-	
-	<select id="getGroups" resultType="com.woonoz.pv.progdash.dao.dbo.GroupDbo">
-		SELECT id_groupe id, nom_groupe name
-		FROM woonoz_groupe
-		WHERE id_groupe_p = #{areaId};
-	</select>
-
-	<select id="countAreaUsers" resultType="java.lang.Integer">
-		SELECT COUNT(*)
-		FROM woonoz_groupe_p_membre
-		WHERE id_groupe_p = #{areaId}
-		      AND user_role = 'learner';
-	</select>
 
 	<select id="countGroupUsers" resultType="java.lang.Integer">
 		SELECT COUNT(*)
