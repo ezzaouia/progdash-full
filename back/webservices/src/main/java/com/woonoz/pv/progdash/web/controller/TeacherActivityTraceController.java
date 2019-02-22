@@ -3,7 +3,7 @@ package com.woonoz.pv.progdash.web.controller;
 import java.io.IOException;
 import java.io.InputStream;
 
-import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -16,12 +16,13 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.stereotype.Controller;
 
 import com.woonoz.pv.progdash.dto.TeacherActivityTraceDto;
+import com.woonoz.pv.progdash.model.UserRoleConst;
 import com.woonoz.pv.progdash.service.TeacherActivityTraceService;
 import com.woonoz.web.controller.WoonozJerseyController;
 
 @Controller
 @Path("teacher")
-@PermitAll
+@RolesAllowed(UserRoleConst.USER_ADMIN)
 public class TeacherActivityTraceController implements WoonozJerseyController{
 
 	@Inject private TeacherActivityTraceService teacherActivityTraceService;
