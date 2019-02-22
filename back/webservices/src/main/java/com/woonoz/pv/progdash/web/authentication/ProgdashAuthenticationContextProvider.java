@@ -8,7 +8,7 @@ import com.woonoz.auth.services.AuthenticationService;
 import com.woonoz.pv.progdash.model.ProgdashUserDetails;
 
 @Component
-public class ProgdashAutneticationContextProvider {
+public class ProgdashAuthenticationContextProvider {
 
 	@Inject private AuthenticationService authenticationService;
 

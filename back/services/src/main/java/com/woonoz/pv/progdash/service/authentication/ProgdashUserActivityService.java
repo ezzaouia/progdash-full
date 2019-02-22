@@ -15,7 +15,7 @@ import com.woonoz.auth.model.UserId;
 import com.woonoz.auth.session.services.UserActivityService;
 import com.woonoz.library.tools.date.DateUtils;
 import com.woonoz.pv.progdash.dao.mapper.UserActivityMapper;
-import com.woonoz.pv.progdash.model.LearningSessionTimeDbo;
+import com.woonoz.pv.progdash.dao.dbo.LearningSessionTimeDbo;
 
 @Service
 @Transactional(readOnly = true)

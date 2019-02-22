@@ -1,18 +1,18 @@
-package com.woonoz.pv.progdash.model;
+package com.woonoz.pv.progdash.dao.dbo;
 
 import com.google.common.base.MoreObjects;
 
-public class UniverseDetailsDbo {
+public class AreaDetailsDbo {
 
-	private Integer universeId;
+	private Integer areaId;
 	private String role;
 
-	public Integer getUniverseId() {
-		return universeId;
+	public Integer getAreaId() {
+		return areaId;
 	}
 
-	public void setUniverseId(Integer universeId) {
-		this.universeId = universeId;
+	public void setAreaId(Integer areaId) {
+		this.areaId = areaId;
 	}
 
 	public String getRole() {
@@ -26,7 +26,7 @@ public class UniverseDetailsDbo {
 	@Override
 	public String toString() {
 		return MoreObjects.toStringHelper(this)
-				.add("universeId", universeId)
+				.add("areaId", areaId)
 				.add("role", role)
 				.toString();
 	}

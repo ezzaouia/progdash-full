@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.woonoz.auth.model.UserId;
-import com.woonoz.pv.progdash.model.LearningSessionTimeDbo;
+import com.woonoz.pv.progdash.dao.dbo.LearningSessionTimeDbo;
 
 @Mapper
 public interface UserActivityMapper {

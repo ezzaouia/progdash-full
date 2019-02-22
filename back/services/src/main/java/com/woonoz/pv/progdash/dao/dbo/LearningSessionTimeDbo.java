@@ -1,4 +1,4 @@
-package com.woonoz.pv.progdash.model;
+package com.woonoz.pv.progdash.dao.dbo;
 
 import java.util.Date;
 

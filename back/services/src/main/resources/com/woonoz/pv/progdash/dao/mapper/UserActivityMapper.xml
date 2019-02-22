@@ -3,7 +3,7 @@
 		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.woonoz.pv.progdash.dao.mapper.UserActivityMapper">
 
-	<resultMap id="learningSessionTimeMap" type="com.woonoz.pv.progdash.model.LearningSessionTimeDbo">
+	<resultMap id="learningSessionTimeMap" type="com.woonoz.pv.progdash.dao.dbo.LearningSessionTimeDbo">
 		<id property="learningSessionId" column="id"/>
 		<result property="startDate" column="start_date"/>
 		<result property="timeSpent" column="time_spent_on"/>

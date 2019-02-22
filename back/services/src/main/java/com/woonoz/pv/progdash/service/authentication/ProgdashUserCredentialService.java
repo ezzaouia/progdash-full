@@ -23,11 +23,11 @@ import com.woonoz.auth.model.WoonozUserDetails;
 import com.woonoz.auth.model.policy.PasswordPolicy;
 import com.woonoz.auth.services.UserCredentialsService;
 import com.woonoz.pv.progdash.dao.mapper.UserCredentialsMapper;
-import com.woonoz.pv.progdash.model.AreaDetailsDbo;
+import com.woonoz.pv.progdash.dao.dbo.AreaDetailsDbo;
 import com.woonoz.pv.progdash.model.ProgdashUserDetails;
-import com.woonoz.pv.progdash.model.UniverseDetailsDbo;
+import com.woonoz.pv.progdash.dao.dbo.UniverseDetailsDbo;
 import com.woonoz.pv.progdash.model.UserDetails;
-import com.woonoz.pv.progdash.model.UserDetailsDbo;
+import com.woonoz.pv.progdash.dao.dbo.UserDetailsDbo;
 import com.woonoz.pv.progdash.model.UserRole;
 
 @Service
