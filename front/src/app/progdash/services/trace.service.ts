@@ -1,5 +1,4 @@
 import { Injectable, Injector } from '@angular/core';
-// import { environment } from 'environments/environment';
 import { Http } from '@angular/http';
 import { Location, LocationStrategy, PathLocationStrategy } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -10,9 +9,9 @@ import { Action } from '@ngrx/store';
 import { DeviceDetectorService } from 'ngx-device-detector';
 
 import { UserService } from './user.service';
+import { environment } from '../../../environments/environment';
 
-// const API_URL = environment.apiUrl;
-const API_URL = 'http://localhost:8080';
+const API_URL = environment.apiUrl;
 @Injectable()
 export class TraceService {
     private sessionId: String;
