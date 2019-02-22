@@ -14,4 +14,6 @@ public interface InsightStatisticsMapper {
 
 	float avgTrainingTime(@Param("areaId") int areaId, @Param("startDate") Date startDate, @Param("endDate") Date endDate);
 
+	int countActiveUsers(@Param("areaId") int areaId, @Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("nbExpectedConnections") int nbExpectedConnections);
+
 }

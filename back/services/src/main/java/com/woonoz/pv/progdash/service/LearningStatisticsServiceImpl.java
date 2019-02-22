@@ -83,8 +83,8 @@ public class LearningStatisticsServiceImpl implements LearningStatisticsService 
 		Collection<UserDataDto> userDataDtos = usersMap.values();
 		allStats.setUsers(userDataDtos);
 
-		InsightInfoDto lastWeek = insightStatisticsService.createInsightsInfo(areaId, 7);
-		InsightInfoDto lastMonth = insightStatisticsService.createInsightsInfo(areaId, 30);
+		InsightInfoDto lastWeek = insightStatisticsService.createInsightsInfo(areaId, 7, 1);
+		InsightInfoDto lastMonth = insightStatisticsService.createInsightsInfo(areaId, 30, 4);
 		allStats.setInsights(new InsightDataDto(lastWeek, lastMonth));
 
 		allStats.setModules(moduleService.getModulesInfo(areaId));

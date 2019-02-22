@@ -49,4 +49,22 @@
 		  AND wgpm_all.user_role= 'learner';
 	</select>
 
+	<select id="countActiveUsers" resultType="_int">
+		SELECT COUNT(*) active_users
+		FROM (
+		  SELECT wm.id_membre, COUNT(ls.id) nb_sessions
+		  FROM woonoz_groupe_p_membre wgpm_active
+		    JOIN woonoz_membre wm ON wm.id_membre = wgpm_active.id_membre
+		    JOIN learning_session ls ON ls.user_id = wm.id_membre
+		  WHERE wgpm_active.id_groupe_p = #{areaId}
+		    AND wgpm_active.user_role= 'learner'
+		    AND ls.mode = 'learn'
+		    AND ls.time_spent_on IS NOT NULL
+			AND ls.start_date > #{startDate}
+			AND #{endDate} > ls.start_date
+		  GROUP BY ls.user_id
+		) nb_sessions_per_user
+		WHERE nb_sessions >= #{nbExpectedConnections};
+	</select>
+
 </mapper>

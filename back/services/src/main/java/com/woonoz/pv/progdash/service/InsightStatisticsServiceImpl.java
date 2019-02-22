@@ -24,20 +24,28 @@ public class InsightStatisticsServiceImpl implements InsightStatisticsService {
 	private DateProvider coreDateProvider;
 
 	@Override
-	public InsightInfoDto createInsightsInfo(int areaId, int nbDays) {
+	public InsightInfoDto createInsightsInfo(int areaId, int nbDays, int nbExpectedConnections) {
 		DateTime today = coreDateProvider.now();
 		DateTime mainPeriodStartDay = today.minusDays(nbDays);
 		DateTime previousPeriodStartDay = mainPeriodStartDay.minusDays(nbDays);
 		int nbUsers = insightStatisticsMapper.countUsers(areaId);
-
 		InsightInfoDto insightInfoDto = new InsightInfoDto();
+
 		int rulesMainPeriod = Math.round(insightStatisticsMapper.sumKeypoints(areaId, mainPeriodStartDay.toDate(), today.toDate()) / nbUsers);
 		int rulesPreviousPeriod = Math.round(insightStatisticsMapper.sumKeypoints(areaId, previousPeriodStartDay.toDate(), mainPeriodStartDay.toDate()) / nbUsers);
-		insightInfoDto.setScore(new DifferentialDto(rulesMainPeriod, rulesMainPeriod-rulesPreviousPeriod));
+		insightInfoDto.setScore(new DifferentialDto(rulesMainPeriod, rulesMainPeriod - rulesPreviousPeriod));
 
 		int trainingTimeMainPeriod = Math.round(insightStatisticsMapper.avgTrainingTime(areaId, mainPeriodStartDay.toDate(), today.toDate()));
 		int trainingTimePreviousPeriod = Math.round(insightStatisticsMapper.avgTrainingTime(areaId, previousPeriodStartDay.toDate(), mainPeriodStartDay.toDate()));
-		insightInfoDto.setTime(new DifferentialDto(trainingTimeMainPeriod, trainingTimeMainPeriod-trainingTimePreviousPeriod));
+		insightInfoDto.setTime(new DifferentialDto(trainingTimeMainPeriod, trainingTimeMainPeriod - trainingTimePreviousPeriod));
+
+		int activeUsersMainPeriod = insightStatisticsMapper.countActiveUsers(areaId, mainPeriodStartDay.toDate(), today.toDate(), nbExpectedConnections);
+		int activeUsersPreviousPeriod = insightStatisticsMapper.countActiveUsers(areaId, previousPeriodStartDay.toDate(), mainPeriodStartDay.toDate(), nbExpectedConnections);
+		insightInfoDto.setActiveUsers(new DifferentialDto(activeUsersMainPeriod, activeUsersMainPeriod - activeUsersPreviousPeriod));
+
+		int inactiveUsersMainPeriod = nbUsers - activeUsersMainPeriod;
+		int inactiveUsersPreviousPeriod = nbUsers - activeUsersPreviousPeriod;
+		insightInfoDto.setInactiveUsers(new DifferentialDto(inactiveUsersMainPeriod, inactiveUsersMainPeriod - inactiveUsersPreviousPeriod));
 
 		return insightInfoDto;
 	}
