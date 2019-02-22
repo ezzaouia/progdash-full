@@ -2,7 +2,7 @@ export const environment = {
   production: true,
   loglevel: 0,
   hmr: false,
-  apiUrl: '/api',
+  apiUrl: '/suivi/api',
   pvApiUrl: '/services-pjv',
-  API_URL: '/api',
+  API_URL: '/suivi/api',
 };
