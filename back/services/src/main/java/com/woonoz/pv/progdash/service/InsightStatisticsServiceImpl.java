@@ -29,11 +29,10 @@ public class InsightStatisticsServiceImpl implements InsightStatisticsService {
 	private DateProvider coreDateProvider;
 
 	@Override
-	public InsightInfoDto createInsightsInfo(int areaId, int nbDays, int nbExpectedConnections) {
+	public InsightInfoDto createInsightsInfo(int areaId, int nbUsers, int nbDays, int nbExpectedConnections) {
 		DateTime today = coreDateProvider.now();
 		DateTime mainPeriodStartDay = today.minusDays(nbDays);
 		DateTime previousPeriodStartDay = mainPeriodStartDay.minusDays(nbDays);
-		int nbUsers = insightStatisticsMapper.countUsers(areaId);
 		InsightInfoDto insightInfoDto = new InsightInfoDto();
 
 		int rulesMainPeriod = Math.round(insightStatisticsMapper.sumKeypoints(areaId, mainPeriodStartDay.toDate(), today.toDate()) / nbUsers);

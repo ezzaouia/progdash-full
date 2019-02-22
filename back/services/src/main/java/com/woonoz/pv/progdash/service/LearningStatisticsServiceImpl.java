@@ -20,6 +20,7 @@ import com.woonoz.pv.progdash.dao.dbo.ScoreInitialEvalDbo;
 import com.woonoz.pv.progdash.dao.dbo.TrainingConnectionsDbo;
 import com.woonoz.pv.progdash.dao.dbo.UserIdentityDbo;
 import com.woonoz.pv.progdash.dao.dbo.UserRouteProductsDbo;
+import com.woonoz.pv.progdash.dao.mapper.AreaGroupMapper;
 import com.woonoz.pv.progdash.dao.mapper.LearningStatisticsMapper;
 import com.woonoz.pv.progdash.dto.AllStatisticsDto;
 import com.woonoz.pv.progdash.dto.GroupDto;
@@ -33,6 +34,10 @@ import com.woonoz.pv.progdash.dto.UserDataDto;
 @Transactional(propagation = Propagation.MANDATORY)
 public class LearningStatisticsServiceImpl implements LearningStatisticsService {
 
+	private static final int GROUP_ID_FOR_ALL_AREA = 0;
+	private static final String GROUP_NAME_FOR_ALL_AREA = "Tous";
+
+	@Inject private AreaGroupMapper areaGroupMapper;
 	@Inject private LearningStatisticsMapper learningStatisticsMapper;
 	@Inject private InsightStatisticsService insightStatisticsService;
 	@Inject private ModuleService moduleService;
@@ -44,21 +49,23 @@ public class LearningStatisticsServiceImpl implements LearningStatisticsService 
 
 	@Override
 	public List<GroupDto> getGroups(int areaId) {
-		List<GroupDbo> groupsDbos = learningStatisticsMapper.getGroups(areaId);
-		return convertGroupDbosAsDto(groupsDbos);
+		List<GroupDbo> groupsDbos = areaGroupMapper.getGroups(areaId);
+		List<GroupDto> groupDtos = convertGroupDbosAsDto(groupsDbos);
+		groupDtos.add(new GroupDto(GROUP_ID_FOR_ALL_AREA, GROUP_NAME_FOR_ALL_AREA, areaGroupMapper.countAreaUsers(areaId)));
+		return groupDtos;
 	}
 
 	private List<GroupDto> convertGroupDbosAsDto(List<GroupDbo> groupDbos) {
 		List<GroupDto> groupDtos = new ArrayList<>();
 		for (GroupDbo groupDbo : groupDbos) {
-			groupDtos.add(new GroupDto(groupDbo.getId(), groupDbo.getName()));
+			groupDtos.add(new GroupDto(groupDbo.getId(), groupDbo.getName(), groupDbo.getNbUsers()));
 		}
 		return groupDtos;
 	}
 
 	@Override
 	public boolean isAreaUsersNumberWithinLimit(int areaId, int limit) {
-		return learningStatisticsMapper.countAreaUsers(areaId) <= limit;
+		return areaGroupMapper.countAreaUsers(areaId) <= limit;
 	}
 
 	@Override
@@ -74,6 +81,7 @@ public class LearningStatisticsServiceImpl implements LearningStatisticsService 
 	@Override
 	public AllStatisticsDto getAllStatistics(int areaId, Integer groupId) {
 		AllStatisticsDto allStats = new AllStatisticsDto();
+		int nbUsers = areaGroupMapper.countAreaUsers(areaId);
 
 		Map<Integer, UserDataDto> usersMap = new HashMap<>();
 		for (UserIdentityDbo userIdentityDbo : learningStatisticsMapper.getUsersIdentity(areaId)) {
@@ -83,8 +91,8 @@ public class LearningStatisticsServiceImpl implements LearningStatisticsService 
 		Collection<UserDataDto> userDataDtos = usersMap.values();
 		allStats.setUsers(userDataDtos);
 
-		InsightInfoDto lastWeek = insightStatisticsService.createInsightsInfo(areaId, 7, 1);
-		InsightInfoDto lastMonth = insightStatisticsService.createInsightsInfo(areaId, 30, 4);
+		InsightInfoDto lastWeek = insightStatisticsService.createInsightsInfo(areaId, nbUsers, 7, 1);
+		InsightInfoDto lastMonth = insightStatisticsService.createInsightsInfo(areaId, nbUsers, 30, 4);
 		allStats.setInsights(new InsightDataDto(lastWeek, lastMonth));
 
 		allStats.setModules(moduleService.getModulesInfo(areaId));

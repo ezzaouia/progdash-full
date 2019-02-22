@@ -63,7 +63,7 @@ public class LearningStatisticsController implements WoonozJerseyController {
 	}
 
 	private void checkAreaAndGroup(int areaId, Integer groupId) throws WoonozException {
-		if (groupId == null) {
+		if (groupId == null || groupId == 0) {
 			if (!learningStatisticsService.isAreaUsersNumberWithinLimit(areaId, NB_USERS_LIMIT)) {
 				throw new ProgdashConflictException("too_many_users", "The area contains too many users, the server can handle only " + NB_USERS_LIMIT + ".");
 			}
