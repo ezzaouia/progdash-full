@@ -8,6 +8,7 @@ import { Modal } from './modal';
 import { PrintWidgetComponent } from './printWidget';
 import { HomePageComponent } from '../containers';
 import { FormatTimePipe, ValuesPipe } from '../pipes';
+import { SnackNotifyComponent } from "./snackNotify";
 
 export const fromComponents: any[] = [
   RootComponent,
@@ -19,13 +20,14 @@ export const fromComponents: any[] = [
   ErrorComponent,
   Modal,
   PrintWidgetComponent,
+  SnackNotifyComponent,
 
   FormatTimePipe,
   ValuesPipe,
 ];
 
 export const fromEntryComponents: any[] = [
-  Modal, PrintWidgetComponent,
+  Modal, PrintWidgetComponent, SnackNotifyComponent
 ];
 
 export * from './root';

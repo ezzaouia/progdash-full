@@ -1,15 +1,36 @@
 import { Injectable, Injector } from '@angular/core';
 import { Location, LocationStrategy, PathLocationStrategy } from '@angular/common';
 import { DeviceDetectorService } from 'ngx-device-detector';
+import {MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition} from "@angular/material";
+import {SnackNotifyComponent} from "../components/snackNotify";
 
 @Injectable()
 export class NotificationService {
 
-  constructor ( private injector: Injector , private deviceService: DeviceDetectorService ) {}
+  constructor ( private injector: Injector , private deviceService: DeviceDetectorService, private snackBar: MatSnackBar) {}
 
   notify ( ...args ) {
-    // Sent To Server errors
-    alert( `Notify ${args.join( ' , ' )} ` );
+    const horizontalPosition: MatSnackBarHorizontalPosition = 'center';
+    const verticalPosition: MatSnackBarVerticalPosition = 'top';
+
+    this.snackBar.openFromComponent(SnackNotifyComponent, {
+      duration: 2000,
+      horizontalPosition: horizontalPosition,
+      verticalPosition: verticalPosition,
+      data: {  message :`Notify ${args.join( ' , ' )}`, htmClass: "info" }
+    });
+  }
+
+  notifyError (message: string) {
+    const horizontalPosition: MatSnackBarHorizontalPosition = 'center';
+    const verticalPosition: MatSnackBarVerticalPosition = 'top';
+
+    this.snackBar.openFromComponent(SnackNotifyComponent, {
+      duration: 2000,
+      horizontalPosition: horizontalPosition,
+      verticalPosition: verticalPosition,
+      data: {message, htmClass: "error"}
+    });
   }
 
   trace ( action ) {
