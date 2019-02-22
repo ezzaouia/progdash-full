@@ -1,5 +1,8 @@
 package com.woonoz.pv.progdash.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.inject.Inject;
 
 import org.joda.time.DateTime;
@@ -8,7 +11,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.woonoz.pv.progdash.dao.dbo.SessionOnDateDbo;
 import com.woonoz.pv.progdash.dao.mapper.InsightStatisticsMapper;
+import com.woonoz.pv.progdash.dto.ConnectionDto;
 import com.woonoz.pv.progdash.dto.DifferentialDto;
 import com.woonoz.pv.progdash.dto.InsightInfoDto;
 import com.woonoz.service.DateProvider;
@@ -46,6 +51,13 @@ public class InsightStatisticsServiceImpl implements InsightStatisticsService {
 		int inactiveUsersMainPeriod = nbUsers - activeUsersMainPeriod;
 		int inactiveUsersPreviousPeriod = nbUsers - activeUsersPreviousPeriod;
 		insightInfoDto.setInactiveUsers(new DifferentialDto(inactiveUsersMainPeriod, inactiveUsersMainPeriod - inactiveUsersPreviousPeriod));
+
+		List<SessionOnDateDbo> sessionOnDateDbos = insightStatisticsMapper.getConnectionsChart(areaId, nbDays, today.toDate());
+		List<ConnectionDto> connectionDtos = new ArrayList<>();
+		for (SessionOnDateDbo sessionOnDateDbo : sessionOnDateDbos) {
+			connectionDtos.add(new ConnectionDto(sessionOnDateDbo.getNbSessions(), sessionOnDateDbo.getDate()));
+		}
+		insightInfoDto.setConnections(connectionDtos);
 
 		return insightInfoDto;
 	}
