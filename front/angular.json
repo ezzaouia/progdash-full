@@ -49,6 +49,14 @@
               "vendorChunk": false,
               "buildOptimizer": true
             },
+            "docker": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.docker.ts"
+                }
+              ]
+            },
             "hmr": {
               "fileReplacements": [
                 {
@@ -71,6 +79,9 @@
             "hmr": {
               "hmr": true,
               "browserTarget": "angular-pvstats:build:hmr"
+            },
+            "docker": {
+              "browserTarget": "angular-pvstats:build:docker"
             }
           }
         },
