@@ -122,7 +122,7 @@ export class ProgBoardComponent implements OnInit, OnDestroy, AfterViewInit {
   boardGrid: any; // Array<GridsterItem>;
 
   updateSup: Subscription;
-  classes$ = new BehaviorSubject<StoreField<ClassData>>({ byId: null, allIds: null });
+  classes$ = new BehaviorSubject<any>({ byId: null, allIds: null });
   selectedClass$ = new BehaviorSubject<string>( '' );
   selectedTimescale$ = new BehaviorSubject<string>( '' );
   selectedRules$ = new BehaviorSubject<string[]>([]);
@@ -159,10 +159,10 @@ export class ProgBoardComponent implements OnInit, OnDestroy, AfterViewInit {
       displayGrid: DisplayGrid.OnDragAndResize,
       pushItems: true,
       draggable: {
-        enabled: true,
+        enabled: false,
       },
       resizable: {
-        enabled: true,
+        enabled: false,
       },
       fixedColWidth: Math.floor( this.boardWidth / 12 ),
       fixedRowHeight: 60,

@@ -23,8 +23,9 @@ import { StoreField, ClassData } from '../../store';
     <ProgdashView [isSidenavOpened]="!isProgTableOpened">
       <app-navbar class="toolbar mat-elevation-z3">
         <div class="logo">
-          <mat-icon aria-label="menu">graphic_eq</mat-icon>
-          <span>Progdash</span>
+          <!-- mat-icon aria-label="menu">graphic_eq</mat-icon -->
+          <img src="assets/icon/voltaire-logo.jpg" alt="">
+          <span>Suivi Voltaire</span>
         </div>
 
 
@@ -237,6 +238,11 @@ import { StoreField, ClassData } from '../../store';
       .print-container {
         margin: 0 5px;
       }
+      .logo img {
+        width: 46px;
+        height: 46px;
+        margin-right: 12px;
+      }
     `,
   ],
 })
@@ -279,7 +285,7 @@ export class ProgdashManagerComponent implements AfterContentInit {
   @Output() openUserDialogTraceHandler = new EventEmitter();
   @Output() hoverWidgetTraceHandler = new EventEmitter();
 
-  classes$ = new BehaviorSubject<StoreField<ClassData>>({
+  classes$ = new BehaviorSubject<any>({
     byId: {},
     allIds: [],
   });

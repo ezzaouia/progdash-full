@@ -6,6 +6,7 @@ import { Actions, Effect, ofType } from '@ngrx/effects';
 import { startsWith, filter, size } from 'lodash';
 import { saveAs } from 'file-saver';
 
+import { ProgdashDataService } from '../../services';
 import { DataService } from '../../../shared/services';
 import { TeacherService } from '../../services';
 import { dataPrep, filename } from '../../utils/data.prep';
@@ -22,6 +23,9 @@ import {
   PrintReportSuccess,
   StartPrintReport,
   HotPrintWidget,
+  LoadGroupsData,
+  LoadGroupsDataSuccess,
+  LoadGroupsDataFailure,
 } from '../actions';
 import { Router } from '@angular/router';
 import * as html2pdf from 'html2pdf.js';
@@ -38,6 +42,7 @@ export class DashEffects {
     private actions$: Actions,
     private dataService: DataService,
     private teacherService: TeacherService,
+    private progdashDataService: ProgdashDataService,
     private router: Router,
     private store: Store<fromStore.State>
   ) {
@@ -56,6 +61,17 @@ export class DashEffects {
         .loadCSV$( filename, cast )
         .pipe( map( data => new LoadDataSuccess( data )));
     })
+  );
+
+  @Effect()
+  loadGroupsData$: Observable<Action> = this.actions$.pipe(
+    ofType<LoadGroupsData>( DashActionTypes.LoadGroupsData ),
+    withLatestFrom( this.store.pipe( select( fromStore.userInfo ))),
+    switchMap(([ _, userInfo ]) => {
+        return this.progdashDataService.loadGroupsData$({ areaId: userInfo.areaId });
+      }
+    ),
+    map( payload => new LoadGroupsDataSuccess( payload ))
   );
 
   @Effect()

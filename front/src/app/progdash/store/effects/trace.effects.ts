@@ -5,7 +5,6 @@ import { Action } from '@ngrx/store';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 
 import { DashActionTypes } from '../actions';
-import { NotificationService } from '../../../shared/services/notification.service';
 import { TraceService } from '../../services/trace.service';
 
 /**
@@ -20,7 +19,6 @@ import { TraceService } from '../../services/trace.service';
 export class TraceEffects {
   constructor (
     private actions$: Actions,
-    private notificationService: NotificationService,
     private traceService: TraceService
   ) {}
 
@@ -65,16 +63,7 @@ export class TraceEffects {
       // ...,
     ),
     tap( action => {
-      this.notificationService.trace( action );
-    }),
-    switchMap( (action) =>
-      this.traceService.createTrace(action)
-    ),
-    catchError(
-      err => {
-        console.error("impossible to save trace: " + err);
-        return of(null);
-      }
-    )
+      this.traceService.createTrace( action );
+    })
   );
 }

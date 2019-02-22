@@ -1,5 +1,6 @@
 package com.woonoz.pv.progdash.dto;
 
+import java.util.Date;
 import java.util.Map;
 
 import com.google.common.base.MoreObjects;
@@ -21,18 +22,21 @@ public class TeacherActivityTraceDto {
 
 	public int areaId;
 
+	public Date clientTimestamp;
+
 	/**
 	 * Private constructor for deserialization only
 	 */
 	@SuppressWarnings("unused")
 	private TeacherActivityTraceDto() {}
 
-	public TeacherActivityTraceDto(int teacherId, Object payload, String actionType, String sessionId, int areaId){
+	public TeacherActivityTraceDto(int teacherId, Object payload, String actionType, String sessionId, int areaId, Date clientTimestamp){
 		this.teacherId = teacherId;
 		this.payload = payload;
 		this.actionType = actionType;
 		this.sessionId = sessionId;
 		this.areaId = areaId;
+		this.clientTimestamp = clientTimestamp;
 	}
 
 	public Object getPayload() {
@@ -55,6 +59,10 @@ public class TeacherActivityTraceDto {
 		return teacherId;
 	}
 
+	public Date getClientTimestamp() {
+		return clientTimestamp;
+	}
+
 	@Override
 	public String toString() {
 		return MoreObjects.toStringHelper(this)
@@ -63,6 +71,7 @@ public class TeacherActivityTraceDto {
 				.add("sessionId", sessionId)
 				.add("areaId", areaId)
 				.add("teacherId", teacherId)
+				.add("clientTimestamp", clientTimestamp)
 				.toString();
 	}
 }

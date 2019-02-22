@@ -12,12 +12,12 @@ export const AppRoutes: Routes = [
     component: HomePageComponent,
     children: [
       {
-        path: 'dash',
+        path: 'suivi',
         loadChildren: './progdash/progdash.module#ProgdashModule',
       },
       {
         path: '',
-        redirectTo: 'dash',
+        redirectTo: 'suivi',
         pathMatch: 'full',
       },
       {
@@ -50,7 +50,7 @@ export const AppRoutes: Routes = [
   imports: [
     RouterModule.forRoot( AppRoutes, {
       useHash: true,
-      enableTracing: environment.production ? false : true,
+      enableTracing: !environment.production,
     }),
   ],
   exports: [ RouterModule ],
