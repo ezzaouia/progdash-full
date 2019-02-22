@@ -25,5 +25,6 @@
 
 	<typeHandlers>
 		<typeHandler handler="com.woonoz.auth.dao.handlers.DefaultUserIdTypeHandler"/>
+		<typeHandler handler="com.woonoz.auth.session.dao.handler.SessionTypeTypeHandler"/>
 	</typeHandlers>
 </configuration>

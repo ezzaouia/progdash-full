@@ -22,12 +22,12 @@ import com.woonoz.auth.model.WoonozAuthenticationRequest;
 import com.woonoz.auth.model.WoonozUserDetails;
 import com.woonoz.auth.model.policy.PasswordPolicy;
 import com.woonoz.auth.services.UserCredentialsService;
-import com.woonoz.pv.progdash.dao.mapper.UserCredentialsMapper;
 import com.woonoz.pv.progdash.dao.dbo.AreaDetailsDbo;
-import com.woonoz.pv.progdash.model.ProgdashUserDetails;
 import com.woonoz.pv.progdash.dao.dbo.UniverseDetailsDbo;
-import com.woonoz.pv.progdash.model.UserDetails;
 import com.woonoz.pv.progdash.dao.dbo.UserDetailsDbo;
+import com.woonoz.pv.progdash.dao.mapper.UserCredentialsMapper;
+import com.woonoz.pv.progdash.model.ProgdashUserDetails;
+import com.woonoz.pv.progdash.model.UserDetails;
 import com.woonoz.pv.progdash.model.UserRole;
 
 @Service
@@ -135,14 +135,16 @@ public class ProgdashUserCredentialService implements UserCredentialsService {
 	 */
 	private UserDetailsDbo loadUserByUsernameFromDatabase(String username, String pseudonymOrId, boolean allowUserId) throws UsernameNotFoundException {
 		UserId userId = userCredentialsMapper.getUserId(pseudonymOrId);
-		if (userId == null && !allowUserId) {
-			throw new UsernameNotFoundException(username);
-		}
-		try {
-			userId = new DefaultUserId(pseudonymOrId);
-		} catch (NumberFormatException e1) {
-			// it's really the UserNotFoundException that we want to throw here.
-			throw new UsernameNotFoundException(username);
+		if (userId == null) {
+			if (!allowUserId){
+				throw new UsernameNotFoundException(username);
+			}
+			try {
+				userId = new DefaultUserId(pseudonymOrId);
+			} catch (NumberFormatException e1) {
+				// it's really the UserNotFoundException that we want to throw here.
+				throw new UsernameNotFoundException(username);
+			}
 		}
 
 		final UserDetailsDbo user = userCredentialsMapper.loadUserDetails(userId);

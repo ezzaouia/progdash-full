@@ -210,6 +210,11 @@
 				<version>${woonoz.auth.version}</version>
 			</dependency>
 			<dependency>
+				<groupId>com.woonoz.auth.session</groupId>
+				<artifactId>authentication-session-services</artifactId>
+				<version>${woonoz.auth.version}</version>
+			</dependency>
+			<dependency>
 				<groupId>com.woonoz.auth.session.cookie</groupId>
 				<artifactId>woonoz-session-cookie</artifactId>
 				<version>${woonoz.auth.version}</version>

@@ -33,6 +33,12 @@
 		</dependency>
 
 		<dependency>
+			<groupId>com.woonoz.auth.session</groupId>
+			<artifactId>authentication-session-services</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+
+		<dependency>
 			<groupId>com.zaxxer</groupId>
 			<artifactId>HikariCP</artifactId>
 		</dependency>

@@ -2,6 +2,7 @@ package com.woonoz.pv.progdash.web.controller;
 
 import java.util.List;
 
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -32,6 +33,7 @@ public class LearningStatisticsController implements WoonozJerseyController {
 
 	private static final int NB_USERS_LIMIT = 100;
 
+	@PermitAll
 	@GET
 	@Path("coucou")
 	@Produces(MediaType.TEXT_PLAIN)
