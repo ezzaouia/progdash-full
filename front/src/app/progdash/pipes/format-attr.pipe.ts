@@ -40,7 +40,7 @@ export class FormatAttrPipe implements PipeTransform {
   }
 
   timeFormater ( value ) {
-    return moment.duration( value, 'seconds' ).format( 'h[ ][h][ ]mm[ ][min]' );
+    return moment.duration( value, 'minutes' ).format( 'h[ ][h][ ]mm[ ][min]' );
   }
 
   pluralFormater ( value, ...labels ) {

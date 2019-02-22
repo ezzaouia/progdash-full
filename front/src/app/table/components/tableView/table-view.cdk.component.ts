@@ -10,7 +10,7 @@ import {
   EventEmitter,
   Output,
 } from '@angular/core';
-import { MatSort, MatSortable, MatTableDataSource } from '@angular/material';
+import { MatSort, MatSortable, MatTableDataSource, MatPaginator } from '@angular/material';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import {
   keys,
@@ -118,6 +118,8 @@ import { omit } from '@ngrx/store/src/utils';
             [key]="col"
             [keys]="columns[col].keys"
             [hint]="columns[col].hint|| col"
+            [compositeHint]="columns[col].compositeHint || null"
+            [formatter]="columns[col].formatter || null"
             [options]="columns[col]"
             [mode]="innerRowMode[element.id] || mode"
             [cScale]="cScale"
@@ -139,6 +141,8 @@ import { omit } from '@ngrx/store/src/utils';
         *cdkRowDef="let row; columns: displayedColumns;">
       </cdk-row>
     </cdk-table>
+
+    <mat-paginator [pageSize]="20" [pageSizeOptions]="[10, 20, 30]" showFirstLastButtons></mat-paginator>
 
     `,
   styles: [ `
@@ -218,6 +222,7 @@ import { omit } from '@ngrx/store/src/utils';
 })
 export class CdkTableViewComponent implements AfterViewInit, OnInit, OnDestroy {
   @ViewChild( MatSort ) sort: MatSort;
+  @ViewChild( MatPaginator ) paginator: MatPaginator;
 
   // @Input() dataStream;
   @Input() columns;
@@ -301,6 +306,8 @@ export class CdkTableViewComponent implements AfterViewInit, OnInit, OnDestroy {
         };
 
         this.dataSource.sort = this.sort;
+
+        this.dataSource.paginator = this.paginator;
 
         this.dataSource.filterPredicate = this.filterPredicate.bind( this );
 

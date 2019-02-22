@@ -1,6 +1,10 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { values } from 'lodash';
+import * as moment from 'moment';
+import 'moment-duration-format';
+moment.locale( 'fr' );
+
 import { initialEvalCatColors, moduleCatColors } from '../../../utils/chart.util';
 import { PrintWidgetComponent } from '../../../shared/components';
 
@@ -9,7 +13,6 @@ import { PrintWidgetComponent } from '../../../shared/components';
   selector: 'ProgTable',
   template: `
   <div class="container">
-
     <mat-card
       id="table-view"
       class="widget-card table-widget"
@@ -145,18 +148,19 @@ export class ProgTableComponent implements OnInit, OnDestroy {
       width: 100,
       topBottom: 0,
     },
-    moduleName: {
-      name: 'Module Atteint',
-      histo: 'categorical',
-      encoding: 'CAT',
-      width: 100,
-      topBottom: 0,
-      color: moduleCatColors,
-    },
+    // moduleName: {
+    //   name: 'Module Atteint',
+    //   histo: 'categorical',
+    //   encoding: 'CAT',
+    //   width: 100,
+    //   topBottom: 0,
+    //   color: moduleCatColors,
+    // },
     'lastConnection': {
       name: 'Dernière Connexion',
-      histo: 'categorical',
-      encoding: 'CAT',
+      histo: '',
+      formatter: this.lastConnectionFormatter,
+      encoding: 'STRING',
       width: 100,
       topBottom: 0,
     },
@@ -167,7 +171,7 @@ export class ProgTableComponent implements OnInit, OnDestroy {
       width: 80,
       topBottom: 0,
     },
-    'initialEval.sum': {
+    'initialEval': {
       name: 'Eval. Initiale',
       histo: 'ordinal',
       encoding: 'BAR',
@@ -176,14 +180,16 @@ export class ProgTableComponent implements OnInit, OnDestroy {
     },
     'initialLevel.sum': {
       name: 'Règles sues initialement',
+      compositeHint: [ 'initialLevel.sum', 'initialLevel.count' ],
       histo: 'ordinal',
       encoding: 'BAR',
       width: 80,
       topBottom: 0,
     },
-    'time.sum': {
+    'time': {
       name: 'Temps cumulé',
-      hint: 'time.format',
+      // hint: 'time.format',
+      formatter: this.timeFormatter,
       histo: 'ordinal',
       encoding: 'BAR',
       width: 80,
@@ -193,7 +199,8 @@ export class ProgTableComponent implements OnInit, OnDestroy {
       name: 'Score',
       histo: 'ordinal',
       encoding: 'BAR',
-      hint: 'score.format',
+      // hint: 'score.format',
+      compositeHint: [ 'score.sum', 'score.count' ],
       width: 80,
       topBottom: 0,
     },
@@ -236,6 +243,14 @@ export class ProgTableComponent implements OnInit, OnDestroy {
 
   get userListData () {
     return this.userListData$.getValue();
+  }
+
+  timeFormatter ( time ) {
+    return moment.duration( time, 'minutes' ).format( 'h[h]mm[min]' );
+  }
+
+  lastConnectionFormatter ( date ) {
+    return moment( date ).fromNow();
   }
 
 }

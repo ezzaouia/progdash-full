@@ -9,7 +9,7 @@ import {
   EventEmitter
 } from '@angular/core';
 import { select, scaleBand, scaleLinear } from 'd3';
-import { map, get, startsWith } from 'lodash';
+import { map, get, startsWith, values } from 'lodash';
 import { BehaviorSubject, Subscription, merge } from 'rxjs';
 import * as moment from 'moment';
 import 'moment-duration-format';
@@ -84,8 +84,8 @@ export class TimelineWidgetComponent implements AfterViewInit, OnDestroy {
 
   updateSub: Subscription;
   timescale$ = new BehaviorSubject<string>( '' );
-  values$ = new BehaviorSubject<any[]>([]);
-  update$ = merge( this.values$, this.timescale$ );
+  data$ = new BehaviorSubject<{}>({});
+  update$ = merge( this.data$, this.timescale$ );
 
 
   timer = null;
@@ -139,7 +139,7 @@ export class TimelineWidgetComponent implements AfterViewInit, OnDestroy {
 
   updateScale () {
     this.xScale
-      .domain( map( this.values, 'x' ))
+      .domain( map( values( this.data ), 'date' ))
       .range([ 0, this.width - 2 * this.margin.leftRight  ]);
     this.yScale
       .domain([ 0, 100 ])
@@ -154,7 +154,7 @@ export class TimelineWidgetComponent implements AfterViewInit, OnDestroy {
         `translate(${this.margin.leftRight / 2 }, ${this.margin.topBottom})`
       )
       .selectAll( '.bars' )
-      .data( this.values );
+      .data( values( this.data ));
 
     const enter = group
       .enter()
@@ -164,7 +164,7 @@ export class TimelineWidgetComponent implements AfterViewInit, OnDestroy {
       .attr(
         'transform',
         ( d, _ ) =>
-          `translate(${this.xScale( get( d, 'x' ))}, 0)`
+          `translate(${this.xScale( get( d, 'date' ))}, 0)`
       );
 
     enter.append( 'rect' );
@@ -173,18 +173,18 @@ export class TimelineWidgetComponent implements AfterViewInit, OnDestroy {
     enter
       .select( 'rect' )
       .attr( 'width', barWidth )
-      .attr( 'height', d => this.yScale( 0 ) - this.yScale( get( d, 'y' )))
-      .attr( 'y', d => this.yScale( get( d, 'y' )))
+      .attr( 'height', d => this.yScale( 0 ) - this.yScale( get( d, 'count' )))
+      .attr( 'y', d => this.yScale( get( d, 'count' )))
       .attr( 'x', this.xScale.bandwidth() / 2 )
       .style( 'fill', '#ccc' )
       .style( 'stroke', 'none' );
 
     enter
       .select( 'text' )
-      .text( d => get( d, 'y' ))
+      .text( d => get( d, 'count' ))
       .attr( 'class', 'text-label middle' )
       .attr( 'x', this.xScale.bandwidth() / 2 + barWidth / 2 )
-      .attr( 'y', d => this.yScale( get( d, 'y' )) - 5 );
+      .attr( 'y', d => this.yScale( get( d, 'count' )) - 5 );
 
     group.exit().remove();
   }
@@ -196,14 +196,14 @@ export class TimelineWidgetComponent implements AfterViewInit, OnDestroy {
         `translate(${this.margin.leftRight}, ${this.margin.topBottom})`
       )
       .selectAll( '.grid' )
-      .data( this.values );
+      .data( values( this.data ));
 
     const enter = group
       .enter()
       .append( 'g' )
       .classed( 'grid', true )
       .merge( group )
-      .attr( 'transform', ( d, _ ) => `translate(${ this.xScale( get ( d, 'x' )) }, 0)` );
+      .attr( 'transform', ( d, _ ) => `translate(${ this.xScale( get ( d, 'date' )) }, 0)` );
 
     enter.append( 'line' );
     enter.append( 'text' );
@@ -247,12 +247,12 @@ export class TimelineWidgetComponent implements AfterViewInit, OnDestroy {
   }
 
   @Input()
-  set values ( value ) {
-    this.values$.next( value );
+  set data ( value ) {
+    this.data$.next( value );
   }
 
-  get values () {
-    return this.values$.getValue();
+  get data () {
+    return this.data$.getValue();
   }
 
   @Input()

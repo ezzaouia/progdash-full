@@ -35,6 +35,7 @@
     "angular-gridster2": "^6.0.10",
     "babel-polyfill": "^6.26.0",
     "chance": "^1.0.18",
+    "classlist.js": "^1.1.20150312",
     "core-js": "^2.6.1",
     "d3": "^5.7.0",
     "d3-horizon-chart": "0.0.6",
@@ -64,6 +65,7 @@
     "short-unique-id": "^1.1.1",
     "simplebar": "^3.1.1",
     "uuid": "^3.2.1",
+    "web-animations-js": "^2.3.1",
     "zone.js": "^0.8.26"
   },
   "devDependencies": {
