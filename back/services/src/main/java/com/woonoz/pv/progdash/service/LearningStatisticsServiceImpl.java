@@ -44,6 +44,7 @@ public class LearningStatisticsServiceImpl implements LearningStatisticsService 
 	@Inject private InsightStatisticsService insightStatisticsService;
 	@Inject private KeypointService keypointService;
 	@Inject private ModuleService moduleService;
+	@Inject private EvaluationService evaluationService;
 
 	@Override
 	public LearningSessionStatisticsDto getLearningSessionStatistics(Integer userId, String message) {
@@ -103,6 +104,7 @@ public class LearningStatisticsServiceImpl implements LearningStatisticsService 
 
 		allStats.setInsights(new InsightDataDto(lastWeek, lastMonth));
 		allStats.setModules(moduleService.getModulesInfo(areaId));
+		allStats.setEvaluations(evaluationService.getEvaluationInfo(areaId));
 		return allStats;
 	}
 

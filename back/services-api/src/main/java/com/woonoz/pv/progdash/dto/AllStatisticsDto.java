@@ -8,6 +8,7 @@ public class AllStatisticsDto {
 	private Collection<UserDataDto> users;
 	private InsightDataDto insights;
 	private List<ModuleInfoDto> modules;
+	private List<EvaluationInfoDto> evaluations;
 
 	public Collection<UserDataDto> getUsers() {
 		return users;
@@ -31,5 +32,13 @@ public class AllStatisticsDto {
 
 	public void setModules(List<ModuleInfoDto> modules) {
 		this.modules = modules;
+	}
+
+	public List<EvaluationInfoDto> getEvaluations() {
+		return evaluations;
+	}
+
+	public void setEvaluations(List<EvaluationInfoDto> evaluations) {
+		this.evaluations = evaluations;
 	}
 }
