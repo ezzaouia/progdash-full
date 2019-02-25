@@ -109,7 +109,9 @@ public class ModuleServiceImpl implements ModuleService {
 			if(!availablesRoutes.containsKey(d.getRouteId())) {
 				availablesRoutes.put(d.getRouteId(), true);
 				for (ModuleInfoDbo opt: optionals) {
-					routesWithOptional.add(new ModuleInfoDbo(opt.getProductId(), opt.getKey(), d.getRouteId(), opt.getNbrOfRules(), opt.getAbsPos()));
+					if(!existsProductIdForRouteIndex(dbos, opt.getProductId(), d.getRouteId())) {
+						routesWithOptional.add(new ModuleInfoDbo(opt.getProductId(), opt.getKey(), d.getRouteId(), opt.getNbrOfRules(), opt.getAbsPos()));
+					}
 				}
 			}
 			routesWithOptional.add(d);
@@ -131,7 +133,7 @@ public class ModuleServiceImpl implements ModuleService {
 				routes.add(newRoute);
 			}
 			Route route = routeByRouteId.get(m.getRouteId());
-			route.modules.add(new ModuleWithIndex(route.modules.size() + 1, m));
+			route.modules.add(new ModuleWithIndex(route.modules.size(), m));
 		}
 
 		Collections.sort(routes, new Comparator<Route>() {
@@ -153,5 +155,14 @@ public class ModuleServiceImpl implements ModuleService {
 			}
 		}
 		return res;
+	}
+
+	private boolean existsProductIdForRouteIndex(List<ModuleInfoDbo> dbos, Long productId, Long routeId) {
+		for(ModuleInfoDbo m : dbos) {
+			if(m.getProductId() == productId && m.getRouteId() == routeId) {
+				return true;
+			}
+		}
+		return false;
 	}
 }
