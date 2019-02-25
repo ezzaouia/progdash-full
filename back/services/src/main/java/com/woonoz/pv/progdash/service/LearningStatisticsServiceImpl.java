@@ -37,9 +37,12 @@ public class LearningStatisticsServiceImpl implements LearningStatisticsService 
 	private static final int GROUP_ID_FOR_ALL_AREA = 0;
 	private static final String GROUP_NAME_FOR_ALL_AREA = "Tous";
 
+	private static final int NB_ITEMS_FOR_TOP = 5;
+
 	@Inject private AreaGroupMapper areaGroupMapper;
 	@Inject private LearningStatisticsMapper learningStatisticsMapper;
 	@Inject private InsightStatisticsService insightStatisticsService;
+	@Inject private KeypointService keypointService;
 	@Inject private ModuleService moduleService;
 
 	@Override
@@ -93,8 +96,12 @@ public class LearningStatisticsServiceImpl implements LearningStatisticsService 
 
 		InsightInfoDto lastWeek = insightStatisticsService.createInsightsInfo(areaId, nbUsers, 7, 1);
 		InsightInfoDto lastMonth = insightStatisticsService.createInsightsInfo(areaId, nbUsers, 30, 4);
-		allStats.setInsights(new InsightDataDto(lastWeek, lastMonth));
 
+		DataFromKeypoints dataFromKeypoints = keypointService.processKeypoints(areaId,NB_ITEMS_FOR_TOP);
+		lastWeek.setTopNRules(dataFromKeypoints.getLastWeekTopRules());
+		lastMonth.setTopNRules(dataFromKeypoints.getLastMonthTopRules());
+
+		allStats.setInsights(new InsightDataDto(lastWeek, lastMonth));
 		allStats.setModules(moduleService.getModulesInfo(areaId));
 		return allStats;
 	}
