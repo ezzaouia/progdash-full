@@ -99,10 +99,6 @@ export function reducers (
       };
     }
 
-    case DashActionTypes.StateGroupData: {
-      return state;
-    }
-
     case DashActionTypes.LoadGroupDataSuccess: {
       const { group, data } = action.payload;
       return {
