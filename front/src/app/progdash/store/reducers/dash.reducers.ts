@@ -24,7 +24,7 @@ const initialState: State = {
   isProgTableOpened: false,
   isProgEvaluationOpened: false,
   isLoading: false,
-  classes: null,
+  classes: { allIds: [], byId: {} },
   selectedClass: {},
   selectedTimescale: 'lastWeek',
   selectedRules: [],
@@ -58,7 +58,6 @@ export function reducers (
       return {
         ...state,
         isLoading: false,
-        // rawData: action.payload,
       };
     }
 
@@ -100,6 +99,10 @@ export function reducers (
       };
     }
 
+    case DashActionTypes.StateGroupData: {
+      return state;
+    }
+
     case DashActionTypes.LoadGroupDataSuccess: {
       const { group, data } = action.payload;
       return {
@@ -113,6 +116,7 @@ export function reducers (
             [group.id]: {
               users: keyBy( get( data, 'users', []), ( o: any ) => o.id ),
               insights: get( data, 'insights', {}),
+              pulledAt: new Date(),
             },
           },
         },
@@ -287,11 +291,8 @@ export function reducers (
   }
 }
 
-// export const rawData = ( state: State ) => state.rawData;
-// export const usersByClass = ( state: State ) => state.usersByClass;
+
 export const classes = ( state: State ) => state.classes;
-// export const newClasses = ( state: State ) => state.newClasses;
-// export const insights = ( state: State ) => state.insights;
 export const selectedClass = ( state: State ) => state.selectedClass;
 export const selectedTimescale = ( state: State ) => state.selectedTimescale;
 export const isDataLoaded = ( state: State ) => state.isDataLoaded;
@@ -304,6 +305,10 @@ export const selectedWidgets = ( state: State ) => state.selectedWidgets;
 export const modulesData = ( state: State ) => state.modulesData;
 export const userInfo = ( state: State ) => ({ userId: state.userId, areaId: state.areaId });
 
+// export const newClasses = ( state: State ) => state.newClasses;
+// export const insights = ( state: State ) => state.insights;
+// export const rawData = ( state: State ) => state.rawData;
+// export const usersByClass = ( state: State ) => state.usersByClass;
 
 const modulesDataPrep = mdata => {
   return modulesDataAttr ( mdata );
