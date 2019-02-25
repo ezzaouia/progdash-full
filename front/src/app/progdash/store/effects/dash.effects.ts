@@ -1,17 +1,19 @@
 import { Injectable } from '@angular/core';
-import { Observable, from, of } from 'rxjs';
+import { Observable, from, of, empty } from 'rxjs';
+import { get } from 'lodash';
 import {
   switchMap,
   map,
   tap,
   catchError,
   withLatestFrom,
-  delay
+  delay,
 } from 'rxjs/operators';
 import { select, Action, Store } from '@ngrx/store';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { startsWith, filter, size } from 'lodash';
 import { saveAs } from 'file-saver';
+import * as moment from 'moment';
 
 import { ProgdashDataService } from '../../services';
 import { DataService } from '../../../shared/services';
@@ -61,16 +63,6 @@ export class DashEffects {
   }
 
   @Effect()
-  loadData$: Observable<Action> = this.actions$.pipe(
-    ofType<LoadData>( DashActionTypes.LoadData ),
-    switchMap(() => {
-      return this.dataService
-        .loadCSV$( filename, cast )
-        .pipe( map( data => new LoadDataSuccess( data )));
-    })
-  );
-
-  @Effect()
   loadGroupsData$: Observable<Action> = this.actions$.pipe(
     ofType<LoadGroupsData>( DashActionTypes.LoadGroupsData ),
     withLatestFrom( this.store.pipe( select( fromStore.userInfo ))),
@@ -91,8 +83,13 @@ export class DashEffects {
     ofType<SelectClass>( DashActionTypes.SelectClass ),
     map( action => action.payload ),
     withLatestFrom( this.store.pipe( select( fromStore.userInfo ))),
-    switchMap(([ selectedClass, userInfo ]) => {
-      return this.progdashDataService
+    withLatestFrom( this.store.pipe( select( fromStore.classes ))),
+    switchMap(([ [ selectedClass, userInfo ], classes ]) => {
+      const pulledAt = get( classes, `byId.${selectedClass.id}.pulledAt`, '' );
+      if ( pulledAt &&  ( moment().diff( moment( pulledAt ), 'hours', true ) < 1 )) {
+        return empty();
+      } else {
+        return this.progdashDataService
         .loadGroupData$({
           groupId: selectedClass.id ? selectedClass.id : null,
           areaId: userInfo.areaId,
@@ -105,6 +102,7 @@ export class DashEffects {
             return of( new LoadGroupDataFailure( err ));
           })
         );
+      }
     })
   );
 
