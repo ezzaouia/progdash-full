@@ -35,6 +35,16 @@ public class KeypointServiceImpl implements KeypointService {
 	public DataFromKeypoints processKeypoints(int areaId, int nbItemsForTop) {
 		List<KeypointPracticeDbo> kpPracticeDbos = keypointMapper.getKeypointsPractice(areaId);
 
+		DataFromKeypoints dataFromKeypoints = new DataFromKeypoints();
+
+		addTopRulesToData(dataFromKeypoints, kpPracticeDbos, nbItemsForTop);
+
+		return dataFromKeypoints;
+
+	}
+
+	private void addTopRulesToData(DataFromKeypoints dataFromKeypoints, List<KeypointPracticeDbo> kpPracticeDbos, int nbItemsForTop) {
+
 		Map<Integer, Double> difficultChapters = getDifficultyChapters2(kpPracticeDbos);
 		Map<Integer, Double> learnedChapters = getLearnedChapters(kpPracticeDbos);
 		Map<Integer, Double> initiallyKnownChapters = getInitiallyKnownChapters(kpPracticeDbos);
@@ -53,11 +63,8 @@ public class KeypointServiceImpl implements KeypointService {
 		List<RuleDataInfoDto> topLearnedDto = buildTopRulesDto(topLearnedChapters, chapterNames, learnedChapters);
 		List<RuleDataInfoDto> topInitiallyKnownDto = buildTopRulesDto(topInitiallyKnownChapters, chapterNames, initiallyKnownChapters);
 
-		TopNRulesDto lastWeek = new TopNRulesDto(topDifficultyDto, topLearnedDto, topInitiallyKnownDto);
-		TopNRulesDto lastMonth = new TopNRulesDto(topDifficultyDto, topLearnedDto, topInitiallyKnownDto);
-
-		return new DataFromKeypoints(lastWeek, lastMonth);
-
+		dataFromKeypoints.setLastWeekTopRules(new TopNRulesDto(topDifficultyDto, topLearnedDto, topInitiallyKnownDto));
+		dataFromKeypoints.setLastMonthTopRules(new TopNRulesDto(topDifficultyDto, topLearnedDto, topInitiallyKnownDto));
 	}
 
 	private Map<Integer, Double> getDifficultyChapters2(List<KeypointPracticeDbo> kpPracticeDbos) {

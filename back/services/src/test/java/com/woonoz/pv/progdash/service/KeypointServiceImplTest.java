@@ -88,10 +88,10 @@ public class KeypointServiceImplTest extends AbstractMockServiceTest {
 		List<RuleDataInfoDto> learnedChapters = Arrays.asList(rule5Dto, rule4Dto, rule1Dto);
 		List<RuleDataInfoDto> initiallyKnownChapters = Arrays.asList(rule6Dto, rule1Dto);
 
-		TopNRulesDto lastWeekTops = new TopNRulesDto(difficultyChapters, learnedChapters, initiallyKnownChapters);
-		TopNRulesDto lastMonthTops = new TopNRulesDto(difficultyChapters, learnedChapters, initiallyKnownChapters);
+		DataFromKeypoints expectedResult = new DataFromKeypoints();
+		expectedResult.setLastWeekTopRules(new TopNRulesDto(difficultyChapters, learnedChapters, initiallyKnownChapters));
+		expectedResult.setLastMonthTopRules(new TopNRulesDto(difficultyChapters, learnedChapters, initiallyKnownChapters));
 
-		DataFromKeypoints expectedResult = new DataFromKeypoints(lastWeekTops, lastMonthTops);
 		assertThat(dataFromKeypoints).isEqualToComparingFieldByFieldRecursively(expectedResult);
 	}
 }

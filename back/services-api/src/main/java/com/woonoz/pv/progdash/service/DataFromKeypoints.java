@@ -7,8 +7,11 @@ public class DataFromKeypoints {
 	private TopNRulesDto lastWeekTopRules;
 	private TopNRulesDto lastMonthTopRules;
 
-	public DataFromKeypoints(TopNRulesDto lastWeekTopRules, TopNRulesDto lastMonthTopRules) {
+	public void setLastWeekTopRules(TopNRulesDto lastWeekTopRules) {
 		this.lastWeekTopRules = lastWeekTopRules;
+	}
+
+	public void setLastMonthTopRules(TopNRulesDto lastMonthTopRules) {
 		this.lastMonthTopRules = lastMonthTopRules;
 	}
 
