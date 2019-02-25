@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<parent>
 		<artifactId>pv-progdash-parent</artifactId>
-		<groupId>com.woonoz</groupId>
+		<groupId>com.woonoz.pv.progdash</groupId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
@@ -15,10 +15,17 @@
 	<description>PV Progdash webservices and controllers</description>
 
 	<dependencies>
+		<!-- authent -->
+		<dependency>
+			<groupId>com.woonoz.auth.session.cookie</groupId>
+			<artifactId>woonoz-session-cookie</artifactId>
+		</dependency>
+		<!-- webservices jersey core -->
 		<dependency>
 			<groupId>com.woonoz.core</groupId>
 			<artifactId>webservices-core-jersey2</artifactId>
 		</dependency>
+		<!-- progdash services -->
 		<dependency>
 			<groupId>com.woonoz.pv.progdash</groupId>
 			<artifactId>services-api</artifactId>
@@ -59,8 +66,8 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.woonoz.core</groupId>
-			<artifactId>webservices-core-test-jersey2</artifactId>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
 		</dependency>
 
 		<dependency>

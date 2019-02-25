@@ -1,16 +1,12 @@
 package com.woonoz.pv.progdash.service;
 
-
 import javax.inject.Inject;
 
 import org.springframework.stereotype.Service;
 
 import com.woonoz.pv.progdash.dto.AuditDto;
-import com.woonoz.pv.progdash.dto.TeacherActivityTraceDto;
 import com.woonoz.pv.progdash.mongodb.model.Audit;
-import com.woonoz.pv.progdash.mongodb.model.TeacherActivityTrace;
 import com.woonoz.pv.progdash.mongodb.repository.AuditRepository;
-import com.woonoz.pv.progdash.mongodb.repository.TeacherActivityRepository;
 
 @Service
 public class AuditServiceImpl implements AuditService {
