@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import org.joda.time.DateTime;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -19,51 +20,63 @@ import org.mockito.Mock;
 import com.woonoz.pv.progdash.dao.dbo.ChapterNameDbo;
 import com.woonoz.pv.progdash.dao.dbo.KeypointPracticeDbo;
 import com.woonoz.pv.progdash.dao.mapper.KeypointMapper;
+import com.woonoz.pv.progdash.dto.DifferentialDto;
 import com.woonoz.pv.progdash.dto.RuleDataInfoDto;
 import com.woonoz.pv.progdash.dto.TopNRulesDto;
+import com.woonoz.pv.progdash.dto.UserDataInfoDto;
+import com.woonoz.service.DateProvider;
 import com.woonoz.service.services.AbstractMockServiceTest;
 
 public class KeypointServiceImplTest extends AbstractMockServiceTest {
 
 
-	private static final SimpleDateFormat SDF = new SimpleDateFormat("dd/MM/yyyy");
+	private static final SimpleDateFormat SDF = new SimpleDateFormat("dd/mm/yyyy");
 
 	@InjectMocks private KeypointServiceImpl keypointService;
 	@Mock private KeypointMapper keypointMapper;
+	@Mock private DateProvider coreDateProvider;
 
 	@Test
 	public void processKeypoints() throws ParseException {
 		// GIVEN
 		int areaId = 5000;
-		Date day18 = SDF.parse("18/01/1019");
-		Date day10 = SDF.parse("10/01/1019");
+		DateTime day19 = new DateTime(2019, 1, 19, 0, 0);
+		Date day18 = SDF.parse("18/01/2019");
+		Date day10 = SDF.parse("10/01/2019");
+		int user1 = 101;
+		int user2 = 102;
+		int user3 = 103;
+
+		given(coreDateProvider.now()).willReturn(day19);
+
 		given(keypointMapper.getKeypointsPractice(areaId)).willReturn(Arrays.asList(
 				//keypoint 1 : learning + learned + initially known
-				new KeypointPracticeDbo(101, 1, 1, "chapter1",    0, 0,  5, day18),
-				new KeypointPracticeDbo(102, 1, 1, "chapter1",    1, 0,  5, day18),
-				new KeypointPracticeDbo(103, 1, 1, "chapter1",    1, 1,  5, day18),
+				new KeypointPracticeDbo(user1, 1, 1, "chapter1",    0, 0,  5, day18),
+				new KeypointPracticeDbo(user2, 1, 1, "chapter1",    1, 0,  5, day18),
+				new KeypointPracticeDbo(user3, 1, 1, "chapter1",    1, 1,  5, day18),
 				//keypoint 2 : learning
-				new KeypointPracticeDbo(101, 2, 2, "chapter2",    0, 0, 10, day18),
-				new KeypointPracticeDbo(102, 2, 2, "chapter2",    0, 0, 10, day18),
-				new KeypointPracticeDbo(103, 2, 2, "chapter2",    0, 0, 10, day18),
+				new KeypointPracticeDbo(user1, 2, 2, "chapter2",    0, 0,  8, day18),
+				new KeypointPracticeDbo(user2, 2, 2, "chapter2",    0, 0, 10, day18),
+				new KeypointPracticeDbo(user3, 2, 2, "chapter2",    0, 0, 12, day18),
 				//keypoint 3 : learning
-				new KeypointPracticeDbo(101, 3, 3, "chapter3", 0.8f, 0, 15, day10),
-				new KeypointPracticeDbo(102, 3, 3, "chapter3", 0.8f, 0, 15, day10),
-				new KeypointPracticeDbo(103, 3, 3, "chapter3", 0.8f, 0, 15, day10),
+				new KeypointPracticeDbo(user1, 3, 3, "chapter3", 0.8f, 0, 13, day10),
+				new KeypointPracticeDbo(user2, 3, 3, "chapter3", 0.8f, 0, 15, day10),
+				new KeypointPracticeDbo(user3, 3, 3, "chapter3", 0.8f, 0, 17, day10),
 				//keypoint 4 : learned
-				new KeypointPracticeDbo(101, 4, 4, "chapter4",    1, 0, 20, day18),
-				new KeypointPracticeDbo(102, 4, 4, "chapter4",    1, 0, 20, day18),
-				new KeypointPracticeDbo(103, 4, 4, "chapter4",    1, 0, 20, day18),
+				new KeypointPracticeDbo(user1, 4, 4, "chapter4",    1, 0, 18, day18),
+				new KeypointPracticeDbo(user2, 4, 4, "chapter4",    1, 0, 20, day18),
+				new KeypointPracticeDbo(user3, 4, 4, "chapter4",    1, 0, 22, day18),
 				//keypoint 5 : learned
-				new KeypointPracticeDbo(101, 5, 5, "chapter5",    1, 0, 25, day18),
-				new KeypointPracticeDbo(102, 5, 5, "chapter5",    1, 0, 25, day18),
-				new KeypointPracticeDbo(103, 5, 5, "chapter5",    1, 0, 25, day18),
+				new KeypointPracticeDbo(user1, 5, 5, "chapter5",    1, 0, 23, day18),
+				new KeypointPracticeDbo(user2, 5, 5, "chapter5",    1, 0, 25, day18),
+				new KeypointPracticeDbo(user3, 5, 5, "chapter5",    1, 0, 27, day18),
 				//keypoint 6 : initially known
-				new KeypointPracticeDbo(101, 6, 6, "chapter6",    1, 1, 30, day18),
-				new KeypointPracticeDbo(102, 6, 6, "chapter6",    1, 1, 30, day18),
-				new KeypointPracticeDbo(103, 6, 6, "chapter6",    1, 1, 30, day18)
+				new KeypointPracticeDbo(user1, 6, 6, "chapter6",    1, 1, 28, day18),
+				new KeypointPracticeDbo(user2, 6, 6, "chapter6",    1, 1, 30, day18),
+				new KeypointPracticeDbo(user3, 6, 6, "chapter6",    1, 1, 32, day18)
 				)
 		);
+
 		Map<Integer, ChapterNameDbo> chapterNames = new HashMap<>();
 		chapterNames.put(1, new ChapterNameDbo(1,"chapter1"));
 		chapterNames.put(2, new ChapterNameDbo(2,"chapter2"));
@@ -88,9 +101,22 @@ public class KeypointServiceImplTest extends AbstractMockServiceTest {
 		List<RuleDataInfoDto> learnedChapters = Arrays.asList(rule5Dto, rule4Dto, rule1Dto);
 		List<RuleDataInfoDto> initiallyKnownChapters = Arrays.asList(rule6Dto, rule1Dto);
 
+		List<UserDataInfoDto> lastWeekTopUsers = Arrays.asList(
+				new UserDataInfoDto(user3, new DifferentialDto(20, 3)),
+				new UserDataInfoDto(user2, new DifferentialDto(18, 3)),
+				new UserDataInfoDto(user1, new DifferentialDto(16, 3))
+		);
+		List<UserDataInfoDto> lastMonthTopUsers = Arrays.asList(
+				new UserDataInfoDto(user3, new DifferentialDto(19, 19)),
+				new UserDataInfoDto(user2, new DifferentialDto(18, 18)),
+				new UserDataInfoDto(user1, new DifferentialDto(16, 16))
+		);
+
 		DataFromKeypoints expectedResult = new DataFromKeypoints();
 		expectedResult.setLastWeekTopRules(new TopNRulesDto(difficultyChapters, learnedChapters, initiallyKnownChapters));
 		expectedResult.setLastMonthTopRules(new TopNRulesDto(difficultyChapters, learnedChapters, initiallyKnownChapters));
+		expectedResult.setLastWeekTopUsers(lastWeekTopUsers);
+		expectedResult.setLastMonthTopUsers(lastMonthTopUsers);
 
 		assertThat(dataFromKeypoints).isEqualToComparingFieldByFieldRecursively(expectedResult);
 	}

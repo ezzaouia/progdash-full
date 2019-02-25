@@ -28,6 +28,7 @@ import com.woonoz.pv.progdash.dto.InsightDataDto;
 import com.woonoz.pv.progdash.dto.InsightInfoDto;
 import com.woonoz.pv.progdash.dto.LearningSessionStatisticsDto;
 import com.woonoz.pv.progdash.dto.RatioDto;
+import com.woonoz.pv.progdash.dto.TopNUsersDto;
 import com.woonoz.pv.progdash.dto.UserDataDto;
 
 @Service
@@ -101,6 +102,14 @@ public class LearningStatisticsServiceImpl implements LearningStatisticsService 
 		DataFromKeypoints dataFromKeypoints = keypointService.processKeypoints(areaId,NB_ITEMS_FOR_TOP);
 		lastWeek.setTopNRules(dataFromKeypoints.getLastWeekTopRules());
 		lastMonth.setTopNRules(dataFromKeypoints.getLastMonthTopRules());
+
+		TopNUsersDto lastWeekTopUsers = new TopNUsersDto();
+		TopNUsersDto lastMonthTopUsers = new TopNUsersDto();
+		lastWeekTopUsers.setHelp(dataFromKeypoints.getLastWeekTopUsers());
+		lastMonthTopUsers.setHelp(dataFromKeypoints.getLastMonthTopUsers());
+
+		lastWeek.setTopNUsers(lastWeekTopUsers);
+		lastMonth.setTopNUsers(lastMonthTopUsers);
 
 		allStats.setInsights(new InsightDataDto(lastWeek, lastMonth));
 		allStats.setModules(moduleService.getModulesInfo(areaId));
