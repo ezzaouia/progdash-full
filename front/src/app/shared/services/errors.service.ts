@@ -9,8 +9,7 @@ export class ErrorsService {
   constructor ( private notificationService: NotificationService ) {}
 
   log ( error ) {
-    const _error = this.addContextInfo( error );
-    this.notificationService.error( _error );
+    this.notificationService.error( error );
   }
 
   addContextInfo ( error ) {

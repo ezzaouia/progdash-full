@@ -20,10 +20,10 @@ import { MatCheckboxChange } from '@angular/material';
           <mat-divider></mat-divider>
           <div
             class="list-item"
-            *ngFor="let item of topN">
+            *ngFor="let item of data">
               <div class="list-item-content">
                 <span class="label">
-                    {{ item.ruleName }}
+                    {{ item.name }}
                 </span>
                 <div class="item-detail"
                   *ngIf="isPVLive">
@@ -31,8 +31,8 @@ import { MatCheckboxChange } from '@angular/material';
                     class="checkbox"
                     matTooltipPosition="above"
                     matTooltip="Sélectionnez la règle pour le mode présentiel"
-                    [checked]="selectedRules.includes( item.ruleId )"
-                    (change)="onRuleChecked($event, item.ruleId)">
+                    [checked]="selectedRules.includes( item.id )"
+                    (change)="onRuleChecked($event, item.id)">
                   </mat-checkbox>
                 </div>
               </div>
@@ -86,7 +86,7 @@ import { MatCheckboxChange } from '@angular/material';
 export class TopNRulesWidgetComponent implements OnInit {
 
   @Input() title;
-  @Input() topN;
+  @Input() data;
   @Input() key;
   @Input() id;
   @Input() isPVLive;

@@ -25,6 +25,11 @@ export const AppRoutes: Routes = [
         canActivate: [ externalUrlProvider ],
         component: NotFoundComponent,
       },
+      {
+        path: 'externalSuiviStatsRedirect',
+        canActivate: [ externalUrlProvider ],
+        component: NotFoundComponent,
+      },
     ],
   },
   {
@@ -43,7 +48,8 @@ export const AppRoutes: Routes = [
       provide: externalUrlProvider,
       useValue: ( route: ActivatedRouteSnapshot ) => {
         const externalUrl = route.paramMap.get( 'externalUrl' );
-        window.open( externalUrl, '_blank' );
+        const isSelf = route.paramMap.get( 'isSelf' );
+        window.open( externalUrl, isSelf ? '_self' : '_blank' );
       },
     },
   ],

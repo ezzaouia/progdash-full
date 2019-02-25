@@ -17,7 +17,7 @@ import {
   GridType,
   DisplayGrid
 } from 'angular-gridster2';
-import { each, get, set, last, split, replace } from 'lodash';
+import { each, get, set, last, split, replace, startsWith, values } from 'lodash';
 
 import { InsightData, ClassData, StoreField } from '../../store';
 import {
@@ -276,7 +276,9 @@ export class ProgBoardComponent implements OnInit, OnDestroy, AfterViewInit {
             }.${key}`
           );
 
-          if ( key === 'connections' ) {
+          if (( key === 'connections' ) ||
+               ( startsWith( key, 'topNRules' )) ||
+                 ( startsWith( key, 'topNUsers' ))) {
             addedVal = { data };
           } else {
             addedVal = {
@@ -298,6 +300,7 @@ export class ProgBoardComponent implements OnInit, OnDestroy, AfterViewInit {
             selectedWidgets: this.selectedWidgets,
             selectedRules: this.selectedRules,
             isPVLive: true,
+            users: get( this.classes, `byId.${this.selectedClass.id}.users`, []),
           });
         });
 

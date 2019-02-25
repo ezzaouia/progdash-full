@@ -16,7 +16,7 @@ import { ProgTableComponent } from './progTable';
 import { UserTimelineWidgetComponent } from './userTimelineWidget';
 import { ProgEvaluationComponent } from './progEvaluation';
 import { ProgdashViewPageComponent } from '../containers';
-import { FormatAttrPipe } from '../pipes';
+import { FormatAttrPipe, MathAbsPipe } from '../pipes';
 
 export const fromComponents: any[] = [
   ProgdashViewComponent,
@@ -35,9 +35,10 @@ export const fromComponents: any[] = [
   TopNRulesWidgetComponent,
   TopNUsersWidgetComponent,
   UserTimelineWidgetComponent,
-  FormatAttrPipe,
   ProgdashViewPageComponent,
   ProgEvaluationComponent,
+  FormatAttrPipe,
+  MathAbsPipe,
 ];
 
 export const fromEntryComponents: any[] = [
