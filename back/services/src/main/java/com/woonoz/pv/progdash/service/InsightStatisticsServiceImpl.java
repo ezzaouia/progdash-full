@@ -1,7 +1,10 @@
 package com.woonoz.pv.progdash.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -11,10 +14,12 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.woonoz.pv.progdash.dao.dbo.SessionOnDateDbo;
+import com.woonoz.pv.progdash.dao.dbo.UserTrainingTimeDbo;
 import com.woonoz.pv.progdash.dao.mapper.InsightStatisticsMapper;
 import com.woonoz.pv.progdash.dto.ConnectionDto;
 import com.woonoz.pv.progdash.dto.DifferentialDto;
 import com.woonoz.pv.progdash.dto.InsightInfoDto;
+import com.woonoz.pv.progdash.dto.UserDataInfoDto;
 import com.woonoz.service.DateProvider;
 
 @Service
@@ -22,6 +27,7 @@ import com.woonoz.service.DateProvider;
 public class InsightStatisticsServiceImpl implements InsightStatisticsService {
 
 	@Inject private InsightStatisticsMapper insightStatisticsMapper;
+	@Inject private KeypointService keypointService;
 
 	@Inject
 	@Qualifier("coreDateProvider")
@@ -56,5 +62,26 @@ public class InsightStatisticsServiceImpl implements InsightStatisticsService {
 		insightInfoDto.setConnections(connectionDtos);
 
 		return insightInfoDto;
+	}
+
+	@Override
+	public List<UserDataInfoDto> getTopNTimeUsers(int areaId, int nbDays, int nbForTop) {
+		Period period = new Period(coreDateProvider.now(), nbDays);
+		Map<Integer, UserTrainingTimeDbo> topTimeMainPeriod = insightStatisticsMapper.getTopTrainingTime(areaId, period.getMainStartDate(), period.getMainEndDate(), nbForTop);
+		Map<Integer, UserTrainingTimeDbo> topTimePreviousPeriod = insightStatisticsMapper.getTopTrainingTime(areaId, period.getPreviousStartDate(), period.getPreviousEndDate(), null);
+		List<UserTrainingTimeDbo> userTime = new ArrayList(topTimeMainPeriod.values());
+		Collections.sort(userTime, new Comparator<UserTrainingTimeDbo>() {
+
+			@Override public int compare(UserTrainingTimeDbo o1, UserTrainingTimeDbo o2) {
+				return Math.round(o2.getTotalTrainingTime() - o1.getTotalTrainingTime());
+			}
+		});
+		List<UserDataInfoDto> userDataInfoDtos = new ArrayList<>();
+		for (UserTrainingTimeDbo userTimeDbo : userTime) {
+			int mainPeriodTime = Math.round(topTimeMainPeriod.get(userTimeDbo.getUserId()).getTotalTrainingTime());
+			int previousPeriodTime = topTimePreviousPeriod.get(userTimeDbo.getUserId()) == null ? 0 : Math.round(topTimePreviousPeriod.get(userTimeDbo.getUserId()).getTotalTrainingTime());
+			userDataInfoDtos.add(new UserDataInfoDto(userTimeDbo.getUserId(), new DifferentialDto(mainPeriodTime, mainPeriodTime - previousPeriodTime)));
+		}
+		return userDataInfoDtos;
 	}
 }

@@ -99,14 +99,21 @@ public class LearningStatisticsServiceImpl implements LearningStatisticsService 
 		InsightInfoDto lastWeek = insightStatisticsService.createInsightsInfo(areaId, nbUsers, 7, 1);
 		InsightInfoDto lastMonth = insightStatisticsService.createInsightsInfo(areaId, nbUsers, 30, 4);
 
-		DataFromKeypoints dataFromKeypoints = keypointService.processKeypoints(areaId,NB_ITEMS_FOR_TOP);
+		DataFromKeypoints dataFromKeypoints = keypointService.processKeypoints(areaId, NB_ITEMS_FOR_TOP);
 		lastWeek.setTopNRules(dataFromKeypoints.getLastWeekTopRules());
 		lastMonth.setTopNRules(dataFromKeypoints.getLastMonthTopRules());
 
 		TopNUsersDto lastWeekTopUsers = new TopNUsersDto();
-		TopNUsersDto lastMonthTopUsers = new TopNUsersDto();
 		lastWeekTopUsers.setHelp(dataFromKeypoints.getLastWeekTopUsers());
+		lastWeekTopUsers.setTime(insightStatisticsService.getTopNTimeUsers(areaId, 7, NB_ITEMS_FOR_TOP));
+//		lastWeekTopUsers.setDropout();
+//		lastWeekTopUsers.setScore();
+
+		TopNUsersDto lastMonthTopUsers = new TopNUsersDto();
 		lastMonthTopUsers.setHelp(dataFromKeypoints.getLastMonthTopUsers());
+		lastMonthTopUsers.setTime(insightStatisticsService.getTopNTimeUsers(areaId, 30, NB_ITEMS_FOR_TOP));
+//		lastMonthTopUsers.setDropout();
+//		lastMonthTopUsers.setScore();
 
 		lastWeek.setTopNUsers(lastWeekTopUsers);
 		lastMonth.setTopNUsers(lastMonthTopUsers);
@@ -134,7 +141,7 @@ public class LearningStatisticsServiceImpl implements LearningStatisticsService 
 		Map<Integer, UserRouteProductsDbo> userRouteProductDbos = learningStatisticsMapper.getRouteProducts(areaId);
 		List<Integer> optionalProducts = learningStatisticsMapper.getAreaOptionalProducts(areaId);
 		Map<Integer, ProductNbKeypoints> productNbKeypointsMap = learningStatisticsMapper.getProductNbKeypoints(areaId);
-		for (KnownRulesDbo knownRulesDbo :learningStatisticsMapper.getKnownRules(areaId)) {
+		for (KnownRulesDbo knownRulesDbo : learningStatisticsMapper.getKnownRules(areaId)) {
 			UserDataDto userData = usersMap.get(knownRulesDbo.getUserId());
 			List<Integer> userProductIds = userRouteProductDbos.get(knownRulesDbo.getUserId()).getProductIds();
 			int totalNbKeypoints = countUserKeypoints(userProductIds, optionalProducts, productNbKeypointsMap);
