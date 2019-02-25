@@ -30,7 +30,7 @@ import com.woonoz.service.services.AbstractMockServiceTest;
 public class KeypointServiceImplTest extends AbstractMockServiceTest {
 
 
-	private static final SimpleDateFormat SDF = new SimpleDateFormat("dd/mm/yyyy");
+	private static final SimpleDateFormat SDF = new SimpleDateFormat("dd/MM/yyyy");
 
 	@InjectMocks private KeypointServiceImpl keypointService;
 	@Mock private KeypointMapper keypointMapper;

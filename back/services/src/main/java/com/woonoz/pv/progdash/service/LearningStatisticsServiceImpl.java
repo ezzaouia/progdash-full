@@ -27,6 +27,7 @@ import com.woonoz.pv.progdash.dto.GroupDto;
 import com.woonoz.pv.progdash.dto.InsightDataDto;
 import com.woonoz.pv.progdash.dto.InsightInfoDto;
 import com.woonoz.pv.progdash.dto.LearningSessionStatisticsDto;
+import com.woonoz.pv.progdash.dto.ProgressDto;
 import com.woonoz.pv.progdash.dto.RatioDto;
 import com.woonoz.pv.progdash.dto.TopNUsersDto;
 import com.woonoz.pv.progdash.dto.UserDataDto;
@@ -46,6 +47,7 @@ public class LearningStatisticsServiceImpl implements LearningStatisticsService 
 	@Inject private KeypointService keypointService;
 	@Inject private ModuleService moduleService;
 	@Inject private EvaluationService evaluationService;
+	@Inject private ProgressService progressService;
 
 	@Override
 	public LearningSessionStatisticsDto getLearningSessionStatistics(Integer userId, String message) {
@@ -94,6 +96,10 @@ public class LearningStatisticsServiceImpl implements LearningStatisticsService 
 		}
 		fillUsersMap(usersMap, areaId);
 		Collection<UserDataDto> userDataDtos = usersMap.values();
+		Map<Integer, List<ProgressDto>> userProgresses = progressService.getUsersProgresses(usersMap.keySet());
+		for (Integer userId : usersMap.keySet()) {
+			usersMap.get(userId).setProgData(userProgresses.get(userId));
+		}
 		allStats.setUsers(userDataDtos);
 
 		InsightInfoDto lastWeek = insightStatisticsService.createInsightsInfo(areaId, nbUsers, 7, 1);
