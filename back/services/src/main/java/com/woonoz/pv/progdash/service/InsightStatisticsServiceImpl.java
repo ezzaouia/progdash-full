@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -30,28 +29,26 @@ public class InsightStatisticsServiceImpl implements InsightStatisticsService {
 
 	@Override
 	public InsightInfoDto createInsightsInfo(int areaId, int nbUsers, int nbDays, int nbExpectedConnections) {
-		DateTime today = coreDateProvider.now();
-		DateTime mainPeriodStartDay = today.minusDays(nbDays);
-		DateTime previousPeriodStartDay = mainPeriodStartDay.minusDays(nbDays);
+		Period period = new Period(coreDateProvider.now(), nbDays);
 		InsightInfoDto insightInfoDto = new InsightInfoDto();
 
-		int rulesMainPeriod = Math.round(insightStatisticsMapper.sumKeypoints(areaId, mainPeriodStartDay.toDate(), today.toDate()) / nbUsers);
-		int rulesPreviousPeriod = Math.round(insightStatisticsMapper.sumKeypoints(areaId, previousPeriodStartDay.toDate(), mainPeriodStartDay.toDate()) / nbUsers);
+		int rulesMainPeriod = Math.round(insightStatisticsMapper.sumKeypoints(areaId, period.getMainStartDate(), period.getMainEndDate()) / nbUsers);
+		int rulesPreviousPeriod = Math.round(insightStatisticsMapper.sumKeypoints(areaId, period.getPreviousStartDate(), period.getPreviousEndDate()) / nbUsers);
 		insightInfoDto.setScore(new DifferentialDto(rulesMainPeriod, rulesMainPeriod - rulesPreviousPeriod));
 
-		int trainingTimeMainPeriod = Math.round(insightStatisticsMapper.avgTrainingTime(areaId, mainPeriodStartDay.toDate(), today.toDate()));
-		int trainingTimePreviousPeriod = Math.round(insightStatisticsMapper.avgTrainingTime(areaId, previousPeriodStartDay.toDate(), mainPeriodStartDay.toDate()));
+		int trainingTimeMainPeriod = Math.round(insightStatisticsMapper.avgTrainingTime(areaId, period.getMainStartDate(), period.getMainEndDate()));
+		int trainingTimePreviousPeriod = Math.round(insightStatisticsMapper.avgTrainingTime(areaId, period.getPreviousStartDate(), period.getPreviousEndDate()));
 		insightInfoDto.setTime(new DifferentialDto(trainingTimeMainPeriod, trainingTimeMainPeriod - trainingTimePreviousPeriod));
 
-		int activeUsersMainPeriod = insightStatisticsMapper.countActiveUsers(areaId, mainPeriodStartDay.toDate(), today.toDate(), nbExpectedConnections);
-		int activeUsersPreviousPeriod = insightStatisticsMapper.countActiveUsers(areaId, previousPeriodStartDay.toDate(), mainPeriodStartDay.toDate(), nbExpectedConnections);
+		int activeUsersMainPeriod = insightStatisticsMapper.countActiveUsers(areaId, period.getMainStartDate(), period.getMainEndDate(), nbExpectedConnections);
+		int activeUsersPreviousPeriod = insightStatisticsMapper.countActiveUsers(areaId, period.getPreviousStartDate(), period.getPreviousEndDate(), nbExpectedConnections);
 		insightInfoDto.setActiveUsers(new DifferentialDto(activeUsersMainPeriod, activeUsersMainPeriod - activeUsersPreviousPeriod));
 
 		int inactiveUsersMainPeriod = nbUsers - activeUsersMainPeriod;
 		int inactiveUsersPreviousPeriod = nbUsers - activeUsersPreviousPeriod;
 		insightInfoDto.setInactiveUsers(new DifferentialDto(inactiveUsersMainPeriod, inactiveUsersMainPeriod - inactiveUsersPreviousPeriod));
 
-		List<SessionOnDateDbo> sessionOnDateDbos = insightStatisticsMapper.getConnectionsChart(areaId, nbDays, today.toDate());
+		List<SessionOnDateDbo> sessionOnDateDbos = insightStatisticsMapper.getConnectionsChart(areaId, nbDays, coreDateProvider.now().toDate());
 		List<ConnectionDto> connectionDtos = new ArrayList<>();
 		for (SessionOnDateDbo sessionOnDateDbo : sessionOnDateDbos) {
 			connectionDtos.add(new ConnectionDto(sessionOnDateDbo.getNbSessions(), sessionOnDateDbo.getDate()));
