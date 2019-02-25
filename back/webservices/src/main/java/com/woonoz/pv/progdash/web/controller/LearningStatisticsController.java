@@ -2,6 +2,8 @@ package com.woonoz.pv.progdash.web.controller;
 
 import java.util.List;
 
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -17,18 +19,21 @@ import com.woonoz.exception.WoonozException;
 import com.woonoz.pv.progdash.dto.AllStatisticsDto;
 import com.woonoz.pv.progdash.dto.GroupDto;
 import com.woonoz.pv.progdash.dto.LearningSessionStatisticsDto;
+import com.woonoz.pv.progdash.model.UserRoleConst;
 import com.woonoz.pv.progdash.exception.ProgdashConflictException;
 import com.woonoz.pv.progdash.service.LearningStatisticsService;
 import com.woonoz.web.controller.WoonozJerseyController;
 
 @Controller
 @Path("statistics")
+@RolesAllowed(UserRoleConst.USER_ADMIN)
 public class LearningStatisticsController implements WoonozJerseyController {
 
 	@Inject private LearningStatisticsService learningStatisticsService;
 
 	private static final int NB_USERS_LIMIT = 100;
 
+	@PermitAll
 	@GET
 	@Path("coucou")
 	@Produces(MediaType.TEXT_PLAIN)
