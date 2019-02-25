@@ -112,6 +112,8 @@ export function reducers (
             [group.id]: {
               users: keyBy( get( data, 'users', []), ( o: any ) => o.id ),
               insights: get( data, 'insights', {}),
+              evaluations: get( data, 'evaluations', []) ,
+              modules: get( data, 'modules', []),
               pulledAt: new Date(),
             },
           },

@@ -161,9 +161,9 @@ import { Modal } from '../../../shared/components';
           *ngIf="isProgEvaluationOpened"
           [isStartPrintReport]="isStartPrintReport"
           [selectedWidgets]="selectedWidgets"
-          [userListData]="(selectedClass ?
+          [evaluationsData]="(selectedClass ?
             (classes.byId[selectedClass.id] ?
-              classes.byId[selectedClass.id].users : []) : [])"
+              classes.byId[selectedClass.id].evaluations : []) : [])"
           (checkWidgetHandler)="checkWidgetHandler.emit($event)"
           (closeProgTableHandler)="closeProgTableHandler.emit($event)"
 

@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { values } from 'lodash';
+import { values, isNil } from 'lodash';
 import { initialEvalCatColors, moduleCatColors } from '../../../utils/chart.util';
 import { PrintWidgetComponent } from '../../../shared/components';
 import * as moment from 'moment';
@@ -32,7 +32,7 @@ moment.locale( 'fr' );
         <TableViewManager
           class="table-widget"
           [tableMode]="'normal'"
-          [data]="userListData | values"
+          [data]="evaluationsData"
           [columns]="columns"
           [options]="{ filter: true, header: true }"
           [colDefaultWidth]="colDefaultWidth"
@@ -100,27 +100,26 @@ export class ProgEvaluationComponent implements OnInit, OnDestroy {
   @Output() hoverWidgetTraceHandler = new EventEmitter();
 
   updateSub: Subscription;
-  userListData$ = new BehaviorSubject<any>({});
+  evaluationsData$ = new BehaviorSubject<any>({});
   dataStream = new BehaviorSubject<any[]>([]);
 
   colDefaultWidth = 100;
   colDefaultHeight = 30;
   columns = {
-    fullName: {
+    'fullName': {
       name: 'Apprenant',
       histo: '',
       encoding: 'STRING',
       width: 120,
       topBottom: 0,
     },
-    // moduleName: {
-    //   name: 'Evaluation',
-    //   histo: 'categorical',
-    //   encoding: 'CAT',
-    //   width: 120,
-    //   topBottom: 0,
-    //   color: moduleCatColors,
-    // },
+    'evaluationName': {
+      name: 'Evaluation',
+      histo: 'categorical',
+      encoding: 'CAT',
+      width: 120,
+      topBottom: 0,
+    },
     'time': {
       name: 'Temps',
       histo: 'ordinal',
@@ -129,18 +128,18 @@ export class ProgEvaluationComponent implements OnInit, OnDestroy {
       formatter: this.timeFormatter,
       topBottom: 0,
     },
-    'score.sum': {
+    'score': {
       name: 'Score',
       histo: 'ordinal',
       encoding: 'BAR',
-      compositeHint: [ 'score.sum', 'score.count' ],
       width: 120,
       topBottom: 0,
     },
-    'initialLevel.sum': {
+    'mark': {
       name: 'Note /20',
       histo: 'ordinal',
       encoding: 'BAR',
+      formatter: this.markFormatter,
       width: 120,
       topBottom: 0,
     },
@@ -149,9 +148,10 @@ export class ProgEvaluationComponent implements OnInit, OnDestroy {
   constructor () {}
 
   ngOnInit (): void {
-    this.updateSub = this.userListData$
+    // FIXME do we need this
+    this.updateSub = this.evaluationsData$
       .subscribe( _ => {
-        this.dataStream.next( values( this.userListData ));
+        this.dataStream.next( this.evaluationsData );
       });
   }
 
@@ -160,16 +160,20 @@ export class ProgEvaluationComponent implements OnInit, OnDestroy {
   }
 
   @Input()
-  set userListData ( value ) {
-    this.userListData$.next( value );
+  set evaluationsData ( value ) {
+    this.evaluationsData$.next( value );
   }
 
-  get userListData () {
-    return this.userListData$.getValue();
+  get evaluationsData () {
+    return this.evaluationsData$.getValue();
   }
 
   timeFormatter ( time ) {
     return moment.duration( time, 'minutes' ).format( 'h[h]mm[min]' );
+  }
+
+  markFormatter ( mark ) {
+    return isNil( mark ) ? '' : mark;
   }
 
 }
