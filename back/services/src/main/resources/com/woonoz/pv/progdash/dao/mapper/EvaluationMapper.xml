@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.woonoz.pv.progdash.dao.mapper.EvaluationMapper">
+
+    <select id="getEvaluationInfo" resultType="com.woonoz.pv.progdash.dao.dbo.EvaluationInfoDbo">
+        SELECT
+            CONCAT(wm.prenom_membre, " ", wm.nom_membre) fullName,
+            le.name evaluationName,
+            leu.user_id userId,
+            leu.mark,
+            ls.progression,
+            ls.time_spent_on / 60 timeSpentInMin
+        FROM learning_evaluation_user leu
+            JOIN learning_evaluation_session les ON les.id = leu.learning_evaluation_session_id
+            JOIN learning_session ls ON ls.id = leu.learning_session_id
+            JOIN learning_evaluation le ON le.id = les.evaluation_id AND le.area_id = #{areaId}
+            JOIN woonoz_membre wm ON wm.id_membre = leu.user_id;
+    </select>
+
+</mapper>
