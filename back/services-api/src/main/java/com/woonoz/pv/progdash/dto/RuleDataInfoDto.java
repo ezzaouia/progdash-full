@@ -23,4 +23,5 @@ public class RuleDataInfoDto {
 	public int getDifficultyLevel() {
 		return difficultyLevel;
 	}
+
 }
