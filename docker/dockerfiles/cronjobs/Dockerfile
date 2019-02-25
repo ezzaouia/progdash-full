@@ -10,6 +10,7 @@ RUN apt-get update \
     && chown -R woonoz. /data/backups
 
 ENV TZ=Europe/Paris
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 COPY ./docker/scripts/cronjobs/ /scripts/
 

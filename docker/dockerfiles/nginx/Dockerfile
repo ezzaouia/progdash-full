@@ -21,6 +21,7 @@ RUN npm install \
 FROM nginx:1.14.2
 
 ENV TZ=Europe/Paris
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 WORKDIR /var/www/html
 
