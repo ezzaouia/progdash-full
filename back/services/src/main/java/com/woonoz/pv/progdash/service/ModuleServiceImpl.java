@@ -44,10 +44,10 @@ public class ModuleServiceImpl implements ModuleService {
 
 	private void sameProductSameIndex(List<Route> routes, int productId) {
 		int maxIndexInAllRoutes = findMaxIndexInAllRoutes(routes, productId);
-		for(Route r: routes) {
+		for (Route r : routes) {
 			int start = 0;
-			for(ModuleWithIndex m: r.modules) {
-				if(m.module.getProductId() == productId) {
+			for (ModuleWithIndex m : r.modules) {
+				if (m.module.getProductId() == productId) {
 					shiftIndexes(r.modules, start, maxIndexInAllRoutes - m.index);
 				}
 				start++;
@@ -56,18 +56,19 @@ public class ModuleServiceImpl implements ModuleService {
 	}
 
 	private void shiftIndexes(List<ModuleWithIndex> modules, int start, int delta) {
-		if(delta == 0) return;
-		for(int i = start; i < modules.size(); i++) {
+		if (delta == 0)
+			return;
+		for (int i = start; i < modules.size(); i++) {
 			modules.get(i).index += delta;
 		}
 	}
 
 	private int findMaxIndexInAllRoutes(List<Route> routes, int productId) {
 		int res = 0;
-		for(Route r : routes) {
-			for(ModuleWithIndex m : r.modules) {
-				if(m.module.getProductId() == productId) {
-					if(m.index > res) {
+		for (Route r : routes) {
+			for (ModuleWithIndex m : r.modules) {
+				if (m.module.getProductId() == productId) {
+					if (m.index > res) {
 						res = m.index;
 					}
 				}
@@ -86,8 +87,8 @@ public class ModuleServiceImpl implements ModuleService {
 		List<ModuleInfoDbo> allProductsSortByAbsPos = new ArrayList<ModuleInfoDbo>();
 		List<Route> routes = new ArrayList<Route>();
 
-		for (ModuleInfoDbo d: dbos) {
-			if(d.getRouteId() == 0) {
+		for (ModuleInfoDbo d : dbos) {
+			if (d.getRouteId() == 0) {
 				optionals.add(d);
 			} else {
 				withoutOptionals.add(d);
@@ -97,19 +98,18 @@ public class ModuleServiceImpl implements ModuleService {
 
 		Collections.sort(allProductsSortByAbsPos, new Comparator<ModuleInfoDbo>() {
 			@Override
-			public int compare(ModuleInfoDbo a, ModuleInfoDbo b)
-			{
-				return  a.getAbsPos().compareTo(b.getAbsPos());
+			public int compare(ModuleInfoDbo a, ModuleInfoDbo b) {
+				return a.getAbsPos().compareTo(b.getAbsPos());
 			}
 		});
 
 		HashMap<Long, Boolean> availablesRoutes = new HashMap<>();
 
-		for (ModuleInfoDbo d: withoutOptionals) {
-			if(!availablesRoutes.containsKey(d.getRouteId())) {
+		for (ModuleInfoDbo d : withoutOptionals) {
+			if (!availablesRoutes.containsKey(d.getRouteId())) {
 				availablesRoutes.put(d.getRouteId(), true);
-				for (ModuleInfoDbo opt: optionals) {
-					if(!existsProductIdForRouteIndex(dbos, opt.getProductId(), d.getRouteId())) {
+				for (ModuleInfoDbo opt : optionals) {
+					if (!existsProductIdForRouteIndex(dbos, opt.getProductId(), d.getRouteId())) {
 						routesWithOptional.add(new ModuleInfoDbo(opt.getProductId(), opt.getKey(), d.getRouteId(), opt.getNbrOfRules(), opt.getAbsPos()));
 					}
 				}
@@ -119,15 +119,14 @@ public class ModuleServiceImpl implements ModuleService {
 
 		Collections.sort(routesWithOptional, new Comparator<ModuleInfoDbo>() {
 			@Override
-			public int compare(ModuleInfoDbo a, ModuleInfoDbo b)
-			{
-				return  a.getAbsPos().compareTo(b.getAbsPos());
+			public int compare(ModuleInfoDbo a, ModuleInfoDbo b) {
+				return a.getAbsPos().compareTo(b.getAbsPos());
 			}
 		});
 
 		HashMap<Long, Route> routeByRouteId = new HashMap<>();
-		for(ModuleInfoDbo m : routesWithOptional) {
-			if(!routeByRouteId.containsKey(m.getRouteId())) {
+		for (ModuleInfoDbo m : routesWithOptional) {
+			if (!routeByRouteId.containsKey(m.getRouteId())) {
 				Route newRoute = new Route(m.getRouteId().intValue());
 				routeByRouteId.put(m.getRouteId(), newRoute);
 				routes.add(newRoute);
@@ -138,19 +137,18 @@ public class ModuleServiceImpl implements ModuleService {
 
 		Collections.sort(routes, new Comparator<Route>() {
 			@Override
-			public int compare(Route a, Route b)
-			{
+			public int compare(Route a, Route b) {
 				return new Integer(a.routeIndex).compareTo(new Integer(b.routeIndex));
 			}
 		});
 
-		for(ModuleInfoDbo m : allProductsSortByAbsPos) {
+		for (ModuleInfoDbo m : allProductsSortByAbsPos) {
 			sameProductSameIndex(routes, m.getProductId().intValue());
 		}
 
 		ArrayList<ModuleInfoDto> res = new ArrayList<>();
-		for (Route r: routes) {
-			for(ModuleWithIndex m: r.modules) {
+		for (Route r : routes) {
+			for (ModuleWithIndex m : r.modules) {
 				res.add(new ModuleInfoDto(m.module.getKey(), m.index, m.module.getNbrOfRules(), m.module.getRouteId(), m.module.getProductId()));
 			}
 		}
@@ -158,8 +156,8 @@ public class ModuleServiceImpl implements ModuleService {
 	}
 
 	private boolean existsProductIdForRouteIndex(List<ModuleInfoDbo> dbos, Long productId, Long routeId) {
-		for(ModuleInfoDbo m : dbos) {
-			if(m.getProductId() == productId && m.getRouteId() == routeId) {
+		for (ModuleInfoDbo m : dbos) {
+			if (m.getProductId() == productId && m.getRouteId() == routeId) {
 				return true;
 			}
 		}
