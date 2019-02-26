@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 import org.springframework.stereotype.Service;
@@ -81,12 +82,12 @@ public class LearningStatisticsServiceImpl implements LearningStatisticsService 
 	}
 
 	@Override
-	public boolean isGroupInArea(int areaId, Integer groupId) {
+	public boolean isGroupInArea(int areaId, int groupId) {
 		return learningStatisticsMapper.getAreaFromGroup(groupId) == areaId;
 	}
 
 	@Override
-	public AllStatisticsDto getAllStatistics(int areaId, Integer groupId) {
+	public AllStatisticsDto getAllStatistics(int areaId, @Nullable Integer groupId) {
 		AllStatisticsDto allStats = new AllStatisticsDto();
 		int nbUsers = areaGroupMapper.countAreaUsers(areaId);
 
@@ -130,7 +131,7 @@ public class LearningStatisticsServiceImpl implements LearningStatisticsService 
 		return allStats;
 	}
 
-	private void fillUsersMap(Map<Integer, UserDataDto> usersMap, int areaId, Integer groupId) {
+	private void fillUsersMap(Map<Integer, UserDataDto> usersMap, int areaId, @Nullable Integer groupId) {
 
 		for (ReachedProductDbo reachedProductDbo : learningStatisticsMapper.getReachedProduct(areaId, groupId)) {
 			usersMap.get(reachedProductDbo.getUserId()).setLastModule(reachedProductDbo.getProductName());

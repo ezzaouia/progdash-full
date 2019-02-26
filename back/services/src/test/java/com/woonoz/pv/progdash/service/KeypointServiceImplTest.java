@@ -50,7 +50,7 @@ public class KeypointServiceImplTest extends AbstractMockServiceTest {
 
 		given(coreDateProvider.now()).willReturn(day19);
 
-		given(keypointMapper.getKeypointsPractice(areaId)).willReturn(Arrays.asList(
+		given(keypointMapper.getKeypointsPractice(areaId, groupId)).willReturn(Arrays.asList(
 				//keypoint 1 : learning + learned + initially known
 				new KeypointPracticeDbo(user1, 1, 1, "chapter1",    0, 0,  5, day18),
 				new KeypointPracticeDbo(user2, 1, 1, "chapter1",    1, 0,  5, day18),

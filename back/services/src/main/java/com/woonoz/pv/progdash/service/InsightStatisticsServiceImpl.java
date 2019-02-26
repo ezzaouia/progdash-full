@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -27,14 +28,13 @@ import com.woonoz.service.DateProvider;
 public class InsightStatisticsServiceImpl implements InsightStatisticsService {
 
 	@Inject private InsightStatisticsMapper insightStatisticsMapper;
-	@Inject private KeypointService keypointService;
 
 	@Inject
 	@Qualifier("coreDateProvider")
 	private DateProvider coreDateProvider;
 
 	@Override
-	public InsightInfoDto createInsightsInfo(int areaId, Integer groupId, int nbUsers, int nbDays, int nbExpectedConnections) {
+	public InsightInfoDto createInsightsInfo(int areaId, @Nullable Integer groupId, int nbUsers, int nbDays, int nbExpectedConnections) {
 		Period period = new Period(coreDateProvider.now(), nbDays);
 		InsightInfoDto insightInfoDto = new InsightInfoDto();
 

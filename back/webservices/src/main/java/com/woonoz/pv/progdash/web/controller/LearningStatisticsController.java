@@ -2,6 +2,7 @@ package com.woonoz.pv.progdash.web.controller;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
@@ -67,7 +68,7 @@ public class LearningStatisticsController implements WoonozJerseyController {
 		return learningStatisticsService.getAllStatistics(areaId, groupId);
 	}
 
-	private void checkAreaAndGroup(int areaId, Integer groupId) throws WoonozException {
+	private void checkAreaAndGroup(int areaId, @Nullable Integer groupId) throws WoonozException {
 		if (groupId == null || groupId == 0) {
 			if (!learningStatisticsService.isAreaUsersNumberWithinLimit(areaId, NB_USERS_LIMIT)) {
 				throw new ProgdashConflictException("too_many_users", "The area contains too many users, the server can handle only " + NB_USERS_LIMIT + ".");

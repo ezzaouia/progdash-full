@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +19,7 @@ public class EvaluationServiceImpl implements EvaluationService {
     private EvaluationMapper evaluationMapper;
 
     @Override
-    public List<EvaluationInfoDto> getEvaluationInfo(int areaId, Integer groupId) {
+    public List<EvaluationInfoDto> getEvaluationInfo(int areaId, @Nullable Integer groupId) {
         List<EvaluationInfoDbo> dbos = evaluationMapper.getEvaluationInfo(areaId, groupId);
         ArrayList<EvaluationInfoDto> dtos = new ArrayList<>();
         for (EvaluationInfoDbo dbo : dbos) {
