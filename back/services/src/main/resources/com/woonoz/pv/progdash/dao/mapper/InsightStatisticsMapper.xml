@@ -139,12 +139,12 @@
 		FROM woonoz_groupe_p_membre wgpm
 		  LEFT JOIN learning_session ls
 		    	ON ls.user_id = wgpm.id_membre
-		        AND ls.mode = 'learn'
-				AND ls.time_spent_on IS NOT NULL
-		        AND ls.start_date > #{startDate}
-				AND #{endDate} > ls.start_date
 		WHERE wgpm.id_groupe_p = #{areaId}
-		  AND wgpm.user_role= 'learner'
+			AND ls.mode = 'learn'
+			AND ls.time_spent_on IS NOT NULL
+			AND ls.start_date > #{startDate}
+			AND #{endDate} > ls.start_date
+		    AND wgpm.user_role= 'learner'
 		GROUP BY wgpm.id_membre
 		ORDER BY totalTrainingTime <if test="!ascendantOrder"> DESC </if>
 		<if test="nbForTop != null"> LIMIT #{nbForTop} </if>;
