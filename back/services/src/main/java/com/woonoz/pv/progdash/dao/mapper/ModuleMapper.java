@@ -9,5 +9,5 @@ import com.woonoz.pv.progdash.dao.dbo.ModuleInfoDbo;
 
 @Mapper
 public interface ModuleMapper {
-	List<ModuleInfoDbo> getModulesInfo(@Param("areaId")int areaId);
+	List<ModuleInfoDbo> getModulesInfo(@Param("areaId") int areaId);
 }

@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.toMap;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,8 +24,11 @@ import org.springframework.transaction.annotation.Transactional;
 import com.woonoz.pv.progdash.dao.dbo.ChapterNameDbo;
 import com.woonoz.pv.progdash.dao.dbo.KeypointPracticeDbo;
 import com.woonoz.pv.progdash.dao.mapper.KeypointMapper;
+import com.woonoz.pv.progdash.dto.DifferentialDto;
 import com.woonoz.pv.progdash.dto.RuleDataInfoDto;
 import com.woonoz.pv.progdash.dto.TopNRulesDto;
+import com.woonoz.pv.progdash.dto.UserDataInfoDto;
+import com.woonoz.service.DateProvider;
 
 @Service
 @Transactional(propagation = Propagation.MANDATORY)
@@ -31,13 +36,17 @@ public class KeypointServiceImpl implements KeypointService {
 
 	@Inject private KeypointMapper keypointMapper;
 
+	@Inject
+	@Qualifier("coreDateProvider")
+	private DateProvider coreDateProvider;
+
 	@Override
 	public DataFromKeypoints processKeypoints(int areaId, int nbItemsForTop) {
 		List<KeypointPracticeDbo> kpPracticeDbos = keypointMapper.getKeypointsPractice(areaId);
 
 		DataFromKeypoints dataFromKeypoints = new DataFromKeypoints();
-
 		addTopRulesToData(dataFromKeypoints, kpPracticeDbos, nbItemsForTop);
+		addTopHelpUsers(dataFromKeypoints, kpPracticeDbos, nbItemsForTop);
 
 		return dataFromKeypoints;
 
@@ -106,15 +115,15 @@ public class KeypointServiceImpl implements KeypointService {
 				);
 	}
 
-	private List<Integer> sortByNbInteractionsAndSelectTop(Map<Integer, Double> filteredChapters, int nbItemsForTop) {
-		Map<Integer, Double> orderedChapters = filteredChapters.entrySet().stream()
-				// sort by nbInteractions
+	private List<Integer> sortByNbInteractionsAndSelectTop(Map<Integer, Double> map, int nbItemsForTop) {
+		// sort by nbInteractions desc
+		Map<Integer, Double> orderedChapters = map.entrySet().stream()
 				.sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
 				.collect(
 						toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2,
 								LinkedHashMap::new));
 
-		// get the bottom elements
+		// get the top elements
 		List<Integer> topChapters = new ArrayList<>();
 		int iter = 0;
 		Iterator<Integer> iterator = orderedChapters.keySet().iterator();
@@ -134,5 +143,44 @@ public class KeypointServiceImpl implements KeypointService {
 					Math.round(Math.round(chaptersDifficulty.get(chapterId)))));
 		}
 		return topRulesList;
+	}
+
+	private void addTopHelpUsers(DataFromKeypoints dataFromKeypoints, List<KeypointPracticeDbo> kpPracticeDbos, int nbItemsForTop) {
+		dataFromKeypoints.setLastWeekTopUsers(getUsersInPeriodDto(kpPracticeDbos, nbItemsForTop, 7));
+		dataFromKeypoints.setLastMonthTopUsers(getUsersInPeriodDto(kpPracticeDbos, nbItemsForTop, 30));
+	}
+
+	private List<UserDataInfoDto> getUsersInPeriodDto(List<KeypointPracticeDbo> kpPracticeDbos, int nbItemsForTop, int nbDays) {
+
+		Period period = new Period(coreDateProvider.now(), nbDays);
+
+		Map<Integer, Double> usersInLastPeriod = getHelplessUsers(kpPracticeDbos, period.getMainStartDate(), period.getMainEndDate());
+		Map<Integer, Double> usersInPreviousPeriod = getHelplessUsers(kpPracticeDbos, period.getPreviousStartDate(), period.getPreviousEndDate());
+		List<Integer> topHelplessUsersInPeriod = sortByNbInteractionsAndSelectTop(usersInLastPeriod, nbItemsForTop);
+
+		List<UserDataInfoDto> usersInPeriodDto = new ArrayList<>();
+		for (Integer userId : topHelplessUsersInPeriod) {
+			int lastMonthNbInteractions = usersInLastPeriod.get(userId) == null ? 0 : Math.round(Math.round(usersInLastPeriod.get(userId)));
+			int previousMonthNbInteractions = usersInPreviousPeriod.get(userId) == null ? 0 : Math.round(Math.round(usersInPreviousPeriod.get(userId)));
+			usersInPeriodDto.add(new UserDataInfoDto(userId, new DifferentialDto(lastMonthNbInteractions, lastMonthNbInteractions - previousMonthNbInteractions)));
+		}
+		return usersInPeriodDto;
+	}
+
+	private Map<Integer, Double> getHelplessUsers(List<KeypointPracticeDbo> kpPracticeDbos, Date startDate, Date endDate) {
+		return kpPracticeDbos.stream()
+				// where date is in range
+				.filter(kpPracticeDbo ->
+						startDate.compareTo(kpPracticeDbo.getLastPracticeDate()) < 0
+						&&
+						kpPracticeDbo.getLastPracticeDate().compareTo(endDate) <= 0
+						)
+				// group by chapterId and average the nbInteractions
+				.collect(
+						Collectors.groupingBy(
+								KeypointPracticeDbo::getUserId,
+								averagingInt(KeypointPracticeDbo::getNbInteractions)
+						)
+				);
 	}
 }
