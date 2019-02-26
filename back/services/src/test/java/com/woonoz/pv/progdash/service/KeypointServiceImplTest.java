@@ -102,22 +102,34 @@ public class KeypointServiceImplTest extends AbstractMockServiceTest {
 		List<RuleDataInfoDto> learnedChapters = Arrays.asList(rule5Dto, rule4Dto, rule1Dto);
 		List<RuleDataInfoDto> initiallyKnownChapters = Arrays.asList(rule6Dto, rule1Dto);
 
-		List<UserDataInfoDto> lastWeekTopUsers = Arrays.asList(
+		List<UserDataInfoDto> lastWeekTopUsersHelp = Arrays.asList(
 				new UserDataInfoDto(user3, new DifferentialDto(20, 3)),
 				new UserDataInfoDto(user2, new DifferentialDto(18, 3)),
 				new UserDataInfoDto(user1, new DifferentialDto(16, 3))
 		);
-		List<UserDataInfoDto> lastMonthTopUsers = Arrays.asList(
+		List<UserDataInfoDto> lastMonthTopUsersHelp = Arrays.asList(
 				new UserDataInfoDto(user3, new DifferentialDto(19, 19)),
 				new UserDataInfoDto(user2, new DifferentialDto(18, 18)),
 				new UserDataInfoDto(user1, new DifferentialDto(16, 16))
+		);
+		List<UserDataInfoDto> lastWeekTopUsersScore = Arrays.asList(
+				new UserDataInfoDto(user2, new DifferentialDto(4, 3)),
+				new UserDataInfoDto(user3, new DifferentialDto(4, 3)),
+				new UserDataInfoDto(user1, new DifferentialDto(3, 2))
+		);
+		List<UserDataInfoDto> lastMonthTopUsersScore = Arrays.asList(
+				new UserDataInfoDto(user2, new DifferentialDto(5, 5)),
+				new UserDataInfoDto(user3, new DifferentialDto(5, 5)),
+				new UserDataInfoDto(user1, new DifferentialDto(4, 4))
 		);
 
 		DataFromKeypoints expectedResult = new DataFromKeypoints();
 		expectedResult.setLastWeekTopRules(new TopNRulesDto(difficultyChapters, learnedChapters, initiallyKnownChapters));
 		expectedResult.setLastMonthTopRules(new TopNRulesDto(difficultyChapters, learnedChapters, initiallyKnownChapters));
-		expectedResult.setLastWeekTopUsers(lastWeekTopUsers);
-		expectedResult.setLastMonthTopUsers(lastMonthTopUsers);
+		expectedResult.setLastWeekTopUsersHelp(lastWeekTopUsersHelp);
+		expectedResult.setLastMonthTopUsersHelp(lastMonthTopUsersHelp);
+		expectedResult.setLastWeekTopUsersScore(lastWeekTopUsersScore);
+		expectedResult.setLastMonthTopUsersScore(lastMonthTopUsersScore);
 
 		assertThat(dataFromKeypoints).isEqualToComparingFieldByFieldRecursively(expectedResult);
 	}
