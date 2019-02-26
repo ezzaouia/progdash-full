@@ -216,7 +216,7 @@ export class MlineChartComponent implements OnInit, OnDestroy {
 
   calExtent () {
     const data = flatMap( this.data, `progData.${this.timeScale}` );
-    const xextent = extent( data, d => new Date( this.timeParse( d.date )));
+    const xextent = extent( data, d => new Date( this.timeParse( get( d, 'date', '' ))));
     const yextent = [ 0, max( data, d => get ( d, this.ykey )) ];
     return { xextent, yextent };
   }

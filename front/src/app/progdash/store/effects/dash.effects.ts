@@ -1,10 +1,19 @@
 import { Injectable } from '@angular/core';
-import { Observable, from, of } from 'rxjs';
-import { switchMap, map, tap, catchError, withLatestFrom , delay } from 'rxjs/operators';
+import { Observable, from, of, empty } from 'rxjs';
+import { get } from 'lodash';
+import {
+  switchMap,
+  map,
+  tap,
+  catchError,
+  withLatestFrom,
+  delay,
+} from 'rxjs/operators';
 import { select, Action, Store } from '@ngrx/store';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { startsWith, filter, size } from 'lodash';
 import { saveAs } from 'file-saver';
+import * as moment from 'moment';
 
 import { ProgdashDataService } from '../../services';
 import { DataService } from '../../../shared/services';
@@ -26,6 +35,10 @@ import {
   LoadGroupsData,
   LoadGroupsDataSuccess,
   LoadGroupsDataFailure,
+  SelectClass,
+  LoadGroupData,
+  LoadGroupDataSuccess,
+  LoadGroupDataFailure
 } from '../actions';
 import { Router } from '@angular/router';
 import * as html2pdf from 'html2pdf.js';
@@ -35,7 +48,6 @@ import { a4WidgetsStyles, copyComputedStyle } from '../../utils/html2pdf.utils';
 
 @Injectable()
 export class DashEffects {
-
   tmpPdfContainer: Element = null;
 
   constructor (
@@ -47,31 +59,53 @@ export class DashEffects {
     private store: Store<fromStore.State>
   ) {
     this.tmpPdfContainer = document.createElement( 'div' );
-    this.tmpPdfContainer.setAttribute( 'id',  'pdf-container' );
+    this.tmpPdfContainer.setAttribute( 'id', 'pdf-container' );
     this.tmpPdfContainer.setAttribute( 'style', `display: none;` );
     document.body.appendChild( this.tmpPdfContainer );
   }
-
-
-  @Effect()
-  loadData$: Observable<Action> = this.actions$.pipe(
-    ofType<LoadData>( DashActionTypes.LoadData ),
-    switchMap(() => {
-      return this.dataService
-        .loadCSV$( filename, cast )
-        .pipe( map( data => new LoadDataSuccess( data )));
-    })
-  );
 
   @Effect()
   loadGroupsData$: Observable<Action> = this.actions$.pipe(
     ofType<LoadGroupsData>( DashActionTypes.LoadGroupsData ),
     withLatestFrom( this.store.pipe( select( fromStore.userInfo ))),
     switchMap(([ _, userInfo ]) => {
-        return this.progdashDataService.loadGroupsData$({ areaId: userInfo.areaId });
+      return this.progdashDataService
+        .loadGroupsData$({ areaId: userInfo.areaId })
+        .pipe(
+          map( payload => new LoadGroupsDataSuccess( payload )),
+          catchError( err => {
+            return of( new LoadGroupDataFailure( err ));
+          })
+        );
+    })
+  );
+
+  @Effect()
+  selectClass$: Observable<Action> = this.actions$.pipe(
+    ofType<SelectClass>( DashActionTypes.SelectClass ),
+    map( action => action.payload ),
+    withLatestFrom( this.store.pipe( select( fromStore.userInfo ))),
+    withLatestFrom( this.store.pipe( select( fromStore.classes ))),
+    switchMap(([ [ selectedClass, userInfo ], classes ]) => {
+      const pulledAt = get( classes, `byId.${selectedClass.id}.pulledAt`, '' );
+      if ( pulledAt &&  ( moment().diff( moment( pulledAt ), 'hours', true ) < 1 )) {
+        return empty();
+      } else {
+        return this.progdashDataService
+        .loadGroupData$({
+          groupId: selectedClass.id ? selectedClass.id : null,
+          areaId: userInfo.areaId,
+        })
+        .pipe(
+          map( payload => {
+            return new LoadGroupDataSuccess({ group: selectedClass, data: payload });
+          }),
+          catchError( err => {
+            return of( new LoadGroupDataFailure( err ));
+          })
+        );
       }
-    ),
-    map( payload => new LoadGroupsDataSuccess( payload ))
+    })
   );
 
   @Effect()
@@ -81,21 +115,21 @@ export class DashEffects {
     map( data => new RunDataPrepComplete( data ))
   );
 
-  @Effect({ dispatch: false })
-  launchPVLive$: Observable<String> = this.actions$.pipe(
-    ofType<LaunchPVLive>( DashActionTypes.LaunchPVLive ),
-    switchMap((action: LaunchPVLive) => {
-      return this.teacherService.getLink(action.payload.lessons);
-    }),
-    tap((url: String) => this.router.navigate(
-      [ '/externalPVRedirect', { externalUrl: url } ],
-      { skipLocationChange: true }
-  )));
+    @Effect({ dispatch: false })
+    launchPVLive$: Observable<String> = this.actions$.pipe(
+        ofType<LaunchPVLive>( DashActionTypes.LaunchPVLive ),
+        switchMap((action: LaunchPVLive) => {
+            return this.teacherService.getLink(action.payload.lessons);
+        }),
+        tap((url: String) => this.router.navigate(
+            [ '/externalPVRedirect', { externalUrl: url } ],
+            { skipLocationChange: true }
+        )));
 
   @Effect({ dispatch: false })
   startPrintReport$: Observable<Action> = this.actions$.pipe(
     ofType<StartPrintReport>( DashActionTypes.StartPrintReport ),
-    map(( action ) => {
+    map( action => {
       this.tmpPdfContainer.innerHTML = '';
       return null;
     })
@@ -107,19 +141,24 @@ export class DashEffects {
     withLatestFrom(
       this.store.pipe( select( fromStore.selectedWidgets )),
       ( action, selectedWidgets ) => {
-
         const sw = filter( selectedWidgets, w => startsWith( w, 'table-row' ));
         let widgetEl, tmpWrapper, widgetCloneEl, cloneEl;
         // tslint:disable-next-line:prefer-const
         let { isChecked, widgetId } = action.payload;
         if ( isChecked ) {
-
           tmpWrapper = document.createElement( 'div' );
-          tmpWrapper.setAttribute( 'style', `
+          tmpWrapper.setAttribute(
+            'style',
+            `
             margin: 6px;
-          ` );
-          tmpWrapper.setAttribute( 'id', `print-${
-            startsWith( widgetId, 'table-row' ) ? 'table-view' : widgetId }` );
+          `
+          );
+          tmpWrapper.setAttribute(
+            'id',
+            `print-${
+              startsWith( widgetId, 'table-row' ) ? 'table-view' : widgetId
+            }`
+          );
 
           // we can only print either the whole table OR rows
           // In case of Rows we copy the table only once,
@@ -149,7 +188,6 @@ export class DashEffects {
 
               cloneTableEl.appendChild( tableHeaderEl );
               cloneTableEl.appendChild( widgetCloneEl );
-
             } else {
               // add row to the existing table and return
               widgetEl = document.getElementById( widgetId );
@@ -162,7 +200,6 @@ export class DashEffects {
 
               return;
             }
-
           } else {
             widgetEl = document.getElementById( widgetId );
             cloneEl = widgetEl.cloneNode( true );
@@ -175,17 +212,23 @@ export class DashEffects {
 
           if ( widgetId === 'connections' ) {
             // needed to rescale the svg which use viewBox
-            const svg = document.querySelector( '#pdf-container #svg-connections' );
+            const svg = document.querySelector(
+              '#pdf-container #svg-connections'
+            );
             // svg.setAttribute( 'viewBox', '0 0 2000 200'  );
-            svg.setAttribute( 'width', `${ a4WidgetsStyles[ 'svg-connections' ].width }` );
-            svg.setAttribute( 'height', `${ a4WidgetsStyles[ 'svg-connections' ].height }` );
+            svg.setAttribute(
+              'width',
+              `${a4WidgetsStyles['svg-connections'].width}`
+            );
+            svg.setAttribute(
+              'height',
+              `${a4WidgetsStyles['svg-connections'].height}`
+            );
           }
-
         } else {
           // remove widget
           let w, t;
           if ( startsWith( widgetId, 'table-row' )) {
-
             // there is at least one + +1, as sw is the state of
             // the selectedWidgets after the check/uncheck action row in the table
             if ( size( sw ) > 0 ) {
@@ -197,7 +240,6 @@ export class DashEffects {
             } else {
               w = document.getElementById( 'print-table-view' );
             }
-
           } else {
             w = document.getElementById( `print-${widgetId}` );
           }
@@ -207,7 +249,6 @@ export class DashEffects {
         return null;
       }
     )
-
   );
 
   @Effect()
@@ -224,32 +265,30 @@ export class DashEffects {
         .set({
           filename: 'rapport-' + +new Date() + '.pdf',
           pagebreak: { mode: [ 'avoid-all' ] },
-          jsPDF:  {  format: 'letter' },
+          jsPDF: { format: 'letter' },
         });
 
       return from(
         promise.toPdf().output( 'blob' ) // .save()
-      )
-      .pipe(
+      ).pipe(
         map( blob => {
-           // TODO to check if we want to open
-           // files or not
-            // const newWin = window.open( URL.createObjectURL( blob ), '_blank' );
-            // if ( !newWin || newWin.closed || typeof newWin.closed === 'undefined' ) {
-            //   // POPUP BLOCKED
-            //   console.log( 'POPUP BLOCKED' );
-            // }
+          // TODO to check if we want to open
+          // files or not
+          // const newWin = window.open( URL.createObjectURL( blob ), '_blank' );
+          // if ( !newWin || newWin.closed || typeof newWin.closed === 'undefined' ) {
+          //   // POPUP BLOCKED
+          //   console.log( 'POPUP BLOCKED' );
+          // }
 
-            saveAs( blob, 'rapport-' + +new Date() + '.pdf' );
+          saveAs( blob, 'rapport-' + +new Date() + '.pdf' );
 
-            return blob;
+          return blob;
         }),
-        map( blob => new PrintReportSuccess({ blob })),
-        catchError( err => {
-          return of( new PrintReportFailure( 'Print_Pdf_Report_Failure' ));
-        })
+        map( blob => new PrintReportSuccess({ blob }))
+        // catchError( err => {
+        //   return of( new PrintReportFailure( 'Print_Pdf_Report_Failure' ));
+        // })
       );
-
     })
   );
 
@@ -269,11 +308,13 @@ export class DashEffects {
       tmpWrapper.appendChild( cloneEl );
       this.tmpPdfContainer.appendChild( tmpWrapper );
 
-
       const svg = document.querySelector( '#pdf-container #svg-mline-chart' );
       // svg.setAttribute( 'viewBox', '0 0 2000 200'  );
-      svg.setAttribute( 'width', `${ a4WidgetsStyles[ 'svg-mline-chart' ].width }` );
-      svg.setAttribute( 'height', `${ a4WidgetsStyles[ 'svg-mline-chart' ].height }` );
+      svg.setAttribute( 'width', `${a4WidgetsStyles['svg-mline-chart'].width}` );
+      svg.setAttribute(
+        'height',
+        `${a4WidgetsStyles['svg-mline-chart'].height}`
+      );
       return;
     }),
     map(() => {
@@ -287,32 +328,30 @@ export class DashEffects {
         .set({
           filename: 'rapport-' + +new Date() + '.pdf',
           pagebreak: { mode: [ 'avoid-all' ] },
-          jsPDF:  {  format: 'letter' },
+          jsPDF: { format: 'letter' },
         });
 
       return from(
         promise.toPdf().output( 'blob' ) // .save()
-      )
-      .pipe(
+      ).pipe(
         map( blob => {
-           // TODO to check if we want to open
-           // files or not
-            // const newWin = window.open( URL.createObjectURL( blob ), '_blank' );
-            // if ( !newWin || newWin.closed || typeof newWin.closed === 'undefined' ) {
-            //   // POPUP BLOCKED
-            //   console.log( 'POPUP BLOCKED' );
-            // }
+          // TODO to check if we want to open
+          // files or not
+          // const newWin = window.open( URL.createObjectURL( blob ), '_blank' );
+          // if ( !newWin || newWin.closed || typeof newWin.closed === 'undefined' ) {
+          //   // POPUP BLOCKED
+          //   console.log( 'POPUP BLOCKED' );
+          // }
 
-            saveAs( blob, 'rapport-' + +new Date() + '.pdf' );
+          saveAs( blob, 'rapport-' + +new Date() + '.pdf' );
 
-            return blob;
+          return blob;
         }),
-        map( blob => new PrintReportSuccess({ blob })),
-        catchError( err => {
-          return of( new PrintReportFailure( 'Print_Pdf_Report_Failure' ));
-        })
+        map( blob => new PrintReportSuccess({ blob }))
+        // catchError( err => {
+        //   return of( new PrintReportFailure( 'Print_Pdf_Report_Failure' ));
+        // })
       );
-
     })
   );
 
@@ -333,6 +372,4 @@ export class DashEffects {
       this.tmpPdfContainer.innerHTML = '';
     })
   );
-
 }
-

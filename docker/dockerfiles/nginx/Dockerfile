@@ -13,7 +13,7 @@ WORKDIR /app
 COPY ./front /app
 
 RUN npm install \
-    && ng build --base-href=/suivi/ \
+    && ng build --configuration=docker --base-href=/suivi/ \
     && npm cache clean --force
 
 
@@ -21,6 +21,7 @@ RUN npm install \
 FROM nginx:1.14.2
 
 ENV TZ=Europe/Paris
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 WORKDIR /var/www/html
 

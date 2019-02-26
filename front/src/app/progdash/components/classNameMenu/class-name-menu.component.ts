@@ -8,7 +8,7 @@ import { Component, OnInit, Output, Input, EventEmitter } from '@angular/core';
       mat-menu-item
       *ngFor="let clazz of classListData"
       (click)="selectClassHandler.emit( clazz )">
-        <span>{{ clazz }}</span>
+        <span>{{ clazz.name }}</span>
     </button>
   `,
   styles: [ `

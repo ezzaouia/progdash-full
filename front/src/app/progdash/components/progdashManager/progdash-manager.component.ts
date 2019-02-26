@@ -11,10 +11,10 @@ import {
 } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { BehaviorSubject } from 'rxjs';
+import { get } from 'lodash';
 
 import { UserDetailComponent } from '../../components';
 import { Modal } from '../../../shared/components';
-import { StoreField, ClassData } from '../../store';
 
 /* tslint:disable component-selector  */
 @Component({
@@ -40,7 +40,6 @@ import { StoreField, ClassData } from '../../store';
             Tableau de bord
         </button>
 
-
         <TimescaleMenu
           *ngIf="!(isProgTableOpened || isProgEvaluationOpened) && selectedClass"
           [selectedTimescale]="selectedTimescale"
@@ -48,8 +47,6 @@ import { StoreField, ClassData } from '../../store';
         </TimescaleMenu>
 
         <span class="fill"></span>
-
-
 
         <div class="class-picker">
           <button
@@ -59,7 +56,7 @@ import { StoreField, ClassData } from '../../store';
             <span *ngIf="!selectedClass">
                 Sélectionnez une classe
             </span>
-            <span class="class-name">{{ selectedClass }}</span>
+            <span class="class-name">{{ selectedClass ? selectedClass.name : '' }}</span>
               <mat-icon>arrow_drop_down</mat-icon>
           </button>
         </div>
@@ -148,7 +145,9 @@ import { StoreField, ClassData } from '../../store';
           [isStartPrintReport]="isStartPrintReport"
           [selectedWidgets]="selectedWidgets"
           [modulesData]="modulesData"
-          [userListData]="(selectedClass ? usersByClass.byClassId[selectedClass] : [])"
+          [userListData]="(selectedClass ?
+            (classes.byId[selectedClass.id] ?
+              classes.byId[selectedClass.id].users : []) : [])"
           (checkWidgetHandler)="checkWidgetHandler.emit($event)"
           (closeProgTableHandler)="closeProgTableHandler.emit($event)"
 
@@ -162,7 +161,9 @@ import { StoreField, ClassData } from '../../store';
           *ngIf="isProgEvaluationOpened"
           [isStartPrintReport]="isStartPrintReport"
           [selectedWidgets]="selectedWidgets"
-          [userListData]="(selectedClass ? usersByClass.byClassId[selectedClass] : [])"
+          [userListData]="(selectedClass ?
+            (classes.byId[selectedClass.id] ?
+              classes.byId[selectedClass.id].users : []) : [])"
           (checkWidgetHandler)="checkWidgetHandler.emit($event)"
           (closeProgTableHandler)="closeProgTableHandler.emit($event)"
 
@@ -254,8 +255,6 @@ export class ProgdashManagerComponent implements AfterContentInit {
   @Input() isProgEvaluationOpened;
   @Input() isStartPrintReport;
 
-  @Input() usersByClass;
-  @Input() insights;
   @Input() modulesData: {}[];
 
   @Input() selectedClass;
@@ -370,5 +369,9 @@ export class ProgdashManagerComponent implements AfterContentInit {
 
   get classes () {
     return this.classes$.getValue();
+  }
+
+  get _userListData () {
+    return get( this.classes, `byId.${this.selectedClass}.id.users`, []);
   }
 }

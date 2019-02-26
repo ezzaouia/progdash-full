@@ -1,19 +1,15 @@
-import { filter, indexOf, startsWith } from 'lodash';
+import { filter, indexOf, startsWith, get, keyBy } from 'lodash';
 
 import { DashActionsUnion, DashActionTypes, LoadUserInfo } from '../actions';
-import { ClassData, InsightData, RuleData, StoreField, UserData } from '../types';
+import { modulesDataAttr } from '../../utils/mappers';
 
 export interface State {
   isDataLoaded: boolean;
   isProgTableOpened: boolean;
   isProgEvaluationOpened: boolean;
   isLoading: boolean;
-  rawData: any[];
-  usersByClass: any ; /*StoreField<UserData>;*/
-  insights: any; /* StoreField<InsightData>;*/
-  rules: any; /*StoreField<RuleData>;*/
-  classes: any; /*StoreField<ClassData>*/
-  selectedClass: string;
+  classes: any;
+  selectedClass: any;
   selectedTimescale: string;
   selectedRules: string[];
   isStartPrintReport: boolean;
@@ -28,18 +24,14 @@ const initialState: State = {
   isProgTableOpened: false,
   isProgEvaluationOpened: false,
   isLoading: false,
-  rawData: [],
-  usersByClass: null,
-  insights: null,
-  rules: null,
-  classes: null,
-  selectedClass: null,
+  classes: { allIds: [], byId: {} },
+  selectedClass: {},
   selectedTimescale: 'lastWeek',
   selectedRules: [],
   isStartPrintReport: false,
   selectedWidgets: [],
   modulesData: {},
-  areaId: 26880,
+  areaId: 39422, // TODO FIXME
   userId: null,
 };
 
@@ -66,7 +58,6 @@ export function reducers (
       return {
         ...state,
         isLoading: false,
-        // rawData: action.payload,
       };
     }
 
@@ -88,15 +79,47 @@ export function reducers (
       return {
         ...state,
         isLoading: false,
-        // rawData: action.payload,
         classes: {
-          ...state.classes,
-          tmpAllIds: action.payload,
+          allIds: action.payload,
         },
       };
     }
 
     case DashActionTypes.LoadGroupsDataFailure: {
+      return {
+        ...state,
+        isLoading: false,
+      };
+    }
+
+    case DashActionTypes.LoadGroupData: {
+      return {
+        ...state,
+        isLoading: true,
+      };
+    }
+
+    case DashActionTypes.LoadGroupDataSuccess: {
+      const { group, data } = action.payload;
+      return {
+        ...state,
+        isLoading: false,
+        modulesData: modulesDataPrep( _modulesData ),
+        classes: {
+          ...state.classes,
+          byId: {
+            ...state.classes.byId,
+            [group.id]: {
+              users: keyBy( get( data, 'users', []), ( o: any ) => o.id ),
+              insights: get( data, 'insights', {}),
+              pulledAt: new Date(),
+            },
+          },
+        },
+      };
+    }
+
+    case DashActionTypes.LoadGroupDataFailure: {
       return {
         ...state,
         isLoading: false,
@@ -114,6 +137,7 @@ export function reducers (
     case DashActionTypes.SelectClass: {
       return {
         ...state,
+        isLoading: true,
         selectedClass: action.payload,
       };
     }
@@ -263,13 +287,12 @@ export function reducers (
   }
 }
 
-export const rawData = ( state: State ) => state.rawData;
-export const usersByClass = ( state: State ) => state.usersByClass;
+
 export const classes = ( state: State ) => state.classes;
-export const insights = ( state: State ) => state.insights;
 export const selectedClass = ( state: State ) => state.selectedClass;
 export const selectedTimescale = ( state: State ) => state.selectedTimescale;
 export const isDataLoaded = ( state: State ) => state.isDataLoaded;
+export const isLoading = ( state: State ) => state.isLoading;
 export const isProgTableOpened = ( state: State ) => state.isProgTableOpened;
 export const isProgEvaluationOpened = ( state: State ) => state.isProgEvaluationOpened;
 export const isStartPrintReport = ( state: State ) => state.isStartPrintReport;
@@ -277,3 +300,42 @@ export const selectedRules = ( state: State ) => state.selectedRules;
 export const selectedWidgets = ( state: State ) => state.selectedWidgets;
 export const modulesData = ( state: State ) => state.modulesData;
 export const userInfo = ( state: State ) => ({ userId: state.userId, areaId: state.areaId });
+
+// export const newClasses = ( state: State ) => state.newClasses;
+// export const insights = ( state: State ) => state.insights;
+// export const rawData = ( state: State ) => state.rawData;
+// export const usersByClass = ( state: State ) => state.usersByClass;
+
+const modulesDataPrep = mdata => {
+  return modulesDataAttr ( mdata );
+};
+
+// TODO REMOVE THIS
+const _modulesData = [
+  {
+    key: 'Orthotypographie',
+    index: 0, // l'ordre (inverse d'affichage)
+    nbrOfRules: 24, // nombre de règles du module
+  },
+  {
+    key: 'Pont supérieur',
+    index: 1,
+    nbrOfRules: 56,
+  },
+  {
+    key: 'Pro',
+    index: 2,
+    nbrOfRules: 84,
+  },
+  {
+    key: 'Les Fondamentaux Campus',
+    index: 3,
+    nbrOfRules: 47,
+  },
+  {
+    key: 'Supérieur',
+    index: 2, // j'affiche pas
+    nbrOfRules: 140,
+    sameAs: [ 'Pont supérieur', 'Pro' ],
+  },
+];

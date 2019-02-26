@@ -11,7 +11,6 @@ import {
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { each, get, set, last, split, keys } from 'lodash';
 
-import { UserData } from '../../store';
 import {
   GridsterConfig,
   CompactType,
@@ -217,9 +216,16 @@ export class UserDetailComponent implements OnInit, AfterViewInit {
     };
 
     each( this.boardGrid, ( value, key ) => {
+      let data;
+      if ( key === 'time' ) {
+        data = { sum: get( this.user, key ) };
+      } else {
+        data = get( this.user, key );
+      }
+
       set( value, 'data', {
         ...value.data,
-        ...get( this.user, key ),
+        ...data,
         key: last( split( key, '.' )),
         offsetWidth: this.offsetWidth,
         userData: this.user,
@@ -229,6 +235,9 @@ export class UserDetailComponent implements OnInit, AfterViewInit {
     });
 
     this.boardGridElements = keys( this.boardGrid );
+
+    console.log( '=========== this.boardGrid', this.boardGrid );
+
   }
 
   onCloseClick (): void {

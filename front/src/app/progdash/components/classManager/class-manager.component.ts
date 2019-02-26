@@ -40,6 +40,9 @@ import { BehaviorSubject } from 'rxjs';
       align-content: center;
       flex-direction: column;
       justify-content: center;
+      position: absolute;
+      top: 0;
+      left: 0;
     }
     .container {
       width: 100%;

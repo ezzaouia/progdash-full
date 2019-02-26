@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Fri Oct 21 17:05:47 CEST 2016-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.woonoz.pv.progdash.dao.mapper.UserActivityMapper">
+
+	<resultMap id="learningSessionTimeMap" type="com.woonoz.pv.progdash.dao.dbo.LearningSessionTimeDbo">
+		<id property="learningSessionId" column="id"/>
+		<result property="startDate" column="start_date"/>
+		<result property="timeSpent" column="time_spent_on"/>
+	</resultMap>
+
+	<select id="computeLearningTimeSpentBetween" resultType="int">
+		SELECT COALESCE(SUM(time_spent_on),0)
+		FROM learning_session
+		WHERE user_id = #{userId.id}
+		<if test="isLimited">AND
+			(
+			(start_date BETWEEN #{startDate} AND #{endDate})
+			OR
+			(end_date BETWEEN #{startDate} AND #{endDate})
+			)
+		</if>
+	</select>
+
+	<select id="getLearningSessionTimeBetween" resultMap="learningSessionTimeMap">
+		SELECT id,
+		start_date,
+		time_spent_on
+		FROM learning_session
+		WHERE user_id = #{userId.id}
+		AND time_spent_on > 0
+		<if test="isLimited">AND
+			(
+			(start_date BETWEEN #{startDate} AND #{endDate})
+			OR
+			(end_date BETWEEN #{startDate} AND #{endDate})
+			)
+		</if>
+	</select>
+
+</mapper>

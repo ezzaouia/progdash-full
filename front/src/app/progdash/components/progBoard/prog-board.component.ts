@@ -123,7 +123,7 @@ export class ProgBoardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   updateSup: Subscription;
   classes$ = new BehaviorSubject<any>({ byId: null, allIds: null });
-  selectedClass$ = new BehaviorSubject<string>( '' );
+  selectedClass$ = new BehaviorSubject<{id: number; name: string}>( null );
   selectedTimescale$ = new BehaviorSubject<string>( '' );
   selectedRules$ = new BehaviorSubject<string[]>([]);
   isStartPrintReport$ = new BehaviorSubject<boolean>( false );
@@ -131,7 +131,8 @@ export class ProgBoardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.selectedClass$,
     this.selectedTimescale$,
     this.isStartPrintReport$,
-    this.selectedRules$
+    this.selectedRules$,
+    this.classes$
   );
 
   colDefaultWidth = 100;
@@ -263,17 +264,31 @@ export class ProgBoardComponent implements OnInit, OnDestroy, AfterViewInit {
       },
     };
 
+
     this.updateSup = this.update$.subscribe( _ => {
+      let data, addedVal;
       if ( this.selectedTimescale ) {
         each( this.boardGrid, ( value, key ) => {
+          data = get(
+            this.classes,
+            `byId.${this.selectedClass.id}.insights.${
+              this.selectedTimescale
+            }.${key}`
+          );
+
+          if ( key === 'connections' ) {
+            addedVal = { data };
+          } else {
+            addedVal = {
+              ...data,
+              sumd: Math.abs( get( data, 'sumd' )),
+              sign: get( data, 'sumd' ) >= 0 ? 'plus' : 'minus',
+            };
+          }
+
           set( value, 'data', {
             ...value.data,
-            ...get(
-              this.classes,
-              `byId.${this.selectedClass}.insights.${
-                this.selectedTimescale
-              }.${key}`
-            ),
+            ...addedVal,
             id: replace( key, '.', '-' ),
             key: last( split( key, '.' )),
             timescaleLabel: get( Timescale, this.selectedTimescale ),

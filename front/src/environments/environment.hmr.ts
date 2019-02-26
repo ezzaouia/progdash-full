@@ -2,6 +2,8 @@ export const environment = {
   production: false,
   loglevel: 4,
   hmr: true,
-  API_URL: 'http://192.168.3.67:8080',
-    STAT_URL: '',
- };
+  apiUrl: 'http://woonoz.api-url',
+  pvApiUrl: '/services-pjv',
+  API_URL: 'http://localhost:4200/api',
+  SUIVI_STATS_URL: 'https://statistiques.projet-voltaire.fr'
+};

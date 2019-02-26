@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { tap, switchMap, catchError } from 'rxjs/operators';
+import { tap, throttleTime } from 'rxjs/operators';
 import { Action } from '@ngrx/store';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 
@@ -54,15 +54,26 @@ export class TraceEffects {
       DashActionTypes.FilterColumn,
 
       // User dialog
-      DashActionTypes.OpenUserDialog,
-      DashActionTypes.HoverWidget
-
+      DashActionTypes.OpenUserDialog
       // ...,
       // ...,
       // ...,
       // ...,
     ),
     tap( action => {
+      console.log( '***TRACE***', action );
+
+      this.traceService.createTrace( action );
+    })
+  );
+
+  @Effect({ dispatch: false })
+  debounceActions$: Observable<Action> = this.actions$.pipe(
+    ofType( DashActionTypes.HoverWidget ),
+    throttleTime( 5 * 60 * 1000 ),
+    tap( action => {
+      console.log( '***TRACE***', action );
+
       this.traceService.createTrace( action );
     })
   );

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Fri Oct 21 17:05:47 CEST 2016-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.woonoz.pv.progdash.dao.mapper.KeypointMapper">
+
+	<select id="getKeypointsPractice" resultType="com.woonoz.pv.progdash.dao.dbo.KeypointPracticeDbo">
+		SELECT
+			wgpm.id_membre     	as userId,
+			ukps.keypoint_id   	as keypointId,
+			c.id				as chapterId,
+			c.name     		  	as chapterName,
+			ukps.max_weight    	as maxWeight,
+			ukps.initial_weight as initialWeight,
+			COUNT(li.id)       	as nbInteractions,
+			MAX(ls.start_date)	as lastPracticeDate
+		FROM woonoz_groupe_p_membre wgpm
+		<if test="groupId != null">
+		  JOIN woonoz_groupe_membre wgm ON wgm.id_membre = wgpm.id_membre AND wgm.id_groupe = #{groupId}
+		</if>
+		  JOIN user_keypoint_state ukps ON ukps.user_id = wgpm.id_membre
+		  JOIN learning_group_reference lgr ON lgr.learning_group_id_reference = ukps.keypoint_id
+		  JOIN chapter c ON c.id = lgr.learning_group_id
+		  JOIN learning_session ls ON ls.user_id = wgpm.id_membre AND ls.mode = 'learn'
+		  JOIN module_element me ON me.module_id = ls.learning_activity_id AND me.chapter_id = lgr.learning_group_id
+		  JOIN exercise e on e.learning_group_id = lgr.learning_group_id
+		  JOIN learning_interaction li ON li.learning_session_id = ls.id AND li.learning_item_id = e.id
+		WHERE wgpm.id_groupe_p = #{areaId}
+		  AND wgpm.user_role = 'learner'
+		GROUP BY wgpm.id_membre, keypoint_id;
+	</select>
+
+	<resultMap id="chapterName" type="com.woonoz.pv.progdash.dao.dbo.ChapterNameDbo">
+		<constructor>
+			<idArg column="id" javaType="java.lang.Integer"/>
+			<arg column="name" javaType="java.lang.String"/>
+		</constructor>
+	</resultMap>
+	
+	<select id="getChapterNames" resultMap="chapterName">
+		SELECT id, name
+		FROM chapter
+		WHERE id IN <foreach collection="chapterIds" item="item" separator="," open="(" close=")">#{item}</foreach>;
+	</select>
+
+</mapper>
