@@ -24,10 +24,7 @@ export class ErrorsHandler implements ErrorHandler {
       // Server or connection error happened
       if ( !navigator.onLine ) {
         // Handle offline error
-        return notificationService.notifyError( 'No Internet Connection' );
-      } else if (error.status === 401) {
-        // TODO : if the error status function, redirect the user in home page '/'
-        console.log(" error not authorised")
+        return notificationService.notify( 'No Internet Connection' );
       } else {
         // Handle Http Error (error.status === 403, 404...)
         errorsService.log( error );

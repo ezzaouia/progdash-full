@@ -13,7 +13,7 @@ import { Component, OnInit, Input } from '@angular/core';
           'plus-sign': (sign === 'plus'),
           'minus-sign': (sign === 'minus')
         }">
-          play_arrow
+        {{ sign === 'plus' ? 'add' : 'remove' }}
       </mat-icon>
       <span class="label" >{{ data }}</span>
     </div>
@@ -48,12 +48,10 @@ import { Component, OnInit, Input } from '@angular/core';
     }
     .plus-sign {
       color: #B2FF59;
-      transform: rotate(-90deg);
       transition: transform 0.5s ease;
     }
     .minus-sign {
       color: #FF5252;
-      transform: rotate(90deg);
       transition: transform 0.5s ease;
     }
   ` ],

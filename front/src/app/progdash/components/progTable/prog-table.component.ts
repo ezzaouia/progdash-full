@@ -1,6 +1,6 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, AfterContentInit, AfterViewInit } from '@angular/core';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { values } from 'lodash';
+import { values, map, get } from 'lodash';
 import * as moment from 'moment';
 import 'moment-duration-format';
 moment.locale( 'fr' );
@@ -114,7 +114,7 @@ import { PrintWidgetComponent } from '../../../shared/components';
     }
   ` ],
 })
-export class ProgTableComponent implements OnInit, OnDestroy {
+export class ProgTableComponent implements OnInit, OnDestroy, AfterContentInit {
 
   @Input() isStartPrintReport;
   @Input() progTableMode;
@@ -127,114 +127,110 @@ export class ProgTableComponent implements OnInit, OnDestroy {
   @Output() hoverWidgetTraceHandler = new EventEmitter();
   @Output() userMoreMenuHandler = new EventEmitter();
 
-  updateSub: Subscription;
   userListData$ = new BehaviorSubject<any>({});
-  dataStream = new BehaviorSubject<any[]>([]);
 
   colDefaultWidth = 100;
   colDefaultHeight = 30;
-  columns = {
-    moremenu: {
-      name: '',
-      histo: '',
-      encoding: 'NG',
-      width: 24,
-      topBottom: 0,
-    },
-    fullName: {
-      name: 'Apprenant',
-      histo: '',
-      encoding: 'STRING',
-      width: 100,
-      topBottom: 0,
-    },
-    // moduleName: {
-    //   name: 'Module Atteint',
-    //   histo: 'categorical',
-    //   encoding: 'CAT',
-    //   width: 100,
-    //   topBottom: 0,
-    //   color: moduleCatColors,
-    // },
-    'lastConnection': {
-      name: 'Dernière Connexion',
-      histo: '',
-      formatter: this.lastConnectionFormatter,
-      encoding: 'STRING',
-      width: 100,
-      topBottom: 0,
-    },
-    'connectionsNbr': {
-      name: 'Nbr. Connexions',
-      histo: 'ordinal',
-      encoding: 'BAR',
-      width: 80,
-      topBottom: 0,
-    },
-    'initialEval': {
-      name: 'Eval. Initiale',
-      histo: 'ordinal',
-      encoding: 'BAR',
-      width: 80,
-      topBottom: 0,
-    },
-    'initialLevel.sum': {
-      name: 'Règles sues initialement',
-      compositeHint: [ 'initialLevel.sum', 'initialLevel.count' ],
-      histo: 'ordinal',
-      encoding: 'BAR',
-      width: 80,
-      topBottom: 0,
-    },
-    'time': {
-      name: 'Temps cumulé',
-      // hint: 'time.format',
-      formatter: this.timeFormatter,
-      histo: 'ordinal',
-      encoding: 'BAR',
-      width: 80,
-      topBottom: 0,
-    },
-    'score.sum': {
-      name: 'Score',
-      histo: 'ordinal',
-      encoding: 'BAR',
-      // hint: 'score.format',
-      compositeHint: [ 'score.sum', 'score.count' ],
-      width: 80,
-      topBottom: 0,
-    },
-    'print': {
-      name: '',
-      histo: '',
-      encoding: 'NG',
-      width: 50,
-      topBottom: 0,
-    },
-    // 'progData.day': {
-    //   name: 'Progression',
-    //   histo: '',
-    //   encoding: 'LINE',
-    //   width: 70,
-    //   topBottom: 0,
-    //   xkey: 'date',
-    //   ykey: 'sumscore',
-    //   scaleType: 'time',
-    // },
-  };
+  columns = {};
 
   constructor () {}
 
-  ngOnInit (): void {
-    this.updateSub = this.userListData$
-      .subscribe( _ => {
-        this.dataStream.next( values( this.userListData ));
-      });
+  ngOnInit (): void {}
+
+  ngAfterContentInit (): void {
+    this.columns = {
+      moremenu: {
+        name: '',
+        histo: '',
+        encoding: 'NG',
+        width: 24,
+        topBottom: 0,
+      },
+      fullName: {
+        name: 'Apprenant',
+        histo: '',
+        encoding: 'STRING',
+        width: 100,
+        topBottom: 0,
+      },
+      lastModule: {
+        name: 'Module Atteint',
+        histo: 'categorical',
+        encoding: 'CAT',
+        width: 100,
+        topBottom: 0,
+        color: get( this.modulesData, 'forColor' ),
+      },
+      'lastConnection': {
+        name: 'Dernière Connexion',
+        histo: '',
+        formatter: this.lastConnectionFormatter,
+        encoding: 'STRING',
+        width: 100,
+        topBottom: 0,
+      },
+      'connectionsNbr': {
+        name: 'Nbr. Connexions',
+        histo: 'ordinal',
+        encoding: 'BAR',
+        width: 80,
+        topBottom: 0,
+      },
+      'initialEval': {
+        name: 'Eval. Initiale',
+        histo: 'ordinal',
+        encoding: 'BAR',
+        width: 80,
+        topBottom: 0,
+      },
+      'initialLevel.sum': {
+        name: 'Règles sues initialement',
+        compositeHint: [ 'initialLevel.sum', 'initialLevel.count' ],
+        histo: 'ordinal',
+        encoding: 'BAR',
+        width: 80,
+        topBottom: 0,
+      },
+      'time': {
+        name: 'Temps cumulé',
+        // hint: 'time.format',
+        formatter: this.timeFormatter,
+        histo: 'ordinal',
+        encoding: 'BAR',
+        width: 80,
+        topBottom: 0,
+      },
+      'score.sum': {
+        name: 'Score',
+        histo: 'ordinal',
+        encoding: 'BAR',
+        // hint: 'score.format',
+        compositeHint: [ 'score.sum', 'score.count' ],
+        width: 80,
+        topBottom: 0,
+      },
+      'print': {
+        name: '',
+        histo: '',
+        encoding: 'NG',
+        width: 50,
+        topBottom: 0,
+      },
+      // 'progData.day': {
+      //   name: 'Progression',
+      //   histo: '',
+      //   encoding: 'LINE',
+      //   width: 70,
+      //   topBottom: 0,
+      //   xkey: 'date',
+      //   ykey: 'sumscore',
+      //   scaleType: 'time',
+      // },
+    };
+
   }
 
-  ngOnDestroy (): void {
-    this.updateSub.unsubscribe();
-  }
+  ngOnDestroy (): void {}
 
   @Input()
   set userListData ( value ) {

@@ -1,7 +1,7 @@
 import { filter, indexOf, startsWith, get, keyBy } from 'lodash';
 
 import { DashActionsUnion, DashActionTypes, LoadUserInfo } from '../actions';
-import { modulesDataAttr } from '../../utils/mappers';
+import { modulesDataAttr } from '../utils/data-prep.utils';
 
 export interface State {
   isDataLoaded: boolean;
@@ -99,12 +99,18 @@ export function reducers (
       };
     }
 
+    case DashActionTypes.Empty: {
+      return {
+        ...state,
+        isLoading: false,
+      };
+    }
+
     case DashActionTypes.LoadGroupDataSuccess: {
       const { group, data } = action.payload;
       return {
         ...state,
         isLoading: false,
-        modulesData: modulesDataPrep( _modulesData ),
         classes: {
           ...state.classes,
           byId: {
@@ -112,6 +118,8 @@ export function reducers (
             [group.id]: {
               users: keyBy( get( data, 'users', []), ( o: any ) => o.id ),
               insights: get( data, 'insights', {}),
+              evaluations: get( data, 'evaluations', []) ,
+              modules: modulesDataAttr ( get( data, 'modules', [])),
               pulledAt: new Date(),
             },
           },
@@ -300,42 +308,3 @@ export const selectedRules = ( state: State ) => state.selectedRules;
 export const selectedWidgets = ( state: State ) => state.selectedWidgets;
 export const modulesData = ( state: State ) => state.modulesData;
 export const userInfo = ( state: State ) => ({ userId: state.userId, areaId: state.areaId });
-
-// export const newClasses = ( state: State ) => state.newClasses;
-// export const insights = ( state: State ) => state.insights;
-// export const rawData = ( state: State ) => state.rawData;
-// export const usersByClass = ( state: State ) => state.usersByClass;
-
-const modulesDataPrep = mdata => {
-  return modulesDataAttr ( mdata );
-};
-
-// TODO REMOVE THIS
-const _modulesData = [
-  {
-    key: 'Orthotypographie',
-    index: 0, // l'ordre (inverse d'affichage)
-    nbrOfRules: 24, // nombre de règles du module
-  },
-  {
-    key: 'Pont supérieur',
-    index: 1,
-    nbrOfRules: 56,
-  },
-  {
-    key: 'Pro',
-    index: 2,
-    nbrOfRules: 84,
-  },
-  {
-    key: 'Les Fondamentaux Campus',
-    index: 3,
-    nbrOfRules: 47,
-  },
-  {
-    key: 'Supérieur',
-    index: 2, // j'affiche pas
-    nbrOfRules: 140,
-    sameAs: [ 'Pont supérieur', 'Pro' ],
-  },
-];

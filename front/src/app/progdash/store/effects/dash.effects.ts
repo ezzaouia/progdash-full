@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, from, of, empty } from 'rxjs';
+import { Observable, from, of } from 'rxjs';
 import { get } from 'lodash';
 import {
   switchMap,
@@ -16,14 +16,9 @@ import { saveAs } from 'file-saver';
 import * as moment from 'moment';
 
 import { ProgdashDataService } from '../../services';
-import { DataService } from '../../../shared/services';
-import { dataPrep, filename } from '../../utils/data.prep';
-import { cast } from '../../utils/mappers';
 import {
   LoadData,
   DashActionTypes,
-  LoadDataSuccess,
-  RunDataPrepComplete,
   LaunchPVLive,
   CheckWidget,
   PrintReport,
@@ -37,7 +32,8 @@ import {
   SelectClass,
   LoadGroupData,
   LoadGroupDataSuccess,
-  LoadGroupDataFailure
+  LoadGroupDataFailure,
+  Empty,
 } from '../actions';
 import { Router } from '@angular/router';
 import * as html2pdf from 'html2pdf.js';
@@ -51,7 +47,6 @@ export class DashEffects {
 
   constructor (
     private actions$: Actions,
-    private dataService: DataService,
     private progdashDataService: ProgdashDataService,
     private router: Router,
     private store: Store<fromStore.State>
@@ -78,16 +73,19 @@ export class DashEffects {
     })
   );
 
+
   @Effect()
   selectClass$: Observable<Action> = this.actions$.pipe(
     ofType<SelectClass>( DashActionTypes.SelectClass ),
     map( action => action.payload ),
     withLatestFrom( this.store.pipe( select( fromStore.userInfo ))),
     withLatestFrom( this.store.pipe( select( fromStore.classes ))),
-    switchMap(([ [ selectedClass, userInfo ], classes ]) => {
+    map(([ [ selectedClass, userInfo ], classes ]) => ({ selectedClass, userInfo, classes })),
+    switchMap(({ selectedClass, userInfo, classes }) => {
       const pulledAt = get( classes, `byId.${selectedClass.id}.pulledAt`, '' );
       if ( pulledAt &&  ( moment().diff( moment( pulledAt ), 'hours', true ) < 1 )) {
-        return empty();
+        // workaround TOFIX, the action exist but I'm not able to return new Empty()
+        return of({ type: '[Dash] Empty' });
       } else {
         return this.progdashDataService
         .loadGroupData$({
@@ -106,12 +104,12 @@ export class DashEffects {
     })
   );
 
-  @Effect()
-  runDataPrep$: Observable<Action> = this.actions$.pipe(
-    ofType<LoadDataSuccess>( DashActionTypes.LoadDataSuccess ),
-    map( action => dataPrep( action.payload )),
-    map( data => new RunDataPrepComplete( data ))
-  );
+  // @Effect()
+  // runDataPrep$: Observable<Action> = this.actions$.pipe(
+  //   ofType<LoadDataSuccess>( DashActionTypes.LoadDataSuccess ),
+  //   map( action => dataPrep( action.payload )),
+  //   map( data => new RunDataPrepComplete( data ))
+  // );
 
   @Effect({ dispatch: false })
   launchPVLive$: Observable<Action> = this.actions$.pipe(
@@ -282,10 +280,10 @@ export class DashEffects {
 
           return blob;
         }),
-        map( blob => new PrintReportSuccess({ blob }))
-        // catchError( err => {
-        //   return of( new PrintReportFailure( 'Print_Pdf_Report_Failure' ));
-        // })
+        map( blob => new PrintReportSuccess({ blob })),
+        catchError( err => {
+          return of( new PrintReportFailure( 'Print_Pdf_Report_Failure' ));
+        })
       );
     })
   );
@@ -345,10 +343,10 @@ export class DashEffects {
 
           return blob;
         }),
-        map( blob => new PrintReportSuccess({ blob }))
-        // catchError( err => {
-        //   return of( new PrintReportFailure( 'Print_Pdf_Report_Failure' ));
-        // })
+        map( blob => new PrintReportSuccess({ blob })),
+        catchError( err => {
+          return of( new PrintReportFailure( 'Print_Pdf_Report_Failure' ));
+        })
       );
     })
   );

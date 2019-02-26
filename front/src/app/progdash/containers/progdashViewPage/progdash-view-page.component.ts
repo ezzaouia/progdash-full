@@ -14,15 +14,12 @@ import { Timescale } from '../../utils/utils';
       <mat-progress-bar mode="indeterminate" color="#ffd740"></mat-progress-bar>
     </div>
     <ProgdashManager
-      *ngIf="!(isLoading$ | async) && classes$ | async"
       [isDataLoaded]="isDataLoaded$ | async"
       [isProgTableOpened]="isProgTableOpened$ | async"
       [isProgEvaluationOpened]="isProgEvaluationOpened$ | async"
       [isStartPrintReport]="isStartPrintReport$ | async"
 
       [classes]="classes$ | async"
-      [modulesData]="modulesData$ | async"
-
       [selectedClass]="selectedClass$ | async"
       [selectedTimescale]="selectedTimescale$ | async"
       [selectedRules]="selectedRules$ | async"
@@ -68,8 +65,8 @@ export class ProgdashViewPageComponent implements OnInit {
   selectedWidgets$: Observable<string[]>;
 
   constructor ( private store: Store<fromStore.State> ) {
-    this.isDataLoaded$ = this.store.pipe( select( fromStore.isDataLoaded ));
-    // this.isLoading$ = this.store.pipe( select( fromStore.isLoading ));
+    this.isLoading$ = this.store.pipe( select( fromStore.isLoading ));
+    // this.isDataLoaded$ = this.store.pipe( select( fromStore.isDataLoaded ));
     this.isProgTableOpened$ = this.store.pipe( select( fromStore.isProgTableOpened ));
     this.isStartPrintReport$ = this.store.pipe( select( fromStore.isStartPrintReport ));
     this.isProgEvaluationOpened$ = this.store.pipe( select( fromStore.isProgEvaluationOpened ));

@@ -180,7 +180,7 @@ export class MlineChartComponent implements OnInit, OnDestroy {
   }
 
   momentTimeFormat ( d ) {
-    return moment( d, '%d/%m/\'%y' ).format( 'DD/MM/YY' );
+    return moment( d, '%d/%m/\'%y' ).format( 'YYYY/MM/DD' );
   }
 
   get rangeFilter () {
@@ -215,8 +215,8 @@ export class MlineChartComponent implements OnInit, OnDestroy {
   }
 
   calExtent () {
-    const data = flatMap( this.data, `progData.${this.timeScale}` );
-    const xextent = extent( data, d => new Date( this.timeParse( get( d, 'date', '' ))));
+    const data = flatMap( this.data, 'progData' );
+    const xextent = extent( data, d => new Date( get( d, 'date', '' )));
     const yextent = [ 0, max( data, d => get ( d, this.ykey )) ];
     return { xextent, yextent };
   }

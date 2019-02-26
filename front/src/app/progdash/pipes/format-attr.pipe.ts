@@ -16,8 +16,13 @@ export class FormatAttrPipe implements PipeTransform {
         kf = this.pluralFormater( value, 'règle' );
         break;
       }
+      case 'dropout':
       case 'time': {
         kf = this.timeFormater( value );
+        break;
+      }
+      case 'help': {
+        kf = this.helpFormatter( value );
         break;
       }
       case 'activeUsers': {
@@ -41,6 +46,10 @@ export class FormatAttrPipe implements PipeTransform {
 
   timeFormater ( value ) {
     return moment.duration( value, 'minutes' ).format( 'h[ ][h][ ]mm[ ][min]' );
+  }
+
+  helpFormatter ( value ) {
+    return value + ' exo/règle(moy.)';
   }
 
   pluralFormater ( value, ...labels ) {
