@@ -6,6 +6,8 @@ import com.woonoz.pv.progdash.dto.AllStatisticsDto;
 import com.woonoz.pv.progdash.dto.GroupDto;
 import com.woonoz.pv.progdash.dto.LearningSessionStatisticsDto;
 
+import javax.annotation.Nullable;
+
 public interface LearningStatisticsService {
 
 	LearningSessionStatisticsDto getLearningSessionStatistics(Integer userId, String message);
@@ -16,7 +18,7 @@ public interface LearningStatisticsService {
 
 	boolean isGroupUsersNumberWithinLimit(int groupId, int limit);
 
-	boolean isGroupInArea(int areaId, Integer groupId);
+	boolean isGroupInArea(int areaId, int groupId);
 
-	AllStatisticsDto getAllStatistics(int areaId, Integer groupId);
+	AllStatisticsDto getAllStatistics(int areaId, @Nullable Integer groupId);
 }

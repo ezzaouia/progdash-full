@@ -3,13 +3,17 @@ package com.woonoz.pv.progdash.service;
 import java.util.HashMap;
 import java.util.Map;
 
+import java.util.List;
+
 import com.woonoz.pv.progdash.dto.TopNRulesDto;
-import com.woonoz.pv.progdash.dto.UserDataDto;
+import com.woonoz.pv.progdash.dto.UserDataInfoDto;
 
 public class DataFromKeypoints {
 
 	private TopNRulesDto lastWeekTopRules;
 	private TopNRulesDto lastMonthTopRules;
+	private List<UserDataInfoDto> lastWeekTopUsers;
+	private List<UserDataInfoDto> lastMonthTopUsers;
 
 	private Map<Integer, TopNRulesDto> usersMap = new HashMap<>();
 
@@ -27,6 +31,22 @@ public class DataFromKeypoints {
 
 	public TopNRulesDto getLastMonthTopRules() {
 		return lastMonthTopRules;
+	}
+
+	public List<UserDataInfoDto> getLastWeekTopUsers() {
+		return lastWeekTopUsers;
+	}
+
+	public void setLastWeekTopUsers(List<UserDataInfoDto> lastWeekTopUsers) {
+		this.lastWeekTopUsers = lastWeekTopUsers;
+	}
+
+	public List<UserDataInfoDto> getLastMonthTopUsers() {
+		return lastMonthTopUsers;
+	}
+
+	public void setLastMonthTopUsers(List<UserDataInfoDto> lastMonthTopUsers) {
+		this.lastMonthTopUsers = lastMonthTopUsers;
 	}
 
 	public Map<Integer, TopNRulesDto> getUsersMap() {

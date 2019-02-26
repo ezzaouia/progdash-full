@@ -1,5 +1,7 @@
 package com.woonoz.pv.progdash.dto;
 
+import java.util.List;
+
 public class UserDataDto {
 
 	private static final String UNSTARTED = "pas commencé";
@@ -14,6 +16,7 @@ public class UserDataDto {
 	private int connectionsNbr; // number of learning sessions of type 'learn'
 	private String lastModule; // name of the highest module with training, or UNSTARTED
 	private TopNRulesDto topNRules;
+	private List<ProgressDto> progData;
 
 	public UserDataDto(int id, String fullName) {
 		this.id = id;
@@ -62,6 +65,10 @@ public class UserDataDto {
 		return topNRules;
 	}
 
+	public List<ProgressDto> getProgData() {
+		return progData;
+	}
+
 	public void setTime(int time) {
 		this.time = time;
 	}
@@ -92,5 +99,9 @@ public class UserDataDto {
 
 	public void setTopNRules(TopNRulesDto topNRules) {
 		this.topNRules = topNRules;
+	}
+
+	public void setProgData(List<ProgressDto> progData) {
+		this.progData = progData;
 	}
 }

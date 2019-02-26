@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {UserService} from "../../services";
 import {Router} from "@angular/router";
+import {environment} from "../../../../environments/environment";
 
 /* tslint:disable component-selector  */
 @Component({
@@ -27,11 +28,25 @@ export class MoreMenuComponent implements OnInit {
   ngOnInit (): void { }
 
   signOut() {
-    this.router.navigate(['/guard/login']);
+    this.router.navigate([
+        '/externalSuiviStatsRedirect',
+        {
+          externalUrl: `${environment.SUIVI_STATS_URL}/guard/logout'`,
+          isSelf : true,
+        } ],
+      { skipLocationChange: false }
+    );
   }
 
   goToStatistic() {
     const areaId = this.userService.getAreaId();
-    this.router.navigate([`/sphere/${areaId}/statistiques`]);
+    this.router.navigate([
+        '/externalSuiviStatsRedirect',
+        {
+          externalUrl: `${environment.SUIVI_STATS_URL}/sphere/${areaId}/statistiques`,
+          isSelf : true,
+        } ],
+      { skipLocationChange: false }
+    );
   }
 }
