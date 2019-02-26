@@ -8,6 +8,7 @@ public class ProgressDbo {
 	private int keypointId;
 	private Float maxWeight;
 	private Date lastdate;
+	private String productName;
 
 	public int getUserId() {
 		return userId;
@@ -23,5 +24,9 @@ public class ProgressDbo {
 
 	public Date getLastdate() {
 		return lastdate;
+	}
+
+	public String getProductName() {
+		return productName;
 	}
 }

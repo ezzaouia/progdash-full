@@ -8,13 +8,16 @@
 			wgpm.id_membre userId,
 			ukps.keypoint_id keypointId,
 			ukps.max_weight maxWeight,
-			DATE(MAX(ls.start_date)) lastdate
+			DATE(MAX(ls.start_date)) lastdate,
+			pp.nom productName
 
 		FROM woonoz_groupe_p_membre wgpm
-			     JOIN user_keypoint_state ukps ON ukps.user_id = wgpm.id_membre
-			     JOIN learning_group_reference lgr ON lgr.learning_group_id_reference = ukps.keypoint_id
-			     JOIN learning_session ls ON ls.user_id = wgpm.id_membre AND ls.mode = 'learn'
-			     JOIN module_element me ON me.module_id = ls.learning_activity_id AND me.chapter_id = lgr.learning_group_id
+		  JOIN user_keypoint_state ukps ON ukps.user_id = wgpm.id_membre
+		  JOIN learning_group_reference lgr ON lgr.learning_group_id_reference = ukps.keypoint_id
+		  JOIN learning_session ls ON ls.user_id = wgpm.id_membre AND ls.mode = 'learn'
+		  JOIN module m ON m.id = ls.learning_activity_id
+		  JOIN pv_produit pp ON pp.id = m.product_id
+		  JOIN module_element me ON me.module_id = ls.learning_activity_id AND me.chapter_id = lgr.learning_group_id
 
 		WHERE wgpm.id_membre IN <foreach collection="userIds" item="item" separator="," open="(" close=")">#{item}</foreach>
 		  AND wgpm.user_role = 'learner'
