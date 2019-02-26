@@ -4,12 +4,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nullable;
+
 import org.apache.ibatis.annotations.MapKey;
-import com.woonoz.pv.progdash.dao.dbo.SessionOnDateDbo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import javax.annotation.Nullable;
+import com.woonoz.pv.progdash.dao.dbo.SessionOnDateDbo;
 import com.woonoz.pv.progdash.dao.dbo.UserTrainingTimeDbo;
 
 @Mapper
@@ -25,7 +26,7 @@ public interface InsightStatisticsMapper {
     List<SessionOnDateDbo> getConnectionsChart(@Param("areaId") int areaId, @Nullable @Param("groupId") Integer groupId, @Param("nbDays") int nbDays, @Param("endDate") Date endDate);
 
 	@MapKey("userId")
-	Map<Integer, UserTrainingTimeDbo> getTopTrainingTime(@Param("areaId") int areaId, @Param("startDate") Date startDate, @Param("endDate") Date endDate,
+	Map<Integer, UserTrainingTimeDbo> getTopTrainingTime(@Param("areaId") int areaId, @Param("groupId") Integer groupId, @Param("startDate") Date startDate, @Param("endDate") Date endDate,
 			@Param("nbForTop") Integer nbForTop, @Param("ascendantOrder") Boolean ascendantOrder);
 
 }
