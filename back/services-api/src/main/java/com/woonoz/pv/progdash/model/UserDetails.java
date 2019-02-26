@@ -12,7 +12,7 @@ public class UserDetails {
 
 	private final UserId userId;
 	private final String pseudo;
-	private final Map<Integer, UserRole> areaRoles = new HashMap<>();
+	private final Map<AreaDetails, UserRole> areaRoles = new HashMap<>();
 	private final Map<Integer, UserRole> universeRoles = new HashMap<>();
 	private final boolean superAdmin;
 	private final int status;
@@ -40,7 +40,7 @@ public class UserDetails {
 		return status;
 	}
 
-	public Map<Integer, UserRole> getAreaRoles() {
+	public Map<AreaDetails, UserRole> getAreaRoles() {
 		return areaRoles;
 	}
 

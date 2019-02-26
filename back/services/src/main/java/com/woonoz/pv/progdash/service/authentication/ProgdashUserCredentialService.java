@@ -26,6 +26,7 @@ import com.woonoz.pv.progdash.dao.dbo.AreaDetailsDbo;
 import com.woonoz.pv.progdash.dao.dbo.UniverseDetailsDbo;
 import com.woonoz.pv.progdash.dao.dbo.UserDetailsDbo;
 import com.woonoz.pv.progdash.dao.mapper.UserCredentialsMapper;
+import com.woonoz.pv.progdash.model.AreaDetails;
 import com.woonoz.pv.progdash.model.ProgdashUserDetails;
 import com.woonoz.pv.progdash.model.UserDetails;
 import com.woonoz.pv.progdash.model.UserRole;
@@ -186,7 +187,7 @@ public class ProgdashUserCredentialService implements UserCredentialsService {
 	private static void initAreaRoles(UserDetails userDetails, List<AreaDetailsDbo> areaDetailsDbos){
 		if (areaDetailsDbos != null && !areaDetailsDbos.isEmpty()){
 			for (AreaDetailsDbo areaDetailsDbo : areaDetailsDbos){
-				userDetails.getAreaRoles().put(areaDetailsDbo.getAreaId(), UserRole.fromString(areaDetailsDbo.getRole()));
+				userDetails.getAreaRoles().put(new AreaDetails(areaDetailsDbo.getAreaId(), areaDetailsDbo.getUniverseId()), UserRole.fromString(areaDetailsDbo.getRole()));
 			}
 		}
 	}

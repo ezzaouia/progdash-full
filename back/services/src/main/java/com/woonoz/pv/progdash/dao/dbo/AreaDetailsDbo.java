@@ -6,6 +6,7 @@ public class AreaDetailsDbo {
 
 	private Integer areaId;
 	private String role;
+	private Integer universeId;
 
 	public Integer getAreaId() {
 		return areaId;
@@ -23,11 +24,20 @@ public class AreaDetailsDbo {
 		this.role = role;
 	}
 
+	public Integer getUniverseId() {
+		return universeId;
+	}
+
+	public void setUniverseId(Integer universeId) {
+		this.universeId = universeId;
+	}
+
 	@Override
 	public String toString() {
 		return MoreObjects.toStringHelper(this)
 				.add("areaId", areaId)
 				.add("role", role)
+				.add("universeId", universeId)
 				.toString();
 	}
 }
