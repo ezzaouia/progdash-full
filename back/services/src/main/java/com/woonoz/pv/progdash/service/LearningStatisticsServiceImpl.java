@@ -28,6 +28,7 @@ import com.woonoz.pv.progdash.dto.InsightDataDto;
 import com.woonoz.pv.progdash.dto.InsightInfoDto;
 import com.woonoz.pv.progdash.dto.LearningSessionStatisticsDto;
 import com.woonoz.pv.progdash.dto.RatioDto;
+import com.woonoz.pv.progdash.dto.TopNRulesDto;
 import com.woonoz.pv.progdash.dto.UserDataDto;
 
 @Service
@@ -87,18 +88,19 @@ public class LearningStatisticsServiceImpl implements LearningStatisticsService 
 		AllStatisticsDto allStats = new AllStatisticsDto();
 		int nbUsers = areaGroupMapper.countAreaUsers(areaId);
 
+		DataFromKeypoints dataFromKeypoints = keypointService.processKeypoints(areaId,NB_ITEMS_FOR_TOP);
+
 		Map<Integer, UserDataDto> usersMap = new HashMap<>();
 		for (UserIdentityDbo userIdentityDbo : learningStatisticsMapper.getUsersIdentity(areaId)) {
 			usersMap.put(userIdentityDbo.getId(), new UserDataDto(userIdentityDbo.getId(), userIdentityDbo.getFullName()));
 		}
-		fillUsersMap(usersMap, areaId);
+		fillUsersMap(usersMap, areaId, dataFromKeypoints);
 		Collection<UserDataDto> userDataDtos = usersMap.values();
 		allStats.setUsers(userDataDtos);
 
 		InsightInfoDto lastWeek = insightStatisticsService.createInsightsInfo(areaId, nbUsers, 7, 1);
 		InsightInfoDto lastMonth = insightStatisticsService.createInsightsInfo(areaId, nbUsers, 30, 4);
 
-		DataFromKeypoints dataFromKeypoints = keypointService.processKeypoints(areaId,NB_ITEMS_FOR_TOP);
 		lastWeek.setTopNRules(dataFromKeypoints.getLastWeekTopRules());
 		lastMonth.setTopNRules(dataFromKeypoints.getLastMonthTopRules());
 
@@ -108,7 +110,7 @@ public class LearningStatisticsServiceImpl implements LearningStatisticsService 
 		return allStats;
 	}
 
-	private void fillUsersMap(Map<Integer, UserDataDto> usersMap, int areaId) {
+	private void fillUsersMap(Map<Integer, UserDataDto> usersMap, int areaId, DataFromKeypoints dataFromKeypoints) {
 
 		for (ReachedProductDbo reachedProductDbo : learningStatisticsMapper.getReachedProduct(areaId)) {
 			usersMap.get(reachedProductDbo.getUserId()).setLastModule(reachedProductDbo.getProductName());
@@ -131,6 +133,12 @@ public class LearningStatisticsServiceImpl implements LearningStatisticsService 
 			int totalNbKeypoints = countUserKeypoints(userProductIds, optionalProducts, productNbKeypointsMap);
 			userData.setInitialLevel(new RatioDto(knownRulesDbo.getInitiallyKnownRules(), knownRulesDbo.getEvaluatedRules()));
 			userData.setScore(new RatioDto(knownRulesDbo.getKnownRules(), totalNbKeypoints));
+		}
+
+		for(Integer userId: dataFromKeypoints.getUsersMap().keySet()) {
+			UserDataDto userData = usersMap.get(userId);
+			TopNRulesDto topNRulesDto = dataFromKeypoints.getUsersMap().get(userId);
+			userData.setTopNRules(topNRulesDto);
 		}
 	}
 

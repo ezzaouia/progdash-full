@@ -1,17 +1,24 @@
 package com.woonoz.pv.progdash.service;
 
 import static java.util.stream.Collectors.averagingInt;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
@@ -39,8 +46,106 @@ public class KeypointServiceImpl implements KeypointService {
 
 		addTopRulesToData(dataFromKeypoints, kpPracticeDbos, nbItemsForTop);
 
+		addUsersData(dataFromKeypoints, kpPracticeDbos, nbItemsForTop);
+
 		return dataFromKeypoints;
 
+	}
+
+	class TopNRulesKp {
+		public List<KeypointPracticeDbo> known = new ArrayList<KeypointPracticeDbo>();
+		public List<KeypointPracticeDbo> acquired = new ArrayList<KeypointPracticeDbo>();
+		public List<KeypointPracticeDbo> focused = new ArrayList<KeypointPracticeDbo>();
+	}
+
+	private void addUsersData(DataFromKeypoints dataFromKeypoints, List<KeypointPracticeDbo> kpPracticeDbos, int nbItemsForTop) {
+		Map<Integer, List<KeypointPracticeDbo>> kpsByUserId = getKpsByUserId(kpPracticeDbos);
+		Map<Integer, TopNRulesKp> topNRulesKpByUserId = getTopNRulesKpByUserId(kpsByUserId, nbItemsForTop);
+		Set<Integer> allChaptersId = getAllChaptersId(topNRulesKpByUserId);
+		Map<Integer, ChapterNameDbo> chapterNames = keypointMapper.getChapterNames(allChaptersId);
+		dataFromKeypoints.setUsersMap(getUserMapsTopNRules(topNRulesKpByUserId, chapterNames));
+	}
+
+	private Map<Integer, TopNRulesDto> getUserMapsTopNRules(Map<Integer, TopNRulesKp> topNRulesKpByUserId, Map<Integer, ChapterNameDbo> chapterNames) {
+		Function<KeypointPracticeDbo, RuleDataInfoDto> mapKpToInfo = kp -> {
+			String chapterName = chapterNames.get(kp.getChapterId()).getName();
+			return new RuleDataInfoDto(kp.getKeypointId(), chapterName, kp.getNbInteractions());
+		};
+		return  topNRulesKpByUserId.entrySet().stream()
+				.collect(Collectors.toMap(
+						(Map.Entry<Integer, TopNRulesKp> e) -> e.getKey(),
+						(Map.Entry<Integer, TopNRulesKp> e) ->
+							new TopNRulesDto(
+									e.getValue().focused.stream()
+											.map(mapKpToInfo)
+											.collect(toList()),
+									e.getValue().acquired.stream()
+											.map(mapKpToInfo)
+											.collect(toList()),
+									e.getValue().known.stream()
+											.map(mapKpToInfo)
+											.collect(toList())
+							)
+				));
+	}
+
+	private Set<Integer> getAllChaptersId(Map<Integer, TopNRulesKp> topNRulesKpByUserId) {
+		return topNRulesKpByUserId.values().stream()
+				.flatMap( (Function<TopNRulesKp, Stream<KeypointPracticeDbo>>) (TopNRulesKp l) -> Stream.concat(
+						l.acquired.stream(),
+						Stream.concat(l.focused.stream(), l.focused.stream()))
+				)
+				.map((kp) -> kp.getChapterId())
+				.collect(Collectors.toSet());
+	}
+
+	private Map<Integer, TopNRulesKp> getTopNRulesKpByUserId(Map<Integer, List<KeypointPracticeDbo>> kpsByUserId, int nbItemsForTop) {
+		return
+				kpsByUserId.entrySet().stream()
+						.collect(Collectors.toMap(
+								entry -> entry.getKey(),
+								entry -> {
+									TopNRulesKp topNRulesKp = new TopNRulesKp();
+									topNRulesKp.known = getTopNKnownKp(entry.getValue(), nbItemsForTop);
+									topNRulesKp.acquired = getTopNAcquiredKp(entry.getValue(), nbItemsForTop);
+									topNRulesKp.focused = getTopNFocusedKp(entry.getValue(), nbItemsForTop);
+									return topNRulesKp;
+								}
+						));
+	}
+
+	private List<KeypointPracticeDbo> getTopNFocusedKp(List<KeypointPracticeDbo> value, int nbItemsForTop) {
+		return value.stream()
+				.filter(kpPracticeDbo -> kpPracticeDbo.getMaxWeight() < 1)
+				.sorted(Comparator.comparing(KeypointPracticeDbo::getNbInteractions))
+				.limit(nbItemsForTop)
+				.collect(Collectors.toList());
+	}
+
+	private List<KeypointPracticeDbo> getTopNKnownKp(List<KeypointPracticeDbo> value, int nbItemsForTop) {
+		return value.stream()
+				.filter(kpPracticeDbo -> kpPracticeDbo.getInitialWeight() == 1)
+				.sorted(Comparator.comparing(KeypointPracticeDbo::getNbInteractions))
+				.limit(nbItemsForTop)
+				.collect(Collectors.toList());
+	}
+
+	private List<KeypointPracticeDbo> getTopNAcquiredKp(List<KeypointPracticeDbo> value, int nbItemsForTop) {
+		return value.stream()
+				.filter(kpPracticeDbo -> kpPracticeDbo.getMaxWeight() == 1 && kpPracticeDbo.getInitialWeight() < 1)
+				.sorted(Comparator.comparing(KeypointPracticeDbo::getNbInteractions))
+				.limit(nbItemsForTop)
+				.collect(Collectors.toList());
+	}
+
+	private Map<Integer, List<KeypointPracticeDbo>> getKpsByUserId(List<KeypointPracticeDbo> kpPracticeDbos) {
+		return kpPracticeDbos.stream()
+				// group by userId
+				.collect(
+						groupingBy(
+								(KeypointPracticeDbo kp) -> new Integer(kp.getUserId())
+						)
+				);
 	}
 
 	private void addTopRulesToData(DataFromKeypoints dataFromKeypoints, List<KeypointPracticeDbo> kpPracticeDbos, int nbItemsForTop) {
@@ -73,7 +178,7 @@ public class KeypointServiceImpl implements KeypointService {
 				.filter(kpPracticeDbo -> kpPracticeDbo.getMaxWeight() < 1)
 				// group by chapterId and average the nbInteractions
 				.collect(
-						Collectors.groupingBy(
+						groupingBy(
 								KeypointPracticeDbo::getChapterId,
 								averagingInt(KeypointPracticeDbo::getNbInteractions)
 						)
@@ -86,7 +191,7 @@ public class KeypointServiceImpl implements KeypointService {
 				.filter(kpPracticeDbo -> kpPracticeDbo.getMaxWeight() == 1 && kpPracticeDbo.getInitialWeight() == 0)
 				// group by chapterId and average the nbInteractions
 				.collect(
-						Collectors.groupingBy(
+						groupingBy(
 								KeypointPracticeDbo::getChapterId,
 								averagingInt(KeypointPracticeDbo::getNbInteractions)
 						)
@@ -99,7 +204,7 @@ public class KeypointServiceImpl implements KeypointService {
 				.filter(kpPracticeDbo -> kpPracticeDbo.getInitialWeight() == 1)
 				// group by chapterId and average the nbInteractions
 				.collect(
-						Collectors.groupingBy(
+						groupingBy(
 								KeypointPracticeDbo::getChapterId,
 								averagingInt(KeypointPracticeDbo::getNbInteractions)
 						)
