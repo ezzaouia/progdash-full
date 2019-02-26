@@ -1,7 +1,9 @@
 package com.woonoz.pv.progdash.service;
 
+import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.summingDouble;
 import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toSet;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -11,6 +13,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -37,14 +40,20 @@ public class ProgressServiceImpl implements ProgressService {
 		Map<Integer, List<ProgressDto>> usersProgressDtos = new HashMap<>();
 
 		for (Integer userId : userIds) {
-			Map<Date, Double> progressesByDate = progressDbos.stream()
+			List<ProgressDbo> filteredList = progressDbos.stream()
 					// where user is userId
-			        .filter(progressDbo -> progressDbo.getUserId() == userId)
+					.filter(progressDbo -> progressDbo.getUserId() == userId)
+					.collect(Collectors.toList());
+
+			Map<Date, Set<ProgressDbo>> progressDbosByDate = filteredList.stream()
+					.collect(
+							groupingBy(ProgressDbo::getLastdate, toSet())
+					);
+
+			Map<Date, Double> progressesByDate = filteredList.stream()
 					// group by date and sum the max weight
 					.collect(
-							Collectors.groupingBy(
-									ProgressDbo::getLastdate,
-									summingDouble(ProgressDbo::getMaxWeight)
+							groupingBy(ProgressDbo::getLastdate, summingDouble(ProgressDbo::getMaxWeight)
 					)
 			).entrySet().stream()
 					// sort by date
@@ -58,7 +67,8 @@ public class ProgressServiceImpl implements ProgressService {
 			float cumulativeWeight = 0f;
 			for (Date date : progressesByDate.keySet()) {
 				cumulativeWeight += progressesByDate.get(date);
-				progressDtos.add(new ProgressDto(SDF.format(date), cumulativeWeight));
+				String moduleName = progressDbosByDate.get(date).iterator().next().getProductName();
+				progressDtos.add(new ProgressDto(SDF.format(date), cumulativeWeight, moduleName));
 			}
 			usersProgressDtos.put(userId, progressDtos);
 		}
