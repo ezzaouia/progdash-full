@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -41,8 +42,8 @@ public class KeypointServiceImpl implements KeypointService {
 	private DateProvider coreDateProvider;
 
 	@Override
-	public DataFromKeypoints processKeypoints(int areaId, int nbItemsForTop) {
-		List<KeypointPracticeDbo> kpPracticeDbos = keypointMapper.getKeypointsPractice(areaId);
+	public DataFromKeypoints processKeypoints(int areaId, @Nullable Integer groupId, int nbItemsForTop) {
+		List<KeypointPracticeDbo> kpPracticeDbos = keypointMapper.getKeypointsPractice(areaId, groupId);
 
 		DataFromKeypoints dataFromKeypoints = new DataFromKeypoints();
 		addTopRulesToData(dataFromKeypoints, kpPracticeDbos, nbItemsForTop);

@@ -16,6 +16,8 @@ import com.woonoz.pv.progdash.dao.dbo.TrainingConnectionsDbo;
 import com.woonoz.pv.progdash.dao.dbo.UserIdentityDbo;
 import com.woonoz.pv.progdash.dao.dbo.UserRouteProductsDbo;
 
+import javax.annotation.Nullable;
+
 @Mapper
 public interface LearningStatisticsMapper {
 
@@ -25,21 +27,21 @@ public interface LearningStatisticsMapper {
 
 	Integer getAreaFromGroup(@Param("groupId") int groupId);
 
-	List<UserIdentityDbo> getUsersIdentity(@Param("areaId")int areaId);
+	List<UserIdentityDbo> getUsersIdentity(@Param("areaId")int areaId, @Nullable @Param("groupId") Integer groupId);
 
-	List<ReachedProductDbo> getReachedProduct(@Param("areaId")int areaId);
+	List<ReachedProductDbo> getReachedProduct(@Param("areaId") int areaId, @Nullable @Param("groupId") Integer groupId);
 
-	List<TrainingConnectionsDbo> getTrainingConnections(@Param("areaId")int areaId);
+	List<TrainingConnectionsDbo> getTrainingConnections(@Param("areaId")int areaId, @Nullable @Param("groupId") Integer groupId);
 
-	List<ScoreInitialEvalDbo> getScoreInitialEval(@Param("areaId")int areaId);
+	List<ScoreInitialEvalDbo> getScoreInitialEval(@Param("areaId")int areaId, @Nullable @Param("groupId") Integer groupId);
 
 	@MapKey("userId")
-	Map<Integer, UserRouteProductsDbo> getRouteProducts(@Param("areaId")int areaId);
+	Map<Integer, UserRouteProductsDbo> getRouteProducts(@Param("areaId")int areaId, @Nullable @Param("groupId") Integer groupId);
 
 	List<Integer> getAreaOptionalProducts(@Param("areaId")int areaId);
 
 	@MapKey("productId")
 	Map<Integer, ProductNbKeypoints> getProductNbKeypoints(@Param("areaId")int areaId);
 
-	List<KnownRulesDbo> getKnownRules(@Param("areaId")int areaId);
+	List<KnownRulesDbo> getKnownRules(@Param("areaId")int areaId, @Nullable @Param("groupId") Integer groupId);
 }

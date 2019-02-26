@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 import org.springframework.stereotype.Service;
@@ -81,20 +82,20 @@ public class LearningStatisticsServiceImpl implements LearningStatisticsService 
 	}
 
 	@Override
-	public boolean isGroupInArea(int areaId, Integer groupId) {
+	public boolean isGroupInArea(int areaId, int groupId) {
 		return learningStatisticsMapper.getAreaFromGroup(groupId) == areaId;
 	}
 
 	@Override
-	public AllStatisticsDto getAllStatistics(int areaId, Integer groupId) {
+	public AllStatisticsDto getAllStatistics(int areaId, @Nullable Integer groupId) {
 		AllStatisticsDto allStats = new AllStatisticsDto();
 		int nbUsers = areaGroupMapper.countAreaUsers(areaId);
 
 		Map<Integer, UserDataDto> usersMap = new HashMap<>();
-		for (UserIdentityDbo userIdentityDbo : learningStatisticsMapper.getUsersIdentity(areaId)) {
+		for (UserIdentityDbo userIdentityDbo : learningStatisticsMapper.getUsersIdentity(areaId, groupId)) {
 			usersMap.put(userIdentityDbo.getId(), new UserDataDto(userIdentityDbo.getId(), userIdentityDbo.getFullName()));
 		}
-		fillUsersMap(usersMap, areaId);
+		fillUsersMap(usersMap, areaId, groupId);
 		Collection<UserDataDto> userDataDtos = usersMap.values();
 		Map<Integer, List<ProgressDto>> userProgresses = progressService.getUsersProgresses(usersMap.keySet());
 		for (Integer userId : usersMap.keySet()) {
@@ -102,10 +103,10 @@ public class LearningStatisticsServiceImpl implements LearningStatisticsService 
 		}
 		allStats.setUsers(userDataDtos);
 
-		InsightInfoDto lastWeek = insightStatisticsService.createInsightsInfo(areaId, nbUsers, 7, 1);
-		InsightInfoDto lastMonth = insightStatisticsService.createInsightsInfo(areaId, nbUsers, 30, 4);
+		InsightInfoDto lastWeek = insightStatisticsService.createInsightsInfo(areaId, groupId,  nbUsers, 7, 1);
+		InsightInfoDto lastMonth = insightStatisticsService.createInsightsInfo(areaId, groupId,  nbUsers, 30, 4);
 
-		DataFromKeypoints dataFromKeypoints = keypointService.processKeypoints(areaId, NB_ITEMS_FOR_TOP);
+		DataFromKeypoints dataFromKeypoints = keypointService.processKeypoints(areaId,groupId,NB_ITEMS_FOR_TOP);
 		lastWeek.setTopNRules(dataFromKeypoints.getLastWeekTopRules());
 		lastMonth.setTopNRules(dataFromKeypoints.getLastMonthTopRules());
 
@@ -126,28 +127,28 @@ public class LearningStatisticsServiceImpl implements LearningStatisticsService 
 
 		allStats.setInsights(new InsightDataDto(lastWeek, lastMonth));
 		allStats.setModules(moduleService.getModulesInfo(areaId));
-		allStats.setEvaluations(evaluationService.getEvaluationInfo(areaId));
+		allStats.setEvaluations(evaluationService.getEvaluationInfo(areaId, groupId));
 		return allStats;
 	}
 
-	private void fillUsersMap(Map<Integer, UserDataDto> usersMap, int areaId) {
+	private void fillUsersMap(Map<Integer, UserDataDto> usersMap, int areaId, @Nullable Integer groupId) {
 
-		for (ReachedProductDbo reachedProductDbo : learningStatisticsMapper.getReachedProduct(areaId)) {
+		for (ReachedProductDbo reachedProductDbo : learningStatisticsMapper.getReachedProduct(areaId, groupId)) {
 			usersMap.get(reachedProductDbo.getUserId()).setLastModule(reachedProductDbo.getProductName());
 		}
-		for (TrainingConnectionsDbo trainingDbo : learningStatisticsMapper.getTrainingConnections(areaId)) {
+		for (TrainingConnectionsDbo trainingDbo : learningStatisticsMapper.getTrainingConnections(areaId, groupId)) {
 			UserDataDto userData = usersMap.get(trainingDbo.getUserId());
 			userData.setLastConnection(trainingDbo.getLastUsage());
 			userData.setConnectionsNbr(trainingDbo.getNbSessions());
 			userData.setTime(Math.round(trainingDbo.getTotalTrainingTime()));
 		}
-		for (ScoreInitialEvalDbo initialEvalDbo : learningStatisticsMapper.getScoreInitialEval(areaId)) {
+		for (ScoreInitialEvalDbo initialEvalDbo : learningStatisticsMapper.getScoreInitialEval(areaId, groupId)) {
 			usersMap.get(initialEvalDbo.getUserId()).setInitialEval(initialEvalDbo.getScore());
 		}
-		Map<Integer, UserRouteProductsDbo> userRouteProductDbos = learningStatisticsMapper.getRouteProducts(areaId);
+		Map<Integer, UserRouteProductsDbo> userRouteProductDbos = learningStatisticsMapper.getRouteProducts(areaId, groupId);
 		List<Integer> optionalProducts = learningStatisticsMapper.getAreaOptionalProducts(areaId);
 		Map<Integer, ProductNbKeypoints> productNbKeypointsMap = learningStatisticsMapper.getProductNbKeypoints(areaId);
-		for (KnownRulesDbo knownRulesDbo : learningStatisticsMapper.getKnownRules(areaId)) {
+		for (KnownRulesDbo knownRulesDbo : learningStatisticsMapper.getKnownRules(areaId, groupId)) {
 			UserDataDto userData = usersMap.get(knownRulesDbo.getUserId());
 			List<Integer> userProductIds = userRouteProductDbos.get(knownRulesDbo.getUserId()).getProductIds();
 			int totalNbKeypoints = countUserKeypoints(userProductIds, optionalProducts, productNbKeypointsMap);
