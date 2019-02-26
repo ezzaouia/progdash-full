@@ -4,8 +4,6 @@ import { HttpErrorResponse } from '@angular/common/http';
 
 import { NotificationService } from './notification.service';
 import { ErrorsService } from './errors.service';
-import { environment } from '../../../environments/environment';
-
 
 // source https://medium.com/@aleixsuau/error-handling-angular-859d529fa53a
 
@@ -26,39 +24,18 @@ export class ErrorsHandler implements ErrorHandler {
       // Server or connection error happened
       if ( !navigator.onLine ) {
         // Handle offline error
-        return notificationService.notifyError( 'No Internet Connection' );
-      } else if ( error.status === 401 || error.status === 403 ) {
-        // send audit to server
-        // errorsService.log( error );
-
-        // redirect
-        router.navigate(
-          [
-            '/externalSuiviStatsRedirect',
-            { externalUrl: `${environment.SUIVI_STATS_URL}/guard/login`, isSelf : true },
-          ],
-          { skipLocationChange: false }
-        );
-
+        return notificationService.notify( 'No Internet Connection' );
       } else {
         // Handle Http Error (error.status === 403, 404...)
+        errorsService.log( error );
         // return notificationService.notify( `${error.status} - ${error.message}` );
-
-        // send audit to server
-        // errorsService.log( error );
-        // redirect is handled by '**' route in app routing module
       }
     } else {
       // Handle Client Error (Angular Error, ReferenceError...)
-      // send audit to server
-      // errorsService.log( error );
-      // redirect is handled
-      router.navigate([ '/error' ]);
+      errorsService.log( error );
+      // router.navigate([ '/error' ], { queryParams: { error: error } });
     }
     // Log the error anyway
     console.error( 'It happens: ', error );
-
-    // errorsService.log( error );
-
   }
 }
