@@ -36,12 +36,17 @@ export enum DashActionTypes {
 
   PrintReportSuccess = '[Dash] Print Report Success',
   PrintReportFailure = '[Dash] Print Report Failure',
+  Empty = '[Dash] Empty',
 
   // For tracing purpose
   SortColumn = '[Dash] Sort Column',
   FilterColumn = '[Dash] Filter Column',
   OpenUserDialog = '[Dash] Open User Dialog',
   HoverWidget = '[Dash] Hover Widget',
+}
+
+export class Empty implements Action {
+  readonly type = DashActionTypes.Empty;
 }
 
 export class LoadData implements Action {
@@ -241,4 +246,5 @@ export type DashActionsUnion =
   | OpenUserDialog
   | HoverWidget
   | HotPrintWidget
-  | LoadUserInfo;
+  | LoadUserInfo
+  | Empty;

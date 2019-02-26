@@ -1,8 +1,14 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  Output,
+  EventEmitter,
+  OnDestroy,
+  AfterContentInit
+} from '@angular/core';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { values, isNil } from 'lodash';
-import { initialEvalCatColors, moduleCatColors } from '../../../utils/chart.util';
-import { PrintWidgetComponent } from '../../../shared/components';
+import { isNil } from 'lodash';
 import * as moment from 'moment';
 import 'moment-duration-format';
 moment.locale( 'fr' );
@@ -12,7 +18,6 @@ moment.locale( 'fr' );
   selector: 'ProgEvaluation',
   template: `
   <div class="container">
-
     <mat-card
       id="table-view"
       class="widget-card table-widget"
@@ -45,51 +50,51 @@ moment.locale( 'fr' );
         </TableViewManager>
       </mat-card-content>
     </mat-card>
-
   </div>
   `,
-  styles: [ `
-    :host {
-      display: flex;
-      align-items: flex-start;
-      width: 100vw;
-      height: 100%;
-      padding: 0px;
-    }
-    .container {
-      display: flex;
-      margin-left: auto;
-      margin-right: auto;
-      padding: 3px;
-      box-sizing: border-box;
-    }
-    .widget-card {
-      padding: 20px;
-      margin: 3px;
-      box-sizing: border-box;
-    }
-    mat-card-content {
-      padding: 12px 0px;
-      width: 100%;
-      height: 100%;
-    }
-    mat-card-header {
-      padding: 0px 24px;
-      box-sizing: border-box;
-    }
-    .widget-content {
-      width: 100%;
-      height: 100%;
-    }
-    .table-widget {
-      width: 100%;
-      //height: 100vh;
-    }
-
-  ` ],
+  styles: [
+    `
+      :host {
+        display: flex;
+        align-items: flex-start;
+        width: 100vw;
+        height: 100%;
+        padding: 0px;
+      }
+      .container {
+        display: flex;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 3px;
+        box-sizing: border-box;
+      }
+      .widget-card {
+        padding: 20px;
+        margin: 3px;
+        box-sizing: border-box;
+      }
+      mat-card-content {
+        padding: 12px 0px;
+        width: 100%;
+        height: 100%;
+      }
+      mat-card-header {
+        padding: 0px 24px;
+        box-sizing: border-box;
+      }
+      .widget-content {
+        width: 100%;
+        height: 100%;
+      }
+      .table-widget {
+        width: 100%;
+        //height: 100vh;
+      }
+    `,
+  ],
 })
-export class ProgEvaluationComponent implements OnInit, OnDestroy {
-
+export class ProgEvaluationComponent
+  implements OnInit, OnDestroy, AfterContentInit {
   @Input() isStartPrintReport;
   @Input() selectedWidgets: string[];
 
@@ -98,64 +103,59 @@ export class ProgEvaluationComponent implements OnInit, OnDestroy {
   @Output() filterColumnTraceHandler = new EventEmitter();
   @Output() hoverWidgetTraceHandler = new EventEmitter();
 
-  updateSub: Subscription;
   evaluationsData$ = new BehaviorSubject<any>({});
-  dataStream = new BehaviorSubject<any[]>([]);
 
   colDefaultWidth = 100;
   colDefaultHeight = 30;
-  columns = {
-    'fullName': {
-      name: 'Apprenant',
-      histo: '',
-      encoding: 'STRING',
-      width: 120,
-      topBottom: 0,
-    },
-    'evaluationName': {
-      name: 'Evaluation',
-      histo: 'categorical',
-      encoding: 'CAT',
-      width: 120,
-      topBottom: 0,
-    },
-    'time': {
-      name: 'Temps',
-      histo: 'ordinal',
-      encoding: 'BAR',
-      width: 120,
-      formatter: this.timeFormatter,
-      topBottom: 0,
-    },
-    'score': {
-      name: 'Score',
-      histo: 'ordinal',
-      encoding: 'BAR',
-      width: 120,
-      topBottom: 0,
-    },
-    'mark': {
-      name: 'Note /20',
-      histo: 'ordinal',
-      encoding: 'BAR',
-      formatter: this.markFormatter,
-      width: 120,
-      topBottom: 0,
-    },
-  };
+  columns;
 
   constructor () {}
 
-  ngOnInit (): void {
-    // FIXME do we need this
-    this.updateSub = this.evaluationsData$
-      .subscribe( _ => {
-        this.dataStream.next( this.evaluationsData );
-      });
+  ngOnInit (): void {}
+
+  ngAfterContentInit (): void {
+    this.columns = {
+      fullName: {
+        name: 'Apprenant',
+        histo: '',
+        encoding: 'STRING',
+        width: 120,
+        topBottom: 0,
+      },
+      evaluationName: {
+        name: 'Evaluation',
+        histo: 'categorical',
+        encoding: 'CAT',
+        width: 120,
+        topBottom: 0,
+      },
+      time: {
+        name: 'Temps',
+        histo: 'ordinal',
+        encoding: 'BAR',
+        width: 120,
+        formatter: this.timeFormatter,
+        topBottom: 0,
+      },
+      score: {
+        name: 'Score',
+        histo: 'ordinal',
+        encoding: 'BAR',
+        width: 120,
+        topBottom: 0,
+      },
+      mark: {
+        name: 'Note /20',
+        histo: 'ordinal',
+        encoding: 'BAR',
+        formatter: this.markFormatter,
+        width: 120,
+        topBottom: 0,
+      },
+    };
   }
 
   ngOnDestroy (): void {
-    this.updateSub.unsubscribe();
   }
 
   @Input()
@@ -174,5 +174,4 @@ export class ProgEvaluationComponent implements OnInit, OnDestroy {
   markFormatter ( mark ) {
     return isNil( mark ) ? '' : mark;
   }
-
 }

@@ -6,17 +6,11 @@ import {
   ViewChild,
   ElementRef,
   EventEmitter,
-  Output
+  Output,
+  AfterContentInit
 } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialogRef } from '@angular/material';
 import { each, get, set, last, split, keys } from 'lodash';
-
-import {
-  GridsterConfig,
-  CompactType,
-  DisplayGrid,
-  GridType
-} from 'angular-gridster2';
 import { InfoWidgetComponent } from '../infoWidget';
 import { UserTimelineWidgetComponent } from '../userTimelineWidget';
 import { TopNRulesWidgetComponent } from '../topNRulesWidget';
@@ -104,12 +98,14 @@ import { TopNRulesWidgetComponent } from '../topNRulesWidget';
         margin: 20px;
       }
       mat-grid-tile {
-        box-shadow: 0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12);
+        box-shadow: 0 2px 1px -1px rgba(0,0,0,.2),
+        0 1px 1px 0 rgba(0,0,0,.14),
+        0 1px 3px 0 rgba(0,0,0,.12);
       }
     `,
   ],
 })
-export class UserDetailComponent implements OnInit, AfterViewInit {
+export class UserDetailComponent implements OnInit, AfterContentInit {
   @ViewChild( 'containerRef' ) elRef: ElementRef;
 
   @Input() user;
@@ -118,47 +114,18 @@ export class UserDetailComponent implements OnInit, AfterViewInit {
   @Output() hoverWidgetTraceHandler = new EventEmitter();
   @Output() hotPrintWidgetHandler = new EventEmitter();
 
+  offsetWidh;
+  boardGrid;
   offsetWidth;
+  boardGridElements;
   marginOffset = 125;
-  boardOptions: GridsterConfig;
-  boardGrid: any; // Array<GridsterItem>;
-  boardGridElements: string[]; // Array<GridsterItem>;
-
-  static itemChange ( item, itemComponent ) {
-    // console.log( 'itemChanged', item, itemComponent );
-  }
-
-  static itemResize ( item, itemComponent ) {
-    // console.log( 'itemResized', item, itemComponent );
-  }
 
   constructor ( public dialogRef: MatDialogRef<UserDetailComponent> ) {}
 
-  ngOnInit (): void {
-    this.boardOptions = {};
-    this.boardGrid = {};
-  }
+  ngOnInit (): void { }
 
-  ngAfterViewInit (): void {
+  ngAfterContentInit (): void {
     this.offsetWidth = this.elRef.nativeElement.offsetWidth - this.marginOffset;
-    this.boardOptions = {
-      itemChangeCallback: UserDetailComponent.itemChange,
-      itemResizeCallback: UserDetailComponent.itemResize,
-      compactType: CompactType.CompactLeft,
-      swap: true,
-      gridType: GridType.Fixed,
-      displayGrid: DisplayGrid.OnDragAndResize,
-      pushItems: true,
-      draggable: {
-        enabled: true,
-      },
-      resizable: {
-        enabled: true,
-      },
-      fixedColWidth: Math.floor( this.offsetWidth / 12 ),
-      fixedRowHeight: 60,
-      margin: 10,
-    };
 
     this.boardGrid = {
       score: {
@@ -244,15 +211,4 @@ export class UserDetailComponent implements OnInit, AfterViewInit {
     this.dialogRef.close();
   }
 
-  changedOptions () {
-    this.boardOptions.api.optionsChanged();
-  }
-
-  removeItem ( item ) {
-    this.boardGrid.splice( this.boardGrid.indexOf( item ), 1 );
-  }
-
-  addItem () {
-    //  this.boardGrid.push({});
-  }
 }

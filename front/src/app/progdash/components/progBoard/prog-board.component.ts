@@ -12,14 +12,12 @@ import {
 import { BehaviorSubject, Subscription, merge } from 'rxjs';
 import {
   GridsterConfig,
-  GridsterItem,
   CompactType,
   GridType,
   DisplayGrid
 } from 'angular-gridster2';
-import { each, get, set, last, split, replace, startsWith, values } from 'lodash';
+import { each, get, set, last, split, replace, startsWith } from 'lodash';
 
-import { InsightData, ClassData, StoreField } from '../../store';
 import {
   InfoWidgetComponent,
   TopNUsersWidgetComponent,

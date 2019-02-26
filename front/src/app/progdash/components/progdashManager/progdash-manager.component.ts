@@ -63,6 +63,7 @@ import { Modal } from '../../../shared/components';
 
         <button
           mat-button
+          [disabled]="!selectedClass.name"
           (click)="openProgTableHandler.emit($event)">
           <mat-icon aria-label="menu">multiline_chart</mat-icon>
           Détails
@@ -70,6 +71,7 @@ import { Modal } from '../../../shared/components';
 
         <button
           mat-button
+          [disabled]="!selectedClass.name"
           (click)="openProgEvaluationHandler.emit($event)">
           <mat-icon aria-label="menu">bubble_chart</mat-icon>
           Evaluations
@@ -86,6 +88,7 @@ import { Modal } from '../../../shared/components';
           <button
             class="fab-button mat-32"
             mat-button
+            [disabled]="!selectedClass.name"
             *ngIf="!isStartPrintReport"
             (click)="startPrintReportHandler.emit($event)">
               <mat-icon *ngIf="!isStartPrintReport">print</mat-icon>
@@ -144,7 +147,9 @@ import { Modal } from '../../../shared/components';
           *ngIf="isProgTableOpened"
           [isStartPrintReport]="isStartPrintReport"
           [selectedWidgets]="selectedWidgets"
-          [modulesData]="modulesData"
+          [modulesData]="(selectedClass ?
+            (classes.byId[selectedClass.id] ?
+              classes.byId[selectedClass.id].modules : []) : [])"
           [userListData]="(selectedClass ?
             (classes.byId[selectedClass.id] ?
               classes.byId[selectedClass.id].users : []) : [])"
@@ -255,8 +260,6 @@ export class ProgdashManagerComponent implements AfterContentInit {
   @Input() isProgEvaluationOpened;
   @Input() isStartPrintReport;
 
-  @Input() modulesData: {}[];
-
   @Input() selectedClass;
   @Input() selectedTimescale;
   @Input() selectedRules;
@@ -333,7 +336,9 @@ export class ProgdashManagerComponent implements AfterContentInit {
       data: {
         user,
         component: UserDetailComponent,
-        modulesData: this.modulesData,
+        modulesData: ( this.selectedClass ?
+          ( this.classes.byId[this.selectedClass.id] ?
+            this.classes.byId[this.selectedClass.id].modules : []) : []),
         hoverWidgetTraceHandler: this.hoverWidgetTraceHandler,
         hotPrintWidgetHandler: this.hotPrintWidgetHandler,
       },
