@@ -23,6 +23,7 @@ public interface InsightStatisticsMapper {
 	List<SessionOnDateDbo> getConnectionsChart(@Param("areaId") int areaId, @Param("nbDays") int nbDays, @Param("endDate") Date endDate);
 
 	@MapKey("userId")
-	Map<Integer, UserTrainingTimeDbo> getTopTrainingTime(@Param("areaId") int areaId, @Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("nbForTop") Integer nbForTop);
+	Map<Integer, UserTrainingTimeDbo> getTopTrainingTime(@Param("areaId") int areaId, @Param("startDate") Date startDate, @Param("endDate") Date endDate,
+			@Param("nbForTop") Integer nbForTop, @Param("ascendantOrder") Boolean ascendantOrder);
 
 }

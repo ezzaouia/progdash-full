@@ -65,15 +65,22 @@ public class InsightStatisticsServiceImpl implements InsightStatisticsService {
 	}
 
 	@Override
-	public List<UserDataInfoDto> getTopNTimeUsers(int areaId, int nbDays, int nbForTop) {
+	public List<UserDataInfoDto> getTopNTimeUsers(int areaId, int nbDays, int nbForTop, boolean ascendantOrder) {
 		Period period = new Period(coreDateProvider.now(), nbDays);
-		Map<Integer, UserTrainingTimeDbo> topTimeMainPeriod = insightStatisticsMapper.getTopTrainingTime(areaId, period.getMainStartDate(), period.getMainEndDate(), nbForTop);
-		Map<Integer, UserTrainingTimeDbo> topTimePreviousPeriod = insightStatisticsMapper.getTopTrainingTime(areaId, period.getPreviousStartDate(), period.getPreviousEndDate(), null);
+		Map<Integer, UserTrainingTimeDbo> topTimeMainPeriod = insightStatisticsMapper.getTopTrainingTime(areaId, period.getMainStartDate(), period.getMainEndDate(), nbForTop, ascendantOrder);
+		Map<Integer, UserTrainingTimeDbo> topTimePreviousPeriod = insightStatisticsMapper.getTopTrainingTime(areaId, period.getPreviousStartDate(), period.getPreviousEndDate(), null, ascendantOrder);
 		List<UserTrainingTimeDbo> userTime = new ArrayList(topTimeMainPeriod.values());
 		Collections.sort(userTime, new Comparator<UserTrainingTimeDbo>() {
-
 			@Override public int compare(UserTrainingTimeDbo o1, UserTrainingTimeDbo o2) {
-				return Math.round(o2.getTotalTrainingTime() - o1.getTotalTrainingTime());
+				int order = ascendantOrder ? -1 : 1;
+				float diff = o2.getTotalTrainingTime() - o1.getTotalTrainingTime();
+				if (diff > 0) {
+					return order;
+				} else if (diff < 0) {
+					return - order;
+				} else {
+					return 0;
+				}
 			}
 		});
 		List<UserDataInfoDto> userDataInfoDtos = new ArrayList<>();

@@ -122,23 +122,20 @@
 
 	<select id="getTopTrainingTime" resultMap="usersTrainingTime">
 		SELECT
-		       wm.id_membre userId,
+		       wgpm.id_membre userId,
 		       SUM(IFNULL(ls.time_spent_on, 0)) totalTrainingTime
-		FROM woonoz_groupe_p_membre wgpm_active
-		  JOIN woonoz_membre wm ON wm.id_membre = wgpm_active.id_membre
-		  JOIN learning_session ls ON ls.user_id = wm.id_membre
-		WHERE wgpm_active.id_groupe_p = #{areaId}
-		  AND wgpm_active.user_role= 'learner'
-		  AND ls.mode = 'learn'
-		  AND ls.time_spent_on IS NOT NULL
-		  AND ls.start_date > #{startDate}
-		  AND #{endDate} > ls.start_date
-		GROUP BY ls.user_id
-		ORDER BY totalTrainingTime DESC
-		<if test="nbForTop != null">
-			LIMIT #{nbForTop}
-		</if>
-		;
+		FROM woonoz_groupe_p_membre wgpm
+		  LEFT JOIN learning_session ls
+		    	ON ls.user_id = wgpm.id_membre
+		        AND ls.mode = 'learn'
+				AND ls.time_spent_on IS NOT NULL
+		        AND ls.start_date > #{startDate}
+				AND #{endDate} > ls.start_date
+		WHERE wgpm.id_groupe_p = #{areaId}
+		  AND wgpm.user_role= 'learner'
+		GROUP BY wgpm.id_membre
+		ORDER BY totalTrainingTime <if test="!ascendantOrder"> DESC </if>
+		<if test="nbForTop != null"> LIMIT #{nbForTop} </if>;
 	</select>
 
 </mapper>
