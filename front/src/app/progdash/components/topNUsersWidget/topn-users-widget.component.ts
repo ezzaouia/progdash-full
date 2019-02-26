@@ -24,11 +24,11 @@ import { Component, OnInit, Input, EventEmitter } from '@angular/core';
               <span> {{ users[item.id].fullName }} </span>
               <div class="item-detail">
                 <span class="item-sum">
-                  {{ item.sum | formatAttr:key }}
+                  {{ item.sum.sum | formatAttr:key }}
                 </span>
                 <DetlaWidget
-                  [sign]="(item.sumd >= 0 ? 'plus' : 'minus')"
-                  [data]="item.sumd | mathAbs">
+                  [sign]="(item.sum.sumd >= 0 ? 'plus' : 'minus')"
+                  [data]="item.sum.sumd | mathAbs">
                 </DetlaWidget>
               </div>
             </div>
