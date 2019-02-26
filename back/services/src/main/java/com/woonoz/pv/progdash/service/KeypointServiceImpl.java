@@ -68,7 +68,8 @@ public class KeypointServiceImpl implements KeypointService {
 
 	private Map<Integer, TopNRulesDto> getUserMapsTopNRules(Map<Integer, TopNRulesKp> topNRulesKpByUserId, Map<Integer, ChapterNameDbo> chapterNames) {
 		Function<KeypointPracticeDbo, RuleDataInfoDto> mapKpToInfo = kp -> {
-			String chapterName = chapterNames.get(kp.getChapterId()).getName();
+			ChapterNameDbo chapterNameDbo = chapterNames.get(kp.getChapterId());
+			String chapterName = chapterNameDbo.getName();
 			return new RuleDataInfoDto(kp.getKeypointId(), chapterName, kp.getNbInteractions());
 		};
 		return  topNRulesKpByUserId.entrySet().stream()
@@ -93,7 +94,7 @@ public class KeypointServiceImpl implements KeypointService {
 		return topNRulesKpByUserId.values().stream()
 				.flatMap( (Function<TopNRulesKp, Stream<KeypointPracticeDbo>>) (TopNRulesKp l) -> Stream.concat(
 						l.acquired.stream(),
-						Stream.concat(l.focused.stream(), l.focused.stream()))
+						Stream.concat(l.focused.stream(), l.known.stream()))
 				)
 				.map((kp) -> kp.getChapterId())
 				.collect(Collectors.toSet());
@@ -117,7 +118,7 @@ public class KeypointServiceImpl implements KeypointService {
 	private List<KeypointPracticeDbo> getTopNFocusedKp(List<KeypointPracticeDbo> value, int nbItemsForTop) {
 		return value.stream()
 				.filter(kpPracticeDbo -> kpPracticeDbo.getMaxWeight() < 1)
-				.sorted(Comparator.comparing(KeypointPracticeDbo::getNbInteractions))
+				.sorted(Comparator.comparing(KeypointPracticeDbo::getNbInteractions).reversed())
 				.limit(nbItemsForTop)
 				.collect(Collectors.toList());
 	}
@@ -125,7 +126,7 @@ public class KeypointServiceImpl implements KeypointService {
 	private List<KeypointPracticeDbo> getTopNKnownKp(List<KeypointPracticeDbo> value, int nbItemsForTop) {
 		return value.stream()
 				.filter(kpPracticeDbo -> kpPracticeDbo.getInitialWeight() == 1)
-				.sorted(Comparator.comparing(KeypointPracticeDbo::getNbInteractions))
+				.sorted(Comparator.comparing(KeypointPracticeDbo::getNbInteractions).reversed())
 				.limit(nbItemsForTop)
 				.collect(Collectors.toList());
 	}
@@ -133,7 +134,7 @@ public class KeypointServiceImpl implements KeypointService {
 	private List<KeypointPracticeDbo> getTopNAcquiredKp(List<KeypointPracticeDbo> value, int nbItemsForTop) {
 		return value.stream()
 				.filter(kpPracticeDbo -> kpPracticeDbo.getMaxWeight() == 1 && kpPracticeDbo.getInitialWeight() < 1)
-				.sorted(Comparator.comparing(KeypointPracticeDbo::getNbInteractions))
+				.sorted(Comparator.comparing(KeypointPracticeDbo::getNbInteractions).reversed())
 				.limit(nbItemsForTop)
 				.collect(Collectors.toList());
 	}

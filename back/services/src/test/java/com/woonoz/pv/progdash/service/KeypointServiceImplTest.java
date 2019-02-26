@@ -88,9 +88,62 @@ public class KeypointServiceImplTest extends AbstractMockServiceTest {
 		List<RuleDataInfoDto> learnedChapters = Arrays.asList(rule5Dto, rule4Dto, rule1Dto);
 		List<RuleDataInfoDto> initiallyKnownChapters = Arrays.asList(rule6Dto, rule1Dto);
 
+		Map<Integer, TopNRulesDto> userMap = new HashMap<Integer, TopNRulesDto>();
+		userMap.put(101, new TopNRulesDto(
+				//focused
+				Arrays.asList(
+						new RuleDataInfoDto(3, "chapter3",  15),
+						new RuleDataInfoDto(2, "chapter2",  10),
+						new RuleDataInfoDto(1, "chapter1",  5)
+				),
+				// acquired
+				Arrays.asList(
+						new RuleDataInfoDto(5, "chapter5",  25),
+						new RuleDataInfoDto(4, "chapter4",  20)
+				),
+				// known
+				Arrays.asList(
+						new RuleDataInfoDto(6, "chapter6",  30)
+				)));
+		userMap.put(102, new TopNRulesDto(
+				//focused
+				Arrays.asList(
+						new RuleDataInfoDto(3, "chapter3",  15),
+						new RuleDataInfoDto(2, "chapter2",  10)
+
+				),
+				// acquired
+				Arrays.asList(
+						new RuleDataInfoDto(5, "chapter5",  25),
+						new RuleDataInfoDto(4, "chapter4",  20),
+						new RuleDataInfoDto(1, "chapter1",  5)
+				),
+				// known
+				Arrays.asList(
+						new RuleDataInfoDto(6, "chapter6",  30)
+				)));
+		userMap.put(103, new TopNRulesDto(
+				//focused
+				Arrays.asList(
+						new RuleDataInfoDto(3, "chapter3",  15),
+						new RuleDataInfoDto(2, "chapter2",  10)
+
+				),
+				// acquired
+				Arrays.asList(
+						new RuleDataInfoDto(5, "chapter5",  25),
+						new RuleDataInfoDto(4, "chapter4",  20)
+				),
+				// known
+				Arrays.asList(
+						new RuleDataInfoDto(6, "chapter6",  30),
+						new RuleDataInfoDto(1, "chapter1",  5)
+				)));
+
 		DataFromKeypoints expectedResult = new DataFromKeypoints();
 		expectedResult.setLastWeekTopRules(new TopNRulesDto(difficultyChapters, learnedChapters, initiallyKnownChapters));
 		expectedResult.setLastMonthTopRules(new TopNRulesDto(difficultyChapters, learnedChapters, initiallyKnownChapters));
+		expectedResult.setUsersMap(userMap);
 
 		assertThat(dataFromKeypoints).isEqualToComparingFieldByFieldRecursively(expectedResult);
 	}

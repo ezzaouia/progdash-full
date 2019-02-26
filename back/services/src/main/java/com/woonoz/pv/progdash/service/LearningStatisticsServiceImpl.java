@@ -135,10 +135,12 @@ public class LearningStatisticsServiceImpl implements LearningStatisticsService 
 			userData.setScore(new RatioDto(knownRulesDbo.getKnownRules(), totalNbKeypoints));
 		}
 
-		for(Integer userId: dataFromKeypoints.getUsersMap().keySet()) {
-			UserDataDto userData = usersMap.get(userId);
-			TopNRulesDto topNRulesDto = dataFromKeypoints.getUsersMap().get(userId);
-			userData.setTopNRules(topNRulesDto);
+		for(UserDataDto userDataDto: usersMap.values()) {
+			TopNRulesDto topNRulesDto = dataFromKeypoints.getUsersMap().get(userDataDto.getId());
+			if(topNRulesDto == null) {
+				topNRulesDto = new TopNRulesDto(new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+			}
+			userDataDto.setTopNRules(topNRulesDto);
 		}
 	}
 
