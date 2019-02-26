@@ -12,6 +12,9 @@
             ls.progression,
             ls.time_spent_on / 60 timeSpentInMin
         FROM learning_evaluation_user leu
+        <if test="groupId != null">
+            JOIN woonoz_groupe_membre wgm ON wgm.id_membre = leu.user_id AND wgm.id_groupe = #{groupId}
+        </if>
             JOIN learning_evaluation_session les ON les.id = leu.learning_evaluation_session_id
             JOIN learning_session ls ON ls.id = leu.learning_session_id
             JOIN learning_evaluation le ON le.id = les.evaluation_id AND le.area_id = #{areaId}

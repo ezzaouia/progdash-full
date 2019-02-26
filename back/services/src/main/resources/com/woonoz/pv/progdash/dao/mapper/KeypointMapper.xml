@@ -14,6 +14,9 @@
 			COUNT(li.id)       	as nbInteractions,
 			MAX(ls.start_date)	as lastPracticeDate
 		FROM woonoz_groupe_p_membre wgpm
+		<if test="groupId != null">
+		  JOIN woonoz_groupe_membre wgm ON wgm.id_membre = wgpm.id_membre AND wgm.id_groupe = #{groupId}
+		</if>
 		  JOIN user_keypoint_state ukps ON ukps.user_id = wgpm.id_membre
 		  JOIN learning_group_reference lgr ON lgr.learning_group_id_reference = ukps.keypoint_id
 		  JOIN chapter c ON c.id = lgr.learning_group_id

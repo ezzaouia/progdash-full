@@ -11,6 +11,9 @@
 			       ukps.keypoint_id as keypoint_id,
 			       ukps.max_weight as max_weight
 			FROM woonoz_groupe_p_membre wgpm
+			<if test="groupId != null">
+			  JOIN woonoz_groupe_membre wgm ON wgm.id_membre = wgpm.id_membre AND wgm.id_groupe = #{groupId}
+			</if>
 			  JOIN user_keypoint_state ukps ON ukps.user_id = wgpm.id_membre
 			  JOIN learning_group_reference lgr ON lgr.learning_group_id_reference = ukps.keypoint_id
 			  JOIN learning_session ls ON ls.user_id = wgpm.id_membre AND ls.mode = 'learn'
@@ -28,6 +31,9 @@
 		FROM (
 			SELECT wm.id_membre, SUM(IFNULL(ls.time_spent_on, 0)) user_training
 			FROM woonoz_groupe_p_membre wgpm_active
+			<if test="groupId != null">
+			  JOIN woonoz_groupe_membre wgm ON wgm.id_membre = wgpm_active.id_membre AND wgm.id_groupe = #{groupId}
+			</if>
 			  JOIN woonoz_membre wm ON wm.id_membre = wgpm_active.id_membre
 			  JOIN learning_session ls ON ls.user_id = wm.id_membre
 			WHERE wgpm_active.id_groupe_p = #{areaId}
@@ -48,6 +54,9 @@
 		FROM (
 		  SELECT wm.id_membre, COUNT(ls.id) nb_sessions
 		  FROM woonoz_groupe_p_membre wgpm_active
+		  <if test="groupId != null">
+		    JOIN woonoz_groupe_membre wgm ON wgm.id_membre = wgpm_active.id_membre AND wgm.id_groupe = #{groupId}
+		  </if>
 		    JOIN woonoz_membre wm ON wm.id_membre = wgpm_active.id_membre
 		    JOIN learning_session ls ON ls.user_id = wm.id_membre
 		  WHERE wgpm_active.id_groupe_p = #{areaId}
@@ -101,6 +110,9 @@
 			       COUNT(ls.id)        nb_sessions,
 			       date(ls.start_date) session_date
 			FROM woonoz_groupe_p_membre wgpm_active
+			<if test="groupId != null">
+			  JOIN woonoz_groupe_membre wgm ON wgm.id_membre = wgpm_active.id_membre AND wgm.id_groupe = #{groupId}
+			</if>
 			  JOIN woonoz_membre wm ON wm.id_membre = wgpm_active.id_membre
 			  JOIN learning_session ls ON ls.user_id = wm.id_membre
 			WHERE wgpm_active.id_groupe_p = #{areaId}

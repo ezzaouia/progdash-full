@@ -18,8 +18,8 @@ public class EvaluationServiceImpl implements EvaluationService {
     private EvaluationMapper evaluationMapper;
 
     @Override
-    public List<EvaluationInfoDto> getEvaluationInfo(int areaId) {
-        List<EvaluationInfoDbo> dbos = evaluationMapper.getEvaluationInfo(areaId);
+    public List<EvaluationInfoDto> getEvaluationInfo(int areaId, Integer groupId) {
+        List<EvaluationInfoDbo> dbos = evaluationMapper.getEvaluationInfo(areaId, groupId);
         ArrayList<EvaluationInfoDto> dtos = new ArrayList<>();
         for (EvaluationInfoDbo dbo : dbos) {
             dtos.add(new EvaluationInfoDto(dbo.getFullName(), dbo.getUserId(), dbo.getEvaluationName(), dbo.getMark(), dbo.getProgression(), dbo.getTimeSpentInMin()));

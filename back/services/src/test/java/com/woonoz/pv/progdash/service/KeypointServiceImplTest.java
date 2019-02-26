@@ -40,6 +40,7 @@ public class KeypointServiceImplTest extends AbstractMockServiceTest {
 	public void processKeypoints() throws ParseException {
 		// GIVEN
 		int areaId = 5000;
+        Integer groupId = null;
 		DateTime day19 = new DateTime(2019, 1, 19, 0, 0);
 		Date day18 = SDF.parse("18/01/2019");
 		Date day10 = SDF.parse("10/01/2019");
@@ -87,7 +88,7 @@ public class KeypointServiceImplTest extends AbstractMockServiceTest {
 		given(keypointMapper.getChapterNames(new HashSet<>(Arrays.asList(1, 2, 3, 4, 5, 6)))).willReturn(chapterNames);
 
 		// WHEN
-		DataFromKeypoints dataFromKeypoints = keypointService.processKeypoints(areaId, 3);
+		DataFromKeypoints dataFromKeypoints = keypointService.processKeypoints(areaId, groupId, 3);
 
 		// THEN
 		RuleDataInfoDto rule1Dto = new RuleDataInfoDto(1, "chapter1",  5);

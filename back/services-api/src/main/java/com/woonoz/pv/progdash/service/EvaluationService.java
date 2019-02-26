@@ -5,5 +5,5 @@ import com.woonoz.pv.progdash.dto.EvaluationInfoDto;
 import java.util.List;
 
 public interface EvaluationService {
-    List<EvaluationInfoDto> getEvaluationInfo(int areaId);
+    List<EvaluationInfoDto> getEvaluationInfo(int areaId, Integer groupId);
 }

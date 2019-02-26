@@ -27,6 +27,9 @@
 		       CONCAT(wm.prenom_membre, " ", wm.nom_membre) fullName
 		FROM  woonoz_groupe_p_membre wgpm
 		  JOIN woonoz_membre wm ON wm.id_membre = wgpm.id_membre
+		  <if test="groupId != null">
+		    JOIN woonoz_groupe_membre wgm ON wgm.id_membre = wgpm.id_membre AND wgm.id_groupe = #{groupId}
+		  </if>
 		WHERE wgpm.id_groupe_p = #{areaId}
 		  AND wgpm.user_role = 'learner';
 	</select>
@@ -37,6 +40,9 @@
 			   ap.product_id,
 			   ap.position
 		FROM woonoz_groupe_p_membre wgpm
+		  <if test="groupId != null">
+			JOIN woonoz_groupe_membre wgm ON wgm.id_membre = wgpm.id_membre AND wgm.id_groupe = #{groupId}
+		  </if>
 		  JOIN learning_session ls ON ls.user_id = wgpm.id_membre AND ls.mode = 'learn'
 		  JOIN module m ON m.module_type_id IN (1, 6) AND m.id = ls.learning_activity_id
 		  JOIN application_product ap ON ap.product_id = m.product_id
@@ -68,6 +74,9 @@
 			COUNT(ls.id) nbSessions,
 			SUM(ls.time_spent_on) / 60 totalTrainingTime
 		FROM woonoz_groupe_p_membre wgpm
+		  <if test="groupId != null">
+			JOIN woonoz_groupe_membre wgm ON wgm.id_membre = wgpm.id_membre AND wgm.id_groupe = #{groupId}
+		  </if>
 		  LEFT JOIN learning_session ls ON ls.user_id = wgpm.id_membre
 		WHERE wgpm.id_groupe_p = #{areaId}
 		  AND wgpm.user_role= 'learner'
@@ -80,6 +89,9 @@
 			wgpm.id_membre userId,
 			ls.progression score
 		FROM woonoz_groupe_p_membre wgpm
+		  <if test="groupId != null">
+			JOIN woonoz_groupe_membre wgm ON wgm.id_membre = wgpm.id_membre AND wgm.id_groupe = #{groupId}
+		  </if>
 		  JOIN learning_evaluation_user leu ON leu.user_id = wgpm.id_membre
 		  JOIN learning_evaluation_session les ON les.id = leu.learning_evaluation_session_id
 		  JOIN learning_evaluation le ON le.id = les.evaluation_id AND le.mode = 'INSCENARIO_INITIAL'
@@ -103,6 +115,9 @@
 		       wgpm.id_membre userId,
 		       re.product_id productId /* null if user did not pass initial eval yet */
 		FROM woonoz_groupe_p_membre wgpm
+				<if test="groupId != null">
+					JOIN woonoz_groupe_membre wgm ON wgm.id_membre = wgpm.id_membre AND wgm.id_groupe = #{groupId}
+				</if>
 			     LEFT JOIN route_user ru ON ru.user_id = wgpm.id_membre
 			     LEFT JOIN route_element re on re.route_id = ru.route_id
 		WHERE wgpm.id_groupe_p = #{areaId}
@@ -155,6 +170,9 @@
 			IFNULL(SUM(ukps.initial_weight), 0) initiallyKnownRules,
 			IFNULL(SUM(ukps.max_weight), 0) evaluatedRules
 		FROM woonoz_groupe_p_membre wgpm
+		  <if test="groupId != null">
+			JOIN woonoz_groupe_membre wgm ON wgm.id_membre = wgpm.id_membre AND wgm.id_groupe = #{groupId}
+		  </if>
 		  LEFT JOIN user_keypoint_state ukps ON ukps.user_id = wgpm.id_membre
 		WHERE wgpm.id_groupe_p = #{areaId}
 		  AND wgpm.user_role= 'learner'
