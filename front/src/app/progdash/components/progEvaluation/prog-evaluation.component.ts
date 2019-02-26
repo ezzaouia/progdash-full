@@ -41,8 +41,7 @@ moment.locale( 'fr' );
           [selectedWidgets]="selectedWidgets"
           (checkWidgetHandler)="checkWidgetHandler.emit($event)"
           (sortColumnTraceHandler)="sortColumnTraceHandler.emit($event)"
-          (filterColumnTraceHandler)="filterColumnTraceHandler.emit($event)"
-          (userMoreMenuHandler)="userMoreMenuHandler.emit($event)">
+          (filterColumnTraceHandler)="filterColumnTraceHandler.emit($event)">
         </TableViewManager>
       </mat-card-content>
     </mat-card>
