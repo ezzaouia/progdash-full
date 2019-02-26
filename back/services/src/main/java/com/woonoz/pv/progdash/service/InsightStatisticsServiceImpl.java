@@ -65,10 +65,11 @@ public class InsightStatisticsServiceImpl implements InsightStatisticsService {
 	}
 
 	@Override
-	public List<UserDataInfoDto> getTopNTimeUsers(int areaId, int nbDays, int nbForTop, boolean ascendantOrder) {
+	public List<UserDataInfoDto> getTopNTimeUsers(int areaId, @Nullable Integer groupId, int nbDays, int nbForTop, boolean ascendantOrder) {
 		Period period = new Period(coreDateProvider.now(), nbDays);
-		Map<Integer, UserTrainingTimeDbo> topTimeMainPeriod = insightStatisticsMapper.getTopTrainingTime(areaId, period.getMainStartDate(), period.getMainEndDate(), nbForTop, ascendantOrder);
-		Map<Integer, UserTrainingTimeDbo> topTimePreviousPeriod = insightStatisticsMapper.getTopTrainingTime(areaId, period.getPreviousStartDate(), period.getPreviousEndDate(), null, ascendantOrder);
+		Map<Integer, UserTrainingTimeDbo> topTimeMainPeriod = insightStatisticsMapper.getTopTrainingTime(areaId, groupId, period.getMainStartDate(), period.getMainEndDate(), nbForTop, ascendantOrder);
+		Map<Integer, UserTrainingTimeDbo> topTimePreviousPeriod = insightStatisticsMapper.getTopTrainingTime(areaId, groupId, period.getPreviousStartDate(), period.getPreviousEndDate(), null,
+				ascendantOrder);
 		List<UserTrainingTimeDbo> userTime = new ArrayList(topTimeMainPeriod.values());
 		Collections.sort(userTime, new Comparator<UserTrainingTimeDbo>() {
 			@Override public int compare(UserTrainingTimeDbo o1, UserTrainingTimeDbo o2) {

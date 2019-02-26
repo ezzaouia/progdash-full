@@ -112,14 +112,14 @@ public class LearningStatisticsServiceImpl implements LearningStatisticsService 
 
 		TopNUsersDto lastWeekTopUsers = new TopNUsersDto();
 		lastWeekTopUsers.setHelp(dataFromKeypoints.getLastWeekTopUsers());
-		lastWeekTopUsers.setTime(insightStatisticsService.getTopNTimeUsers(areaId, 7, NB_ITEMS_FOR_TOP, false));
-		lastWeekTopUsers.setDropout(insightStatisticsService.getTopNTimeUsers(areaId, 7, NB_ITEMS_FOR_TOP, true));
+		lastWeekTopUsers.setTime(insightStatisticsService.getTopNTimeUsers(areaId, groupId, 7, NB_ITEMS_FOR_TOP, false));
+		lastWeekTopUsers.setDropout(insightStatisticsService.getTopNTimeUsers(areaId, groupId, 7, NB_ITEMS_FOR_TOP, true));
 //		lastWeekTopUsers.setScore();
 
 		TopNUsersDto lastMonthTopUsers = new TopNUsersDto();
 		lastMonthTopUsers.setHelp(dataFromKeypoints.getLastMonthTopUsers());
-		lastMonthTopUsers.setTime(insightStatisticsService.getTopNTimeUsers(areaId, 30, NB_ITEMS_FOR_TOP, false));
-		lastMonthTopUsers.setDropout(insightStatisticsService.getTopNTimeUsers(areaId, 30, NB_ITEMS_FOR_TOP, true));
+		lastMonthTopUsers.setTime(insightStatisticsService.getTopNTimeUsers(areaId, groupId, 30, NB_ITEMS_FOR_TOP, false));
+		lastMonthTopUsers.setDropout(insightStatisticsService.getTopNTimeUsers(areaId, groupId, 30, NB_ITEMS_FOR_TOP, true));
 //		lastMonthTopUsers.setScore();
 
 		lastWeek.setTopNUsers(lastWeekTopUsers);
