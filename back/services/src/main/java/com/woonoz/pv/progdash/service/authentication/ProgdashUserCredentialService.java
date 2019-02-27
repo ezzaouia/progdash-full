@@ -195,7 +195,8 @@ public class ProgdashUserCredentialService implements UserCredentialsService {
 		if (universeDetailsDbos != null && !universeDetailsDbos.isEmpty()){
 			for (UniverseDetailsDbo universeDetailsDbo : universeDetailsDbos){
 				userDetails.getUniverseRoles().put(universeDetailsDbo.getUniverseId(),
-						universeDetailsDbo.getRole() != null && universeDetailsDbo.getRole().equals(UserRole.ADMIN.getValue()) ? UserRole.UNIVERSE_ADMIN : UserRole.fromString(universeDetailsDbo.getRole()));
+						universeDetailsDbo.getRole() != null && universeDetailsDbo.getRole().equalsIgnoreCase(UserRole.ADMIN.getValue()) ? UserRole.UNIVERSE_ADMIN :
+								UserRole.fromString(universeDetailsDbo.getRole()));
 			}
 		}
 	}
