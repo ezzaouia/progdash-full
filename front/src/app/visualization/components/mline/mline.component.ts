@@ -95,10 +95,13 @@ export class MlineComponent implements OnInit, OnDestroy {
       .attr( 'transform', `translate( ${this.transform[0]}, ${this.transform[1]} )` );
 
     this.sSumOfTopRules = this.initSSumOfTopRules();
+
+    const nbrOfRules = get( this.modulesData, 'displayedNbrOfRules' );
+    this.yScale.domain([ 0,  nbrOfRules ]);
+
     this.line
       .y( d =>
-        this.yScale( get( d, this.ykey ) +
-        this.sSumOfTopRules[get( d, 'moduleName' )])
+        this.yScale( get( d, this.ykey ))
       );
 
     this.renderModulesLabels();
@@ -178,9 +181,9 @@ export class MlineComponent implements OnInit, OnDestroy {
     .data( this.data, ( d: any ) => d.id );
 
     // update scale.
-    this.mdlScale.domain([
-      0, get( this.modulesData, 'displayedNbrOfRules' ),
-    ]).range([ this.height - 2 * this.margin , 0 ]);
+    // this.yScale.domain([
+    //   0, get( this.modulesData, 'displayedNbrOfRules' ),
+    // ]).range([ this.height - 2 * this.margin , 0 ]);
 
     const linesElEnter = linesEl
       .enter()
@@ -269,8 +272,7 @@ export class MlineComponent implements OnInit, OnDestroy {
           .merge( circlesEl )
           .attr( 'cx', ( dd: any ) => self.xScale( new Date( dd.date )))
           .attr( 'cy', ( dd: any ) =>
-              self.yScale( get( dd, self.ykey ) +
-              self.sSumOfTopRules[get( dd, 'moduleName' )])
+              self.yScale( get( dd, self.ykey ))
           )
           .attr( 'r', 2 )
           .attr( 'class', 'circles--el ink'  + ' id--' + d.id )

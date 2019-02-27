@@ -173,7 +173,7 @@ export class MlineChartComponent implements OnInit, OnDestroy {
     this.yRange = [ this.height - this.margin, this.margin ];
 
     this.xScale.domain( this.xDomain );
-    this.yScale.domain([ 0, 211 ]);
+    // this.yScale.domain([ 0, get( this.modulesData, 'displayedNbrOfRules' ) ]);
 
     this.xScale.range( this.xRange );
     this.yScale.range( this.yRange );
