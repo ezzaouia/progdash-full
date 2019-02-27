@@ -10,7 +10,7 @@ import {
   AfterContentInit
 } from '@angular/core';
 import { MatDialogRef } from '@angular/material';
-import { each, get, set, last, split, keys } from 'lodash';
+import { each, get, set, last, split, keys, startsWith } from 'lodash';
 import { InfoWidgetComponent } from '../infoWidget';
 import { UserTimelineWidgetComponent } from '../userTimelineWidget';
 import { TopNRulesWidgetComponent } from '../topNRulesWidget';
@@ -186,6 +186,8 @@ export class UserDetailComponent implements OnInit, AfterContentInit {
       let data;
       if ( key === 'time' ) {
         data = { sum: get( this.user, key ) };
+      } else if ( startsWith( key, 'topNRules' )) {
+        data = { data: get( this.user, key ) };
       } else {
         data = get( this.user, key );
       }
