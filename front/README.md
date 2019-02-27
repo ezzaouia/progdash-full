@@ -14,5 +14,10 @@ Run `npm run hmr`
 
 Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
 
+## Build PROD by env
+
+ng build --configuration=pre1 --sourceMap=false --optimization=true
+
 ## Prettier
+
 Prettier is used, maybe an extension is needed regarding your IDE!
