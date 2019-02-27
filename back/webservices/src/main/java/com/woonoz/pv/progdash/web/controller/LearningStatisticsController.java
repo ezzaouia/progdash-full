@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nullable;
-import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -42,15 +41,6 @@ public class LearningStatisticsController implements WoonozJerseyController {
 	@Inject private LearningStatisticsService learningStatisticsService;
 
 	private static final int NB_USERS_LIMIT = 100;
-
-	@PermitAll
-	@GET
-	@Path("coucou")
-	@Produces(MediaType.TEXT_PLAIN)
-	@Transactional(readOnly = true)
-	public String getCoucou() {
-		return "coucou";
-	}
 
 	@GET
 	@Path("user/{userId}/session")
