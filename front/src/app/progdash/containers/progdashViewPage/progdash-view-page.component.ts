@@ -113,8 +113,8 @@ export class ProgdashViewPageComponent implements OnInit {
     this.store.dispatch( new fromStore.CheckRule({ isChecked, ruleId }));
   }
 
-  onLaunchPVLive () {
-    this.store.dispatch( new fromStore.LaunchPVLive( ));
+  onLaunchPVLive (event: string[]) {
+    this.store.dispatch( new fromStore.LaunchPVLive({lessons: event}));
   }
 
   onCancelPVLive () {

@@ -16,6 +16,7 @@ import { saveAs } from 'file-saver';
 import * as moment from 'moment';
 
 import { ProgdashDataService } from '../../services';
+import { TeacherService } from '../../services';
 import {
   LoadData,
   DashActionTypes,
@@ -47,6 +48,7 @@ export class DashEffects {
 
   constructor (
     private actions$: Actions,
+    private teacherService: TeacherService,
     private progdashDataService: ProgdashDataService,
     private router: Router,
     private store: Store<fromStore.State>
@@ -72,7 +74,6 @@ export class DashEffects {
         );
     })
   );
-
 
   @Effect()
   selectClass$: Observable<Action> = this.actions$.pipe(
@@ -111,16 +112,16 @@ export class DashEffects {
   //   map( data => new RunDataPrepComplete( data ))
   // );
 
-  @Effect({ dispatch: false })
-  launchPVLive$: Observable<Action> = this.actions$.pipe(
-    ofType<LaunchPVLive>( DashActionTypes.LaunchPVLive ),
-    tap(() =>
-      this.router.navigate(
-        [ '/externalPVRedirect', { externalUrl: 'https://projet-voltaire.fr' } ],
-        { skipLocationChange: true }
-      )
-    )
-  );
+    @Effect({ dispatch: false })
+    launchPVLive$: Observable<String> = this.actions$.pipe(
+        ofType<LaunchPVLive>( DashActionTypes.LaunchPVLive ),
+        switchMap((action: LaunchPVLive) => {
+            return this.teacherService.getLink(action.payload.lessons);
+        }),
+        tap((url: String) => this.router.navigate(
+            [ '/externalPVRedirect', { externalUrl: url } ],
+            { skipLocationChange: true }
+        )));
 
   @Effect({ dispatch: false })
   startPrintReport$: Observable<Action> = this.actions$.pipe(

@@ -139,6 +139,7 @@ export class CheckRule implements Action {
 
 export class LaunchPVLive implements Action {
   readonly type = DashActionTypes.LaunchPVLive;
+  constructor ( public payload: { lessons: string[] }) {}
 }
 
 export class CancelPVLive implements Action {

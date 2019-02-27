@@ -62,7 +62,7 @@ enum Timescale {
           mat-raised-button
           matTooltipPosition="above"
           matTooltip="Lancer le mode présentiel avec les règles sélectionnées"
-          (click)="launchPVLiveHandler.emit($event)">
+          (click)="onLaunchPVLive()">
             <mat-icon
               class="back-icon"
               aria-label="open_in_new">
@@ -322,6 +322,10 @@ export class ProgBoardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   addItem () {
     //  this.boardGrid.push({});
+  }
+
+  onLaunchPVLive () {
+    this.launchPVLiveHandler.emit(this.selectedRules$.getValue());
   }
 
   @Input()
