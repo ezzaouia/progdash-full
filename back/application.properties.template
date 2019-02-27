@@ -13,4 +13,3 @@ spring.data.mongodb.password=${MONGO_PROGDASH_PASS}
 # logs
 progdash.logs.folder=/opt/progdash/logs
 progdash.log.general.level=${LOG_GENERAL_LEVEL}
-progdash.log.web.level=${LOG_WEB_LEVEL}
