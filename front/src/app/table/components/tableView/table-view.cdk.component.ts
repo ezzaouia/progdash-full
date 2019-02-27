@@ -188,6 +188,7 @@ import { omit } from '@ngrx/store/src/utils';
   .header-title {
     display: flex;
     align-items: center;
+    height: 45px;
   }
   .table-icon-button {
     width: 24px;

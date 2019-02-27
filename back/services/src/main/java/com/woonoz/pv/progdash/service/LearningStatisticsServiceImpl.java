@@ -30,6 +30,7 @@ import com.woonoz.pv.progdash.dto.InsightInfoDto;
 import com.woonoz.pv.progdash.dto.LearningSessionStatisticsDto;
 import com.woonoz.pv.progdash.dto.ProgressDto;
 import com.woonoz.pv.progdash.dto.RatioDto;
+import com.woonoz.pv.progdash.dto.TopNRulesDto;
 import com.woonoz.pv.progdash.dto.TopNUsersDto;
 import com.woonoz.pv.progdash.dto.UserDataDto;
 
@@ -91,11 +92,13 @@ public class LearningStatisticsServiceImpl implements LearningStatisticsService 
 		AllStatisticsDto allStats = new AllStatisticsDto();
 		int nbUsers = areaGroupMapper.countAreaUsers(areaId);
 
+		DataFromKeypoints dataFromKeypoints = keypointService.processKeypoints(areaId,groupId,NB_ITEMS_FOR_TOP);
+
 		Map<Integer, UserDataDto> usersMap = new HashMap<>();
 		for (UserIdentityDbo userIdentityDbo : learningStatisticsMapper.getUsersIdentity(areaId, groupId)) {
 			usersMap.put(userIdentityDbo.getId(), new UserDataDto(userIdentityDbo.getId(), userIdentityDbo.getFullName()));
 		}
-		fillUsersMap(usersMap, areaId, groupId);
+		fillUsersMap(usersMap, areaId, groupId, dataFromKeypoints);
 		Collection<UserDataDto> userDataDtos = usersMap.values();
 		Map<Integer, List<ProgressDto>> userProgresses = progressService.getUsersProgresses(usersMap.keySet());
 		for (Integer userId : usersMap.keySet()) {
@@ -106,21 +109,20 @@ public class LearningStatisticsServiceImpl implements LearningStatisticsService 
 		InsightInfoDto lastWeek = insightStatisticsService.createInsightsInfo(areaId, groupId,  nbUsers, 7, 1);
 		InsightInfoDto lastMonth = insightStatisticsService.createInsightsInfo(areaId, groupId,  nbUsers, 30, 4);
 
-		DataFromKeypoints dataFromKeypoints = keypointService.processKeypoints(areaId,groupId,NB_ITEMS_FOR_TOP);
 		lastWeek.setTopNRules(dataFromKeypoints.getLastWeekTopRules());
 		lastMonth.setTopNRules(dataFromKeypoints.getLastMonthTopRules());
 
 		TopNUsersDto lastWeekTopUsers = new TopNUsersDto();
-		lastWeekTopUsers.setHelp(dataFromKeypoints.getLastWeekTopUsers());
+		lastWeekTopUsers.setHelp(dataFromKeypoints.getLastWeekTopUsersHelp());
 		lastWeekTopUsers.setTime(insightStatisticsService.getTopNTimeUsers(areaId, groupId, 7, NB_ITEMS_FOR_TOP, false));
 		lastWeekTopUsers.setDropout(insightStatisticsService.getTopNTimeUsers(areaId, groupId, 7, NB_ITEMS_FOR_TOP, true));
-//		lastWeekTopUsers.setScore();
+		lastWeekTopUsers.setScore(dataFromKeypoints.getLastWeekTopUsersScore());
 
 		TopNUsersDto lastMonthTopUsers = new TopNUsersDto();
-		lastMonthTopUsers.setHelp(dataFromKeypoints.getLastMonthTopUsers());
+		lastMonthTopUsers.setHelp(dataFromKeypoints.getLastMonthTopUsersHelp());
 		lastMonthTopUsers.setTime(insightStatisticsService.getTopNTimeUsers(areaId, groupId, 30, NB_ITEMS_FOR_TOP, false));
 		lastMonthTopUsers.setDropout(insightStatisticsService.getTopNTimeUsers(areaId, groupId, 30, NB_ITEMS_FOR_TOP, true));
-//		lastMonthTopUsers.setScore();
+		lastMonthTopUsers.setScore(dataFromKeypoints.getLastMonthTopUsersScore());
 
 		lastWeek.setTopNUsers(lastWeekTopUsers);
 		lastMonth.setTopNUsers(lastMonthTopUsers);
@@ -131,7 +133,7 @@ public class LearningStatisticsServiceImpl implements LearningStatisticsService 
 		return allStats;
 	}
 
-	private void fillUsersMap(Map<Integer, UserDataDto> usersMap, int areaId, @Nullable Integer groupId) {
+	private void fillUsersMap(Map<Integer, UserDataDto> usersMap, int areaId, @Nullable Integer groupId, DataFromKeypoints dataFromKeypoints) {
 
 		for (ReachedProductDbo reachedProductDbo : learningStatisticsMapper.getReachedProduct(areaId, groupId)) {
 			usersMap.get(reachedProductDbo.getUserId()).setLastModule(reachedProductDbo.getProductName());
@@ -154,6 +156,14 @@ public class LearningStatisticsServiceImpl implements LearningStatisticsService 
 			int totalNbKeypoints = countUserKeypoints(userProductIds, optionalProducts, productNbKeypointsMap);
 			userData.setInitialLevel(new RatioDto(knownRulesDbo.getInitiallyKnownRules(), knownRulesDbo.getEvaluatedRules()));
 			userData.setScore(new RatioDto(knownRulesDbo.getKnownRules(), totalNbKeypoints));
+		}
+
+		for(UserDataDto userDataDto: usersMap.values()) {
+			TopNRulesDto topNRulesDto = dataFromKeypoints.getUsersMap().get(userDataDto.getId());
+			if(topNRulesDto == null) {
+				topNRulesDto = new TopNRulesDto(new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+			}
+			userDataDto.setTopNRules(topNRulesDto);
 		}
 	}
 

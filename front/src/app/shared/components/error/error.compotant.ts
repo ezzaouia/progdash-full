@@ -22,6 +22,7 @@ export class ErrorComponent implements OnInit {
   ngOnInit (): void { }
 
   goToHome() {
-    this.router.navigate(['/dash/prog'])
+    this.router.navigate(['/suivi']);
+
   }
 }

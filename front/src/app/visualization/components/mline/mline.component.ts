@@ -6,19 +6,18 @@ import {
   ElementRef,
   OnDestroy
 } from '@angular/core';
-import { get, each, truncate } from 'lodash';
+import { get, each, truncate, map } from 'lodash';
 import {
   line,
   select,
   curveMonotoneX,
   interpolateString,
   scaleLinear,
-  transition
+  transition,
 } from 'd3';
 import { BehaviorSubject, merge, Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { InteractionsService } from '../../../shared/services';
-import { moduleCatColors } from 'src/app/utils/chart.util';
 
 @Component({
   /* tslint:disable component-selector  */
@@ -57,7 +56,7 @@ export class MlineComponent implements OnInit, OnDestroy {
   mdlScale: any = scaleLinear();
   line = line()
     .curve( curveMonotoneX )
-    .x(( d: any ) => this.xScale( this.timeParse( d.date )));
+    .x(( d: any ) => this.xScale( new Date( d.date )));
 
   @Input() intialEvalConfig;
 
@@ -96,7 +95,6 @@ export class MlineComponent implements OnInit, OnDestroy {
       .attr( 'transform', `translate( ${this.transform[0]}, ${this.transform[1]} )` );
 
     this.sSumOfTopRules = this.initSSumOfTopRules();
-
     this.line
       .y( d =>
         this.yScale( get( d, this.ykey ) +
@@ -116,6 +114,7 @@ export class MlineComponent implements OnInit, OnDestroy {
     const el = select( this.elRef.nativeElement ).select( '.group--module' );
     const nbrOfRules = get( this.modulesData, 'displayedNbrOfRules' );
     const modules = get ( this.modulesData, 'forLabel' );
+
     const s = scaleLinear()
       .domain([ 0,  nbrOfRules ])
       .range([ this.height - 2 * this.margin , 0 ]);
@@ -179,7 +178,9 @@ export class MlineComponent implements OnInit, OnDestroy {
     .data( this.data, ( d: any ) => d.id );
 
     // update scale.
-    this.mdlScale.domain([ 0, 211 ]).range([ this.height - 2 * this.margin , 0 ]);
+    this.mdlScale.domain([
+      0, get( this.modulesData, 'displayedNbrOfRules' ),
+    ]).range([ this.height - 2 * this.margin , 0 ]);
 
     const linesElEnter = linesEl
       .enter()
@@ -199,15 +200,12 @@ export class MlineComponent implements OnInit, OnDestroy {
 
     linesElEnter
       .select( 'path.line-ink--el' )
-      .style( 'stroke', ( d: any ) => get (
-          moduleCatColors, d.moduleName,  this.cScale( d.moduleName )
-        )
-      )
+      .style( 'stroke', ( d: any ) => get ( this.modulesData, `forColor.${d.lastModule}` ))
       .style( 'stroke-width', 1.5 )
       .style( 'opacity', 0.9 )
       .style( 'fill', 'none' )
       .style( 'pointer-events', 'none' )
-      .attr( 'd', ( d: any ) => this.line( get( d, `progData.${this.timeScale}`, [])))
+      .attr( 'd', ( d: any ) => this.line( get( d, 'progData', [])))
       .transition()
       .duration( 250 )
       .attrTween( 'stroke-dasharray', function () {
@@ -226,7 +224,7 @@ export class MlineComponent implements OnInit, OnDestroy {
       .style( 'fill', 'none' )
       .style( 'pointer-events', 'auto' )
       .style( 'cursor', 'pointer' )
-      .attr( 'd', ( d: any ) => this.line( get( d, `progData.${this.timeScale}`, [])))
+      .attr( 'd', ( d: any ) => this.line( get( d, 'progData', [])))
       .on( 'mouseenter', this.onMouseenter.bind( this, parent ))
       .on( 'mouseleave',  this.onMouseleave.bind( this, parent ))
       .on( 'click',  this.onClick.bind( this, parent ));
@@ -256,10 +254,10 @@ export class MlineComponent implements OnInit, OnDestroy {
     .attr( 'd' , function ( d: any, i ): any {
       const newSelf = select( this );
 
-      each( get( d, `progData.${self.timeScale}`, []), _ => {
+      each( get( d, 'progData', []), _ => {
         const circlesEl = newSelf
           .selectAll( '.circles--el' )
-          .data( get( d, `progData.${self.timeScale}`, []));
+          .data( get( d, 'progData', []));
 
         circlesEl
           .exit()
@@ -269,7 +267,7 @@ export class MlineComponent implements OnInit, OnDestroy {
           .enter()
           .append( 'circle' )
           .merge( circlesEl )
-          .attr( 'cx', ( dd: any ) => self.xScale( self.timeParse( dd.date )))
+          .attr( 'cx', ( dd: any ) => self.xScale( new Date( dd.date )))
           .attr( 'cy', ( dd: any ) =>
               self.yScale( get( dd, self.ykey ) +
               self.sSumOfTopRules[get( dd, 'moduleName' )])
@@ -277,10 +275,7 @@ export class MlineComponent implements OnInit, OnDestroy {
           .attr( 'r', 2 )
           .attr( 'class', 'circles--el ink'  + ' id--' + d.id )
           .style( 'opacity', 0.9 )
-          .style( 'fill', ( ) => get (
-              moduleCatColors, d.moduleName,  self.cScale( d.moduleName )
-            )
-          )
+          .style( 'fill', ( ) => get ( self.modulesData, `forColor.${d.lastModule}` ))
           .on( 'mouseenter', self.onMouseenter.bind( null, el, d ))
           .on( 'mouseleave',  self.onMouseleave.bind( null, el ))
           .on( 'click',  self.onClick.bind( null, el ));

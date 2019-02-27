@@ -19,16 +19,16 @@ import { Component, OnInit, Input, EventEmitter } from '@angular/core';
         <mat-divider></mat-divider>
         <div
           class="list-item"
-          *ngFor="let item of topN">
+          *ngFor="let item of data">
             <div class="list-item-content">
-              <span> {{ item.fullName }} </span>
+              <span> {{ users[item.id].fullName }} </span>
               <div class="item-detail">
                 <span class="item-sum">
-                  {{ item.insights[timescale][key].sum | formatAttr:key }}
+                  {{ item.sum.sum | formatAttr:key }}
                 </span>
                 <DetlaWidget
-                  [sign]="item.insights[timescale][key].sign"
-                  [data]="item.insights[timescale][key].sumd | formatAttr:key">
+                  [sign]="(item.sum.sumd >= 0 ? 'plus' : 'minus')"
+                  [data]="item.sum.sumd | mathAbs">
                 </DetlaWidget>
               </div>
             </div>
@@ -83,10 +83,11 @@ import { Component, OnInit, Input, EventEmitter } from '@angular/core';
 export class TopNUsersWidgetComponent implements OnInit {
 
   @Input() title;
-  @Input() topN;
+  @Input() data;
   @Input() timescale;
   @Input() key;
   @Input() id;
+  @Input() users;
   @Input() isStartPrintReport;
   @Input() checkWidgetHandler = new EventEmitter<{ isChecked: boolean; widgetId: string }>();
   @Input() selectedWidgets: string[];

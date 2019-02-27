@@ -14,7 +14,7 @@ export class ProgdashDataService {
   }
 
   loadGroupData$ ({ groupId, areaId }) {
-    return this.http.get( `${this.API_URL}/statistics/area/${areaId}?groupId${groupId}` );
+    return this.http.get( `${this.API_URL}/statistics/area/${areaId}?groupId=${groupId}` );
   }
 
 }

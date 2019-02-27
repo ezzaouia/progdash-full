@@ -203,7 +203,7 @@ export class TimelineWidgetComponent implements AfterViewInit, OnDestroy {
       .append( 'g' )
       .classed( 'grid', true )
       .merge( group )
-      .attr( 'transform', ( d, _ ) => `translate(${ this.xScale( get ( d, 'date' )) }, 0)` );
+      .attr( 'transform', ( d, _ ) => `translate(${ this.xScale( get ( d, 'date' )) - 10 }, 0)` );
 
     enter.append( 'line' );
     enter.append( 'text' );
