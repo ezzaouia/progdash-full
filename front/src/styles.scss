@@ -159,6 +159,37 @@ progtable {
   }
 }
 
+#pdf-report {
+  display: flex;
+  flex-direction: column;
+  width: 816px;
+  height: 100%;
+  header {
+    width: 100%;
+    height: 46px;
+    display: flex;
+    box-sizing: border-box;
+    padding: 0px 24px;
+    flex-direction: row;
+    align-items: center;
+    white-space: nowrap;
+    border-bottom: 1px solid #ccc;
+  }
+  .title {
+    color: rgba(0, 0, 0, 0.87);
+    font-size: 18px;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-family: "Roboto Mono", monospace;
+  }
+  .separator {
+    margin: 0 5px;
+  }
+  .separator:after {
+    content: "- Classe :";
+  }
+}
+
 #pdf-container {
   display: flex;
   flex-flow: row wrap;
@@ -199,7 +230,7 @@ progtable {
 
   #learner-report {
     width: calc(816px - 60px) !important;
-    height: fit-content !important;
+    height: 100% !important;
   }
 
   #score {
