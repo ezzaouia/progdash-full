@@ -38,6 +38,8 @@ services:
       MONGO_PROGDASH_DB: ${MONGO_PROGDASH_DB}
       MONGO_PROGDASH_USER: ${MONGO_PROGDASH_USER}
       MONGO_PROGDASH_PASS: ${MONGO_PROGDASH_PASS}
+      LOG_GENERAL_LEVEL: ${LOG_GENERAL_LEVEL}
+      SPRING_PROFILES: ${SPRING_PROFILES}
     command: >
       /bin/bash -c "envsubst < /opt/progdash/application.properties.template > /opt/progdash/application.properties
       && rm /opt/progdash/application.properties.template && /usr/bin/java -jar /opt/progdash/webservices.jar --spring.config.location=/opt/progdash/application.properties"

@@ -8,12 +8,10 @@ import org.springframework.context.annotation.Profile;
 
 import com.woonoz.auth.configuration.MethodWebSecurityConfig;
 import com.woonoz.auth.session.cookie.configuration.WoonozCookieAuthenticationConfig;
-import com.woonoz.monitoring.Monitor;
 import com.woonoz.web.HttpRequestContextProvider;
 import com.woonoz.web.SpringWebHttpRequestContextProvider;
-import com.woonoz.web.log.TransactionMonitor;
 
-@Profile("prod")
+@Profile({"prod","dev"})
 @Configuration
 @Import({WoonozCookieAuthenticationConfig.class, MethodWebSecurityConfig.class})
 public class ProgdashAuthenticationConfig {
@@ -22,16 +20,6 @@ public class ProgdashAuthenticationConfig {
 	@Qualifier("coreDateProvider")
 	public com.woonoz.service.DateProvider coreDateProvider(){
 		return new com.woonoz.service.SystemDateProvider();
-	}
-
-	@Bean
-	public Monitor monitor(){
-		return new Monitor();
-	}
-
-	@Bean
-	public TransactionMonitor transactionMonitor(){
-		return new TransactionMonitor();
 	}
 
 	@Bean
