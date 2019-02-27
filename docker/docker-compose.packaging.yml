@@ -19,8 +19,6 @@ services:
     build:
       context: ./
       dockerfile: ./docker/dockerfiles/java/Dockerfile
-    volumes:
-        - C:/dev/log/progdash:/opt/progdash/logs
     ports:
       - 8080:8080
 

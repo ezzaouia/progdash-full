@@ -9,3 +9,8 @@ spring.data.mongodb.port=${MONGO_PORT}
 spring.data.mongodb.database=${MONGO_PROGDASH_DB}
 spring.data.mongodb.username=${MONGO_PROGDASH_USER}
 spring.data.mongodb.password=${MONGO_PROGDASH_PASS}
+
+# logs
+progdash.logs.folder=/opt/progdash/logs
+progdash.log.general.level=${LOG_GENERAL_LEVEL}
+progdash.log.web.level=${LOG_WEB_LEVEL}
