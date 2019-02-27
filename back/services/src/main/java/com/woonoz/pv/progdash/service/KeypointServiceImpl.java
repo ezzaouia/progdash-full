@@ -3,6 +3,7 @@ package com.woonoz.pv.progdash.service;
 import static java.util.stream.Collectors.averagingInt;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.summingDouble;
 import static java.util.stream.Collectors.toMap;
 
 import java.util.ArrayList;
@@ -53,6 +54,7 @@ public class KeypointServiceImpl implements KeypointService {
 		DataFromKeypoints dataFromKeypoints = new DataFromKeypoints();
 		addTopRulesToData(dataFromKeypoints, kpPracticeDbos, nbItemsForTop);
 		addTopHelpUsers(dataFromKeypoints, kpPracticeDbos, nbItemsForTop);
+		addTopScoreUsers(dataFromKeypoints, kpPracticeDbos, nbItemsForTop);
 
 		addUsersData(dataFromKeypoints, kpPracticeDbos, nbItemsForTop);
 
@@ -163,9 +165,9 @@ public class KeypointServiceImpl implements KeypointService {
 		Map<Integer, Double> learnedChapters = getLearnedChapters(kpPracticeDbos);
 		Map<Integer, Double> initiallyKnownChapters = getInitiallyKnownChapters(kpPracticeDbos);
 
-		List<Integer> topDifficultyChapters = sortByNbInteractionsAndSelectTop(difficultChapters, nbItemsForTop);
-		List<Integer> topLearnedChapters = sortByNbInteractionsAndSelectTop(learnedChapters, nbItemsForTop);
-		List<Integer> topInitiallyKnownChapters = sortByNbInteractionsAndSelectTop(initiallyKnownChapters, nbItemsForTop);
+		List<Integer> topDifficultyChapters = sortByValueAndSelectTop(difficultChapters, nbItemsForTop);
+		List<Integer> topLearnedChapters = sortByValueAndSelectTop(learnedChapters, nbItemsForTop);
+		List<Integer> topInitiallyKnownChapters = sortByValueAndSelectTop(initiallyKnownChapters, nbItemsForTop);
 
 		Set<Integer> chaptersList = new HashSet<>();
 		chaptersList.addAll(topDifficultyChapters);
@@ -220,8 +222,8 @@ public class KeypointServiceImpl implements KeypointService {
 				);
 	}
 
-	private List<Integer> sortByNbInteractionsAndSelectTop(Map<Integer, Double> map, int nbItemsForTop) {
-		// sort by nbInteractions desc
+	private List<Integer> sortByValueAndSelectTop(Map<Integer, Double> map, int nbItemsForTop) {
+		// sort by value desc
 		Map<Integer, Double> orderedChapters = map.entrySet().stream()
 				.sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
 				.collect(
@@ -251,20 +253,40 @@ public class KeypointServiceImpl implements KeypointService {
 	}
 
 	private void addTopHelpUsers(DataFromKeypoints dataFromKeypoints, List<KeypointPracticeDbo> kpPracticeDbos, int nbItemsForTop) {
-		dataFromKeypoints.setLastWeekTopUsers(getUsersInPeriodDto(kpPracticeDbos, nbItemsForTop, 7));
-		dataFromKeypoints.setLastMonthTopUsers(getUsersInPeriodDto(kpPracticeDbos, nbItemsForTop, 30));
+		dataFromKeypoints.setLastWeekTopUsersHelp(getHelpUsersInPeriodDto(kpPracticeDbos, nbItemsForTop, 7));
+		dataFromKeypoints.setLastMonthTopUsersHelp(getHelpUsersInPeriodDto(kpPracticeDbos, nbItemsForTop, 30));
 	}
 
-	private List<UserDataInfoDto> getUsersInPeriodDto(List<KeypointPracticeDbo> kpPracticeDbos, int nbItemsForTop, int nbDays) {
+	private void addTopScoreUsers(DataFromKeypoints dataFromKeypoints, List<KeypointPracticeDbo> kpPracticeDbos, int nbItemsForTop) {
+		dataFromKeypoints.setLastWeekTopUsersScore(getScoreUsersInPeriodDto(kpPracticeDbos, nbItemsForTop, 7));
+		dataFromKeypoints.setLastMonthTopUsersScore(getScoreUsersInPeriodDto(kpPracticeDbos, nbItemsForTop, 30));
+	}
+
+	private List<UserDataInfoDto> getHelpUsersInPeriodDto(List<KeypointPracticeDbo> kpPracticeDbos, int nbItemsForTop, int nbDays) {
 
 		Period period = new Period(coreDateProvider.now(), nbDays);
 
 		Map<Integer, Double> usersInLastPeriod = getHelplessUsers(kpPracticeDbos, period.getMainStartDate(), period.getMainEndDate());
 		Map<Integer, Double> usersInPreviousPeriod = getHelplessUsers(kpPracticeDbos, period.getPreviousStartDate(), period.getPreviousEndDate());
-		List<Integer> topHelplessUsersInPeriod = sortByNbInteractionsAndSelectTop(usersInLastPeriod, nbItemsForTop);
+		List<Integer> topUsersInPeriod = sortByValueAndSelectTop(usersInLastPeriod, nbItemsForTop);
 
+		return copyUsersInDto(usersInLastPeriod, usersInPreviousPeriod, topUsersInPeriod);
+	}
+
+	private List<UserDataInfoDto> getScoreUsersInPeriodDto(List<KeypointPracticeDbo> kpPracticeDbos, int nbItemsForTop, int nbDays) {
+
+		Period period = new Period(coreDateProvider.now(), nbDays);
+
+		Map<Integer, Double> usersInLastPeriod = getScoreUsers(kpPracticeDbos, period.getMainStartDate(), period.getMainEndDate());
+		Map<Integer, Double> usersInPreviousPeriod = getScoreUsers(kpPracticeDbos, period.getPreviousStartDate(), period.getPreviousEndDate());
+		List<Integer> topUsersInPeriod = sortByValueAndSelectTop(usersInLastPeriod, nbItemsForTop);
+
+		return copyUsersInDto(usersInLastPeriod, usersInPreviousPeriod, topUsersInPeriod);
+	}
+
+	private List<UserDataInfoDto> copyUsersInDto(Map<Integer, Double> usersInLastPeriod, Map<Integer, Double> usersInPreviousPeriod, List<Integer> topUsersInPeriod) {
 		List<UserDataInfoDto> usersInPeriodDto = new ArrayList<>();
-		for (Integer userId : topHelplessUsersInPeriod) {
+		for (Integer userId : topUsersInPeriod) {
 			int lastMonthNbInteractions = usersInLastPeriod.get(userId) == null ? 0 : Math.round(Math.round(usersInLastPeriod.get(userId)));
 			int previousMonthNbInteractions = usersInPreviousPeriod.get(userId) == null ? 0 : Math.round(Math.round(usersInPreviousPeriod.get(userId)));
 			usersInPeriodDto.add(new UserDataInfoDto(userId, new DifferentialDto(lastMonthNbInteractions, lastMonthNbInteractions - previousMonthNbInteractions)));
@@ -288,4 +310,22 @@ public class KeypointServiceImpl implements KeypointService {
 						)
 				);
 	}
+
+	private Map<Integer, Double> getScoreUsers(List<KeypointPracticeDbo> kpPracticeDbos, Date startDate, Date endDate) {
+		return kpPracticeDbos.stream()
+				// where date is in range
+				.filter(kpPracticeDbo ->
+						startDate.compareTo(kpPracticeDbo.getLastPracticeDate()) < 0
+								&&
+								kpPracticeDbo.getLastPracticeDate().compareTo(endDate) <= 0
+				)
+				// group by chapterId and average the nbInteractions
+				.collect(
+						Collectors.groupingBy(
+								KeypointPracticeDbo::getUserId,
+								summingDouble(KeypointPracticeDbo::getMaxWeight)
+						)
+				);
+	}
+
 }
