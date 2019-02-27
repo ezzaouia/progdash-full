@@ -28,11 +28,4 @@ export const isProgEvaluationOpened = createSelector( _shared, fromDash.isProgEv
 export const isStartPrintReport = createSelector( _shared, fromDash.isStartPrintReport );
 export const selectedRules = createSelector( _shared, fromDash.selectedRules );
 export const selectedWidgets = createSelector( _shared, fromDash.selectedWidgets );
-export const modulesData = createSelector( _shared, fromDash.modulesData );
 export const userInfo = createSelector( _shared, fromDash.userInfo );
-
-// TO CLEAN
-// export const rawData = createSelector( _shared, fromDash.rawData );
-// export const newClasses = createSelector( _shared, fromDash.newClasses );
-// export const usersByClass = createSelector( _shared, fromDash.usersByClass );
-// export const insights = createSelector( _shared, fromDash.insights );

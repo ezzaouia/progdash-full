@@ -47,9 +47,12 @@ export const AppRoutes: Routes = [
     {
       provide: externalUrlProvider,
       useValue: ( route: ActivatedRouteSnapshot ) => {
+        console.log( ' ====> [window.open] Start' );
         const externalUrl = route.paramMap.get( 'externalUrl' );
         const isSelf = route.paramMap.get( 'isSelf' );
+        console.log( ' ====> Ready get params', externalUrl, isSelf );
         window.open( externalUrl, isSelf ? '_self' : '_blank' );
+        console.log( ' ====> [window.open] Fire', externalUrl, isSelf );
       },
     },
   ],

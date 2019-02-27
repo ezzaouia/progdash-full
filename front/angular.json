@@ -60,6 +60,14 @@
                   "with": "src/environments/environment.hmr.ts"
                 }
               ]
+            },
+            "pre1": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.pre1.ts"
+                }
+              ]
             }
           }
         },

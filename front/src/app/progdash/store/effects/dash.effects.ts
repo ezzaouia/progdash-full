@@ -101,7 +101,7 @@ export class DashEffects {
       } else {
         return this.progdashDataService
         .loadGroupData$({
-          groupId: selectedClass.id ? selectedClass.id : null,
+          groupId: selectedClass.id === 0 ? '' : selectedClass.id,
           areaId: userInfo.areaId,
         })
         .pipe(
@@ -126,10 +126,10 @@ export class DashEffects {
     @Effect({ dispatch: false })
     launchPVLive$: Observable<String> = this.actions$.pipe(
         ofType<LaunchPVLive>( DashActionTypes.LaunchPVLive ),
-        switchMap((action: LaunchPVLive) => {
-            return this.teacherService.getLink(action.payload.lessons);
+        switchMap(( action: LaunchPVLive ) => {
+            return this.teacherService.getLink( action.payload.lessons );
         }),
-        tap((url: String) => this.router.navigate(
+        tap(( url: String ) => this.router.navigate(
             [ '/externalPVRedirect', { externalUrl: url } ],
             { skipLocationChange: true }
         )));
