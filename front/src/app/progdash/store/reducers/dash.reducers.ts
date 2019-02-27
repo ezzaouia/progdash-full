@@ -222,6 +222,20 @@ export function reducers (
       };
     }
 
+    case DashActionTypes.PrintReport: {
+      return {
+        ...state,
+        isLoading: true,
+      };
+    }
+
+    case DashActionTypes.HotPrintWidget: {
+      return {
+        ...state,
+        isLoading: true,
+      };
+    }
+
     case DashActionTypes.ClosePrintReport: {
       return {
         ...state,
@@ -268,6 +282,7 @@ export function reducers (
       return {
         ...state,
         isStartPrintReport: false,
+        isLoading: true,
       };
     }
 
@@ -276,6 +291,7 @@ export function reducers (
         ...state,
         selectedWidgets: [],
         isStartPrintReport: false,
+        isLoading: false,
       };
     }
 
@@ -286,6 +302,7 @@ export function reducers (
         ...state,
         selectedWidgets: [],
         isStartPrintReport: false,
+        isLoading: true,
       };
     }
 

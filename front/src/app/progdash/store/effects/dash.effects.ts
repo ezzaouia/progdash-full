@@ -14,6 +14,7 @@ import { Actions, Effect, ofType } from '@ngrx/effects';
 import { startsWith, filter, size } from 'lodash';
 import { saveAs } from 'file-saver';
 import * as moment from 'moment';
+moment.locale( 'fr' );
 
 import { ProgdashDataService } from '../../services';
 import { TeacherService } from '../../services';
@@ -45,6 +46,8 @@ import { a4WidgetsStyles, copyComputedStyle } from '../../utils/html2pdf.utils';
 @Injectable()
 export class DashEffects {
   tmpPdfContainer: Element = null;
+  tmpPdfReport: Element = null;
+  tmpPdfHeader: Element = null;
 
   constructor (
     private actions$: Actions,
@@ -53,10 +56,18 @@ export class DashEffects {
     private router: Router,
     private store: Store<fromStore.State>
   ) {
+    this.tmpPdfReport = document.createElement( 'div' );
     this.tmpPdfContainer = document.createElement( 'div' );
+    this.tmpPdfHeader = document.createElement( 'div' );
+
+    this.tmpPdfReport.setAttribute( 'id', 'pdf-report' );
     this.tmpPdfContainer.setAttribute( 'id', 'pdf-container' );
-    this.tmpPdfContainer.setAttribute( 'style', `display: none;` );
-    document.body.appendChild( this.tmpPdfContainer );
+
+    this.tmpPdfReport.setAttribute( 'style', `display: none;` );
+
+    this.tmpPdfReport.appendChild( this.tmpPdfHeader );
+    this.tmpPdfReport.appendChild( this.tmpPdfContainer );
+    document.body.appendChild( this.tmpPdfReport );
   }
 
   @Effect()
@@ -126,7 +137,17 @@ export class DashEffects {
   @Effect({ dispatch: false })
   startPrintReport$: Observable<Action> = this.actions$.pipe(
     ofType<StartPrintReport>( DashActionTypes.StartPrintReport ),
-    map( action => {
+    withLatestFrom( this.store.pipe( select( fromStore.selectedClass ))),
+    map(([ _ , selectedClass ]) => {
+      this.tmpPdfHeader.innerHTML = `
+        <header>
+          <span class="title">Suivi Voltaire</span>
+          <span class="separator"></span>
+          <span>${get( selectedClass, 'name', 'N/A' )}</span>
+          <span class="fill"></span>
+          <span>${ moment().format( 'LLLL' )}</span>
+        </header>
+      `;
       this.tmpPdfContainer.innerHTML = '';
       return null;
     })
@@ -252,13 +273,13 @@ export class DashEffects {
   printReport$: Observable<Action> = this.actions$.pipe(
     ofType<PrintReport>( DashActionTypes.PrintReport ),
     map(() => {
-      this.tmpPdfContainer.setAttribute( 'style', `display: flex;` );
+      this.tmpPdfReport.setAttribute( 'style', `display: flex;` );
       return null;
     }),
-    delay( 200 ),
+    delay( 1000 ),
     switchMap(() => {
       const promise = html2pdf()
-        .from( this.tmpPdfContainer )
+        .from( this.tmpPdfReport )
         .set({
           filename: 'rapport-' + +new Date() + '.pdf',
           pagebreak: { mode: [ 'avoid-all' ] },
@@ -269,16 +290,7 @@ export class DashEffects {
         promise.toPdf().output( 'blob' ) // .save()
       ).pipe(
         map( blob => {
-          // TODO to check if we want to open
-          // files or not
-          // const newWin = window.open( URL.createObjectURL( blob ), '_blank' );
-          // if ( !newWin || newWin.closed || typeof newWin.closed === 'undefined' ) {
-          //   // POPUP BLOCKED
-          //   console.log( 'POPUP BLOCKED' );
-          // }
-
           saveAs( blob, 'rapport-' + +new Date() + '.pdf' );
-
           return blob;
         }),
         map( blob => new PrintReportSuccess({ blob })),
@@ -292,7 +304,8 @@ export class DashEffects {
   @Effect()
   hotPrintWidget$: Observable<Action> = this.actions$.pipe(
     ofType<HotPrintWidget>( DashActionTypes.HotPrintWidget ),
-    map( action => {
+    withLatestFrom( this.store.pipe( select( fromStore.selectedClass ))),
+    map(([ action , selectedClass ]) => {
       const widgetId = action.payload;
       const widgetEl = document.getElementById( widgetId );
       const cloneEl = widgetEl.cloneNode( true );
@@ -303,6 +316,20 @@ export class DashEffects {
       tmpWrapper.setAttribute( 'style', `margin: 6px;` );
       tmpWrapper.setAttribute( 'id', `print-${widgetId}` );
       tmpWrapper.appendChild( cloneEl );
+
+      this.tmpPdfHeader.innerHTML = '';
+      const hack = document.createElement( 'div' );
+      hack.innerHTML = `
+        <header>
+          <span class="title">Suivi Voltaire</span>
+          <span class="separator"></span>
+          <span>${get( selectedClass, 'name', 'N/A' )}</span>
+          <span class="fill"></span>
+          <span>${ moment().format( 'LLLL' )}</span>
+        </header>
+      `;
+
+      this.tmpPdfContainer.appendChild( hack );
       this.tmpPdfContainer.appendChild( tmpWrapper );
 
       const svg = document.querySelector( '#pdf-container #svg-mline-chart' );
@@ -312,16 +339,17 @@ export class DashEffects {
         'height',
         `${a4WidgetsStyles['svg-mline-chart'].height}`
       );
+
       return;
     }),
     map(() => {
-      this.tmpPdfContainer.setAttribute( 'style', `display: flex;` );
+      this.tmpPdfReport.setAttribute( 'style', `display: flex;` );
       return null;
     }),
-    delay( 200 ),
+    delay( 1000 ),
     switchMap(() => {
       const promise = html2pdf()
-        .from( this.tmpPdfContainer )
+        .from( this.tmpPdfReport )
         .set({
           filename: 'rapport-' + +new Date() + '.pdf',
           pagebreak: { mode: [ 'avoid-all' ] },
@@ -332,16 +360,7 @@ export class DashEffects {
         promise.toPdf().output( 'blob' ) // .save()
       ).pipe(
         map( blob => {
-          // TODO to check if we want to open
-          // files or not
-          // const newWin = window.open( URL.createObjectURL( blob ), '_blank' );
-          // if ( !newWin || newWin.closed || typeof newWin.closed === 'undefined' ) {
-          //   // POPUP BLOCKED
-          //   console.log( 'POPUP BLOCKED' );
-          // }
-
           saveAs( blob, 'rapport-' + +new Date() + '.pdf' );
-
           return blob;
         }),
         map( blob => new PrintReportSuccess({ blob })),
@@ -356,8 +375,9 @@ export class DashEffects {
   PrintReportSuccess$: Observable<Action> = this.actions$.pipe(
     ofType<PrintReportSuccess>( DashActionTypes.PrintReportSuccess ),
     tap(() => {
-      this.tmpPdfContainer.setAttribute( 'style', `display: none;` );
+      this.tmpPdfReport.setAttribute( 'style', `display: none;` );
       this.tmpPdfContainer.innerHTML = '';
+      this.tmpPdfHeader.innerHTML = '';
     })
   );
 
@@ -365,8 +385,9 @@ export class DashEffects {
   PrintReportFailure$: Observable<Action> = this.actions$.pipe(
     ofType<PrintReportFailure>( DashActionTypes.PrintReportFailure ),
     tap(() => {
-      this.tmpPdfContainer.setAttribute( 'style', `display: none;` );
+      this.tmpPdfReport.setAttribute( 'style', `display: none;` );
       this.tmpPdfContainer.innerHTML = '';
+      this.tmpPdfHeader.innerHTML = '';
     })
   );
 }

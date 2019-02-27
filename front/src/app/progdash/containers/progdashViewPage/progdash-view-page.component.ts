@@ -3,8 +3,6 @@ import { Observable, from } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 
 import * as fromStore from '../../store';
-import { UserData, ClassData, StoreField, InsightData } from '../../store/types';
-import { Timescale } from '../../utils/utils';
 
 /* tslint:disable component-selector  */
 @Component({
@@ -27,16 +25,16 @@ import { Timescale } from '../../utils/utils';
 
       (selectClassHandler)="onSelectClass($event)"
       (timescaleHandler)="onTimescaleChange($event)"
-      (openProgTableHandler)="onOpenProgTable($event)"
-      (openProgEvaluationHandler)="onOpenProgEvaluation($event)"
-      (openProgBoardHandler)="onOpenProgBoard($event)"
+      (openProgTableHandler)="onOpenProgTable()"
+      (openProgEvaluationHandler)="onOpenProgEvaluation()"
+      (openProgBoardHandler)="onOpenProgBoard()"
 
       (checkRuleHandler)="onCheckRule($event)"
-      (launchPVLiveHandler)="onLaunchPVLive($event)"
-      (cancelPVLiveHandler)="onCancelPVLive($event)"
+      (launchPVLiveHandler)="onLaunchPVLive()"
+      (cancelPVLiveHandler)="onCancelPVLive()"
 
-      (startPrintReportHandler)="onStartPrintReport($event)"
-      (closePrintReportHandler)="onClosePrintReport($event)"
+      (startPrintReportHandler)="onStartPrintReport()"
+      (closePrintReportHandler)="onClosePrintReport()"
       (checkWidgetHandler)="onCheckWidget($event)"
       (printReportHandler)="onPrintReport($event)"
       (hotPrintWidgetHandler)="onHotPrintWidget($event)"
@@ -56,9 +54,6 @@ export class ProgdashViewPageComponent implements OnInit {
   isProgTableOpened$: Observable<boolean>;
   isProgEvaluationOpened$: Observable<boolean>;
   classes$: Observable<any>;
-  // usersByClass$: Observable<any>;
-  // insights$: Observable<any>;
-  modulesData$: Observable<{}>;
   selectedClass$: Observable<string>;
   selectedTimescale$: Observable<string> = from( 'lastWeek' );
   selectedRules$: Observable<string[]>;
@@ -66,20 +61,14 @@ export class ProgdashViewPageComponent implements OnInit {
 
   constructor ( private store: Store<fromStore.State> ) {
     this.isLoading$ = this.store.pipe( select( fromStore.isLoading ));
-    // this.isDataLoaded$ = this.store.pipe( select( fromStore.isDataLoaded ));
     this.isProgTableOpened$ = this.store.pipe( select( fromStore.isProgTableOpened ));
     this.isStartPrintReport$ = this.store.pipe( select( fromStore.isStartPrintReport ));
     this.isProgEvaluationOpened$ = this.store.pipe( select( fromStore.isProgEvaluationOpened ));
-
     this.classes$ = this.store.pipe( select ( fromStore.classes ));
-    // this.usersByClass$ = this.store.pipe( select( fromStore.usersByClass ));
-    // this.insights$ = this.store.pipe( select ( fromStore.insights ));
-
     this.selectedClass$ = this.store.pipe( select ( fromStore.selectedClass ));
     this.selectedTimescale$ = this.store.pipe( select ( fromStore.selectedTimescale ));
     this.selectedRules$ = this.store.pipe( select ( fromStore.selectedRules ));
     this.selectedWidgets$ = this.store.pipe( select ( fromStore.selectedWidgets ));
-    this.modulesData$ = this.store.pipe( select ( fromStore.modulesData ));
   }
 
   ngOnInit (): void {
