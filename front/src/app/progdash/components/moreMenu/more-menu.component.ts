@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import {UserService} from "../../services";
-import {Router} from "@angular/router";
-import {environment} from "../../../../environments/environment";
+import { UserService } from '../../services';
+import { Router } from '@angular/router';
+import { environment } from '../../../../environments/environment';
 
 /* tslint:disable component-selector  */
 @Component({
@@ -23,27 +23,35 @@ import {environment} from "../../../../environments/environment";
 })
 export class MoreMenuComponent implements OnInit {
 
-  constructor (private userService: UserService, private router: Router) { }
+  constructor ( private userService: UserService, private router: Router ) { }
 
   ngOnInit (): void { }
 
-  signOut() {
+  signOut () {
+    const externalUrl = `${environment.SUIVI_STATS_URL}/guard/logout`;
+    console.log( ' ====> signOut externalSuiviStatsRedirect',
+      environment.SUIVI_STATS_URL, externalUrl );
+
     this.router.navigate([
         '/externalSuiviStatsRedirect',
         {
-          externalUrl: `${environment.SUIVI_STATS_URL}/guard/logout'`,
+          externalUrl, // `${environment.SUIVI_STATS_URL}/guard/logout'`,
           isSelf : true,
         } ],
       { skipLocationChange: false }
     );
   }
 
-  goToStatistic() {
+  goToStatistic () {
     const areaId = this.userService.getAreaId();
+    const externalUrl = `${environment.SUIVI_STATS_URL}/sphere/${areaId}/statistiques`;
+    console.log( ' ====> goToStatistic externalSuiviStatsRedirect',
+      environment.SUIVI_STATS_URL, areaId, externalUrl );
+
     this.router.navigate([
         '/externalSuiviStatsRedirect',
         {
-          externalUrl: `${environment.SUIVI_STATS_URL}/sphere/${areaId}/statistiques`,
+          externalUrl,
           isSelf : true,
         } ],
       { skipLocationChange: false }
