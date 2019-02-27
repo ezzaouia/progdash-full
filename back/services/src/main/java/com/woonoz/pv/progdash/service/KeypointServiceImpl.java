@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -72,7 +73,7 @@ public class KeypointServiceImpl implements KeypointService {
 		Map<Integer, List<KeypointPracticeDbo>> kpsByUserId = getKpsByUserId(kpPracticeDbos);
 		Map<Integer, TopNRulesKp> topNRulesKpByUserId = getTopNRulesKpByUserId(kpsByUserId, nbItemsForTop);
 		Set<Integer> allChaptersId = getAllChaptersId(topNRulesKpByUserId);
-		Map<Integer, ChapterNameDbo> chapterNames = keypointMapper.getChapterNames(allChaptersId);
+		Map<Integer, ChapterNameDbo> chapterNames = (allChaptersId.size() == 0) ? new HashMap<>() : keypointMapper.getChapterNames(allChaptersId);
 		dataFromKeypoints.setUsersMap(getUserMapsTopNRules(topNRulesKpByUserId, chapterNames));
 	}
 
@@ -173,7 +174,7 @@ public class KeypointServiceImpl implements KeypointService {
 		chaptersList.addAll(topDifficultyChapters);
 		chaptersList.addAll(topLearnedChapters);
 		chaptersList.addAll(topInitiallyKnownChapters);
-		Map<Integer, ChapterNameDbo> chapterNames = keypointMapper.getChapterNames(chaptersList);
+		Map<Integer, ChapterNameDbo> chapterNames = (chaptersList.size() == 0) ? new HashMap<>() : keypointMapper.getChapterNames(chaptersList);
 
 		List<RuleDataInfoDto> topDifficultyDto = buildTopRulesDto(topDifficultyChapters, chapterNames, difficultChapters);
 		List<RuleDataInfoDto> topLearnedDto = buildTopRulesDto(topLearnedChapters, chapterNames, learnedChapters);
