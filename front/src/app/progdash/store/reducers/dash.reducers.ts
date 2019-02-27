@@ -14,7 +14,6 @@ export interface State {
   selectedRules: string[];
   isStartPrintReport: boolean;
   selectedWidgets: string[];
-  modulesData: {};
   areaId: number;
   userId: number;
 }
@@ -30,8 +29,7 @@ const initialState: State = {
   selectedRules: [],
   isStartPrintReport: false,
   selectedWidgets: [],
-  modulesData: {},
-  areaId: 39422, // TODO FIXME
+  areaId: null, // 39422
   userId: null,
 };
 
@@ -323,5 +321,4 @@ export const isProgEvaluationOpened = ( state: State ) => state.isProgEvaluation
 export const isStartPrintReport = ( state: State ) => state.isStartPrintReport;
 export const selectedRules = ( state: State ) => state.selectedRules;
 export const selectedWidgets = ( state: State ) => state.selectedWidgets;
-export const modulesData = ( state: State ) => state.modulesData;
 export const userInfo = ( state: State ) => ({ userId: state.userId, areaId: state.areaId });
