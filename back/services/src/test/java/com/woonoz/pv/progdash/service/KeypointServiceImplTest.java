@@ -102,6 +102,58 @@ public class KeypointServiceImplTest extends AbstractMockServiceTest {
 		List<RuleDataInfoDto> learnedChapters = Arrays.asList(rule5Dto, rule4Dto, rule1Dto);
 		List<RuleDataInfoDto> initiallyKnownChapters = Arrays.asList(rule6Dto, rule1Dto);
 
+		Map<Integer, TopNRulesDto> userMap = new HashMap<Integer, TopNRulesDto>();
+		userMap.put(101, new TopNRulesDto(
+				//focused
+				Arrays.asList(
+						new RuleDataInfoDto(3, "chapter3",  13),
+						new RuleDataInfoDto(2, "chapter2",  8),
+						new RuleDataInfoDto(1, "chapter1",  5)
+				),
+				// acquired
+				Arrays.asList(
+						new RuleDataInfoDto(5, "chapter5",  23),
+						new RuleDataInfoDto(4, "chapter4",  18)
+				),
+				// known
+				Arrays.asList(
+						new RuleDataInfoDto(6, "chapter6",  28)
+				)));
+		userMap.put(102, new TopNRulesDto(
+				//focused
+				Arrays.asList(
+						new RuleDataInfoDto(3, "chapter3",  15),
+						new RuleDataInfoDto(2, "chapter2",  10)
+
+				),
+				// acquired
+				Arrays.asList(
+						new RuleDataInfoDto(5, "chapter5",  25),
+						new RuleDataInfoDto(4, "chapter4",  20),
+						new RuleDataInfoDto(1, "chapter1",  5)
+				),
+				// known
+				Arrays.asList(
+						new RuleDataInfoDto(6, "chapter6",  30)
+				)));
+		userMap.put(103, new TopNRulesDto(
+				//focused
+				Arrays.asList(
+						new RuleDataInfoDto(3, "chapter3",  17),
+						new RuleDataInfoDto(2, "chapter2",  12)
+
+				),
+				// acquired
+				Arrays.asList(
+						new RuleDataInfoDto(5, "chapter5",  27),
+						new RuleDataInfoDto(4, "chapter4",  22)
+				),
+				// known
+				Arrays.asList(
+						new RuleDataInfoDto(6, "chapter6",  32),
+						new RuleDataInfoDto(1, "chapter1",  5)
+				)));
+
 		List<UserDataInfoDto> lastWeekTopUsers = Arrays.asList(
 				new UserDataInfoDto(user3, new DifferentialDto(20, 3)),
 				new UserDataInfoDto(user2, new DifferentialDto(18, 3)),
@@ -118,6 +170,7 @@ public class KeypointServiceImplTest extends AbstractMockServiceTest {
 		expectedResult.setLastMonthTopRules(new TopNRulesDto(difficultyChapters, learnedChapters, initiallyKnownChapters));
 		expectedResult.setLastWeekTopUsers(lastWeekTopUsers);
 		expectedResult.setLastMonthTopUsers(lastMonthTopUsers);
+		expectedResult.setUsersMap(userMap);
 
 		assertThat(dataFromKeypoints).isEqualToComparingFieldByFieldRecursively(expectedResult);
 	}
