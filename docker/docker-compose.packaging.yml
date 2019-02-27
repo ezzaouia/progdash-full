@@ -26,6 +26,8 @@ services:
     build:
       context: ./
       dockerfile: ./docker/dockerfiles/nginx/Dockerfile
+      args:
+        - NODE_ENV_CONF=${NODE_ENV_CONF}
     ports:
       - 8090:80
 

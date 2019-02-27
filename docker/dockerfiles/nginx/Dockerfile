@@ -1,6 +1,9 @@
 # STEP 1 build static website
 FROM node:8.15.0-slim as builder
 
+ARG NODE_ENV_CONF
+ENV NODE_ENV_CONF "$NODE_ENV_CONF"
+
 RUN apt-get update \
     && apt-get install -y git \
     && apt-get clean autoclean \
@@ -13,7 +16,8 @@ WORKDIR /app
 COPY ./front /app
 
 RUN npm install \
-    && ng build --prod --base-href=/suivi/ \
+    && echo "!!! Target Env Node: ${NODE_ENV_CONF} !!!" \
+    && ng build --configuration=${NODE_ENV_CONF} --sourceMap=false --optimization=true --base-href=/suivi/ \
     && npm cache clean --force
 
 
