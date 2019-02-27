@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.woonoz.pv.progdash.dao.dbo.GroupDbo;
 import com.woonoz.pv.progdash.dao.dbo.KnownRulesDbo;
 import com.woonoz.pv.progdash.dao.dbo.ProductNbKeypoints;
 import com.woonoz.pv.progdash.dao.dbo.ReachedProductDbo;
@@ -24,7 +23,6 @@ import com.woonoz.pv.progdash.dao.dbo.UserRouteProductsDbo;
 import com.woonoz.pv.progdash.dao.mapper.AreaGroupMapper;
 import com.woonoz.pv.progdash.dao.mapper.LearningStatisticsMapper;
 import com.woonoz.pv.progdash.dto.AllStatisticsDto;
-import com.woonoz.pv.progdash.dto.GroupDto;
 import com.woonoz.pv.progdash.dto.InsightDataDto;
 import com.woonoz.pv.progdash.dto.InsightInfoDto;
 import com.woonoz.pv.progdash.dto.LearningSessionStatisticsDto;
@@ -37,9 +35,6 @@ import com.woonoz.pv.progdash.dto.UserDataDto;
 @Service
 @Transactional(propagation = Propagation.MANDATORY)
 public class LearningStatisticsServiceImpl implements LearningStatisticsService {
-
-	private static final int GROUP_ID_FOR_ALL_AREA = 0;
-	private static final String GROUP_NAME_FOR_ALL_AREA = "Tous";
 
 	private static final int NB_ITEMS_FOR_TOP = 5;
 
@@ -54,27 +49,6 @@ public class LearningStatisticsServiceImpl implements LearningStatisticsService 
 	@Override
 	public LearningSessionStatisticsDto getLearningSessionStatistics(Integer userId, String message) {
 		return new LearningSessionStatisticsDto(learningStatisticsMapper.getLastSessionId(userId), message);
-	}
-
-	@Override
-	public List<GroupDto> getGroups(int areaId) {
-		List<GroupDbo> groupsDbos = areaGroupMapper.getGroups(areaId);
-		List<GroupDto> groupDtos = convertGroupDbosAsDto(groupsDbos);
-		groupDtos.add(new GroupDto(GROUP_ID_FOR_ALL_AREA, GROUP_NAME_FOR_ALL_AREA, areaGroupMapper.countAreaUsers(areaId)));
-		return groupDtos;
-	}
-
-	private List<GroupDto> convertGroupDbosAsDto(List<GroupDbo> groupDbos) {
-		List<GroupDto> groupDtos = new ArrayList<>();
-		for (GroupDbo groupDbo : groupDbos) {
-			groupDtos.add(new GroupDto(groupDbo.getId(), groupDbo.getName(), groupDbo.getNbUsers()));
-		}
-		return groupDtos;
-	}
-
-	@Override
-	public boolean isAreaUsersNumberWithinLimit(int areaId, int limit) {
-		return areaGroupMapper.countAreaUsers(areaId) <= limit;
 	}
 
 	@Override
