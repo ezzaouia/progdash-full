@@ -5,7 +5,8 @@ RUN apt-get update \
     && apt-get clean autoclean \
     && apt-get autoremove -y --purge \
     && rm -rf /var/lib/{apt,dpkg,cache,log}/ \
-    && mkdir /opt/progdash
+    && mkdir /opt/progdash \
+    && mkdir /opt/progdash/logs
 
 ENV TZ=Europe/Paris
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone

@@ -13,7 +13,7 @@ WORKDIR /app
 COPY ./front /app
 
 RUN npm install \
-    && ng build --configuration=docker --base-href=/suivi/ \
+    && ng build --prod --base-href=/suivi/ \
     && npm cache clean --force
 
 
