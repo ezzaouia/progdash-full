@@ -64,7 +64,6 @@ public class LearningStatisticsServiceImpl implements LearningStatisticsService 
 	@Override
 	public AllStatisticsDto getAllStatistics(int areaId, @Nullable Integer groupId) {
 		AllStatisticsDto allStats = new AllStatisticsDto();
-		int nbUsers = areaGroupMapper.countAreaUsers(areaId);
 
 		DataFromKeypoints dataFromKeypoints = keypointService.processKeypoints(areaId,groupId,NB_ITEMS_FOR_TOP);
 
@@ -79,6 +78,8 @@ public class LearningStatisticsServiceImpl implements LearningStatisticsService 
 			usersMap.get(userId).setProgData(userProgresses.get(userId));
 		}
 		allStats.setUsers(userDataDtos);
+		int nbUsers = usersMap.size();
+
 
 		InsightInfoDto lastWeek = insightStatisticsService.createInsightsInfo(areaId, groupId,  nbUsers, 7, 1);
 		InsightInfoDto lastMonth = insightStatisticsService.createInsightsInfo(areaId, groupId,  nbUsers, 30, 4);
