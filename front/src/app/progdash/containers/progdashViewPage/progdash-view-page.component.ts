@@ -30,7 +30,7 @@ import * as fromStore from '../../store';
       (openProgBoardHandler)="onOpenProgBoard()"
 
       (checkRuleHandler)="onCheckRule($event)"
-      (launchPVLiveHandler)="onLaunchPVLive()"
+      (launchPVLiveHandler)="onLaunchPVLive($event)"
       (cancelPVLiveHandler)="onCancelPVLive()"
 
       (startPrintReportHandler)="onStartPrintReport()"
@@ -102,8 +102,8 @@ export class ProgdashViewPageComponent implements OnInit {
     this.store.dispatch( new fromStore.CheckRule({ isChecked, ruleId }));
   }
 
-  onLaunchPVLive (event: string[]) {
-    this.store.dispatch( new fromStore.LaunchPVLive({lessons: event}));
+  onLaunchPVLive ( event: string[]) {
+    this.store.dispatch( new fromStore.LaunchPVLive({ lessons: event }));
   }
 
   onCancelPVLive () {
