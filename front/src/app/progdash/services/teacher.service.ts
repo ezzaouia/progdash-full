@@ -3,7 +3,7 @@ import { environment } from '../../../environments/environment';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 
-const API_URL = environment.STAT_URL;
+const API_URL = environment.SUIVI_STATS_URL;
 @Injectable()
 export class TeacherService {
 
