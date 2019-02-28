@@ -8,7 +8,7 @@ import {
   AfterViewInit,
   EventEmitter
 } from '@angular/core';
-import { select, scaleBand, scaleLinear } from 'd3';
+import { select, scaleBand, scaleLinear, extent } from 'd3';
 import { map, get, startsWith, values } from 'lodash';
 import { BehaviorSubject, Subscription, merge } from 'rxjs';
 import * as moment from 'moment';
@@ -142,7 +142,7 @@ export class TimelineWidgetComponent implements AfterViewInit, OnDestroy {
       .domain( map( values( this.data ), 'date' ))
       .range([ 0, this.width - 2 * this.margin.leftRight  ]);
     this.yScale
-      .domain([ 0, 100 ])
+      .domain( extent( map( values( this.data ), 'count' )))
       .range([ this.height - 2 * this.margin.topBottom, 0 ]);
   }
 
