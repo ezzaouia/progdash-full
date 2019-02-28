@@ -18,6 +18,9 @@ public interface InsightStatisticsMapper {
 
     float sumKeypoints(@Param("areaId") int areaId, @Nullable @Param("groupId") Integer groupId, @Param("startDate") Date startDate, @Param("endDate") Date endDate);
 
+	/**
+	 * @return the average training time in minutes
+	 */
     float avgTrainingTime(@Param("areaId") int areaId, @Nullable @Param("groupId") Integer groupId, @Param("startDate") Date startDate, @Param("endDate") Date endDate);
 
     int countActiveUsers(@Param("areaId") int areaId, @Nullable @Param("groupId") Integer groupId, @Param("startDate") Date startDate, @Param("endDate") Date endDate,

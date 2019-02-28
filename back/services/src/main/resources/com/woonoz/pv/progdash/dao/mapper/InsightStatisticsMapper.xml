@@ -135,7 +135,7 @@
 	<select id="getTopTrainingTime" resultMap="usersTrainingTime">
 		SELECT
 		       wgpm.id_membre userId,
-		       SUM(IFNULL(ls.time_spent_on, 0)) totalTrainingTime
+		       SUM(IFNULL(ls.time_spent_on, 0)) / 60 totalTrainingTime
 		FROM woonoz_groupe_p_membre wgpm
 			<if test="groupId != null">
 				JOIN woonoz_groupe_membre wgm ON wgm.id_membre = wgpm.id_membre AND wgm.id_groupe = #{groupId}
