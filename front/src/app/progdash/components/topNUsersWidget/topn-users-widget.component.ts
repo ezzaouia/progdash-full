@@ -28,7 +28,7 @@ import { Component, OnInit, Input, EventEmitter } from '@angular/core';
                 </span>
                 <DetlaWidget
                   [sign]="(item.sum.sumd >= 0 ? 'plus' : 'minus')"
-                  [data]="item.sum.sumd | mathAbs">
+                  [data]="(item.sum.sumd | mathAbs) | formatSumd:key">
                 </DetlaWidget>
               </div>
             </div>
