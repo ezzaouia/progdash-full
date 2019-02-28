@@ -189,7 +189,7 @@ export class ProgBoardComponent implements OnInit, OnDestroy, AfterViewInit {
         grid: { cols: 3, rows: 3, y: 0, x: 6 },
         component: InfoWidgetComponent,
         data: {
-          title: 'Apprenants Actifs',
+          title: 'Apprenants actifs',
           infoLabel: '',
         },
       },
@@ -197,7 +197,7 @@ export class ProgBoardComponent implements OnInit, OnDestroy, AfterViewInit {
         grid: { cols: 3, rows: 3, y: 0, x: 9 },
         component: InfoWidgetComponent,
         data: {
-          title: 'Apprenants Inactifs',
+          title: 'Apprenants inactifs',
           infoLabel: '',
         },
       },
@@ -212,28 +212,28 @@ export class ProgBoardComponent implements OnInit, OnDestroy, AfterViewInit {
         grid: { cols: 3, rows: 6, y: 7, x: 0 },
         component: TopNUsersWidgetComponent,
         data: {
-          title: 'Meilleurs Scores',
+          title: 'Meilleurs scores',
         },
       },
       'topNUsers.time': {
         grid: { cols: 3, rows: 6, y: 7, x: 3 },
         component: TopNUsersWidgetComponent,
         data: {
-          title: 'Meilleurs Temps',
+          title: 'Meilleurs temps',
         },
       },
       'topNUsers.help': {
         grid: { cols: 3, rows: 6, y: 7, x: 6 },
         component: TopNUsersWidgetComponent,
         data: {
-          title: 'Besoin d\'Aide',
+          title: 'Besoin d\'aide',
         },
       },
       'topNUsers.dropout': {
         grid: { cols: 3, rows: 6, y: 7, x: 9 },
         component: TopNUsersWidgetComponent,
         data: {
-          title: 'Manque de Pratique',
+          title: 'Manque de pratique',
         },
       },
       'topNRules.focused': {
@@ -248,7 +248,7 @@ export class ProgBoardComponent implements OnInit, OnDestroy, AfterViewInit {
         grid: { cols: 4, rows: 6, y: 13, x: 4 },
         component: TopNRulesWidgetComponent,
         data: {
-          title: 'Règles Acquises',
+          title: 'Règles acquises',
           checkRuleHandler: this.checkRuleHandler,
         },
       },

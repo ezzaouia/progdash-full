@@ -74,7 +74,7 @@ import { Modal } from '../../../shared/components';
           [disabled]="!selectedClass.name"
           (click)="openProgEvaluationHandler.emit($event)">
           <mat-icon aria-label="menu">bubble_chart</mat-icon>
-          Evaluations
+          Évaluations
         </button>
 
         <div class="print-container">

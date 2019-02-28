@@ -45,7 +45,8 @@ export class FormatAttrPipe implements PipeTransform {
   }
 
   timeFormater ( value ) {
-    return moment.duration( value, 'minutes' ).format( 'h[ ][h][ ]mm[ ][min]' );
+    // replace mins in min because the moment add the letter 's' automatic.
+    return moment.duration( value, 'minutes' ).format( 'h [h] mm [min]' ).replace("mins", "min");
   }
 
   helpFormatter ( value ) {
