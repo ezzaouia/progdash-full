@@ -3,3 +3,4 @@
 cronjobs.txt eol=lf
 *.sh eol=lf
 .htpasswd_mongoexpress=lf
+.htpasswd_monitoring=lf
