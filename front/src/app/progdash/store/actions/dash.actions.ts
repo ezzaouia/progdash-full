@@ -25,6 +25,10 @@ export enum DashActionTypes {
   OpenProgEvaluation = '[Dash] Open Prog Evaluation',
 
   CheckRule = '[Dash] Check Rule',
+
+  GeneratePVLiveLink = '[Dash] Generate PV Live',
+  GeneratePVLiveLinkSuccess = '[Dash] Generate PV Live Success',
+  GeneratePVLiveLinkFailure = '[Dash] Generate PV Live Failure',
   LaunchPVLive = '[Dash] Launch PV Live',
   CancelPVLive = '[Dash] Cancel PV Live',
 
@@ -142,6 +146,22 @@ export class LaunchPVLive implements Action {
   constructor ( public payload: { lessons: string[] }) {}
 }
 
+export class GeneratePVLiveLink implements Action {
+  readonly type = DashActionTypes.GeneratePVLiveLink;
+  constructor ( public payload: { lessons: string[] }) {}
+}
+
+export class GeneratePVLiveLinkSuccess implements Action {
+  readonly type = DashActionTypes.GeneratePVLiveLinkSuccess;
+
+  constructor ( public payload: string ) {}
+}
+
+export class GeneratePVLiveLinkFailure implements Action {
+  readonly type = DashActionTypes.GeneratePVLiveLinkFailure;
+  constructor ( public payload: any ) {}
+}
+
 export class CancelPVLive implements Action {
   readonly type = DashActionTypes.CancelPVLive;
 }
@@ -248,4 +268,7 @@ export type DashActionsUnion =
   | HoverWidget
   | HotPrintWidget
   | LoadUserInfo
-  | Empty;
+  | Empty
+  | GeneratePVLiveLink
+  | GeneratePVLiveLinkFailure
+  | GeneratePVLiveLinkSuccess;

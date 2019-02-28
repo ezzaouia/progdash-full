@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { Observable, from } from 'rxjs';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { MatDialog } from '@angular/material';
+import { Observable, from, Subscription } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 
 import * as fromStore from '../../store';
@@ -16,6 +17,9 @@ import * as fromStore from '../../store';
       [isProgTableOpened]="isProgTableOpened$ | async"
       [isProgEvaluationOpened]="isProgEvaluationOpened$ | async"
       [isStartPrintReport]="isStartPrintReport$ | async"
+      [isGeneratingPVLiveLink]="isGeneratingPVLiveLink$ | async"
+      [isGeneratePVLiveLinkSuccess]="isGeneratePVLiveLinkSuccess$ | async"
+      [generatedLivePVLink]="generatedLivePVLink$ | async"
 
       [classes]="classes$ | async"
       [selectedClass]="selectedClass$ | async"
@@ -31,6 +35,7 @@ import * as fromStore from '../../store';
 
       (checkRuleHandler)="onCheckRule($event)"
       (launchPVLiveHandler)="onLaunchPVLive($event)"
+      (generatePVLiveLinkHandler)="onGeneratePVLiveLinkHandler($event)"
       (cancelPVLiveHandler)="onCancelPVLive()"
 
       (startPrintReportHandler)="onStartPrintReport()"
@@ -59,16 +64,38 @@ export class ProgdashViewPageComponent implements OnInit {
   selectedRules$: Observable<string[]>;
   selectedWidgets$: Observable<string[]>;
 
+  isGeneratingPVLiveLink$: Observable<boolean>;
+  isGeneratePVLiveLinkSuccess$: Observable<boolean>;
+  generatedLivePVLink$: Observable<string>;
+
   constructor ( private store: Store<fromStore.State> ) {
     this.isLoading$ = this.store.pipe( select( fromStore.isLoading ));
-    this.isProgTableOpened$ = this.store.pipe( select( fromStore.isProgTableOpened ));
-    this.isStartPrintReport$ = this.store.pipe( select( fromStore.isStartPrintReport ));
-    this.isProgEvaluationOpened$ = this.store.pipe( select( fromStore.isProgEvaluationOpened ));
-    this.classes$ = this.store.pipe( select ( fromStore.classes ));
-    this.selectedClass$ = this.store.pipe( select ( fromStore.selectedClass ));
-    this.selectedTimescale$ = this.store.pipe( select ( fromStore.selectedTimescale ));
-    this.selectedRules$ = this.store.pipe( select ( fromStore.selectedRules ));
-    this.selectedWidgets$ = this.store.pipe( select ( fromStore.selectedWidgets ));
+    this.isProgTableOpened$ = this.store.pipe(
+      select( fromStore.isProgTableOpened )
+    );
+    this.isStartPrintReport$ = this.store.pipe(
+      select( fromStore.isStartPrintReport )
+    );
+    this.isProgEvaluationOpened$ = this.store.pipe(
+      select( fromStore.isProgEvaluationOpened )
+    );
+    this.classes$ = this.store.pipe( select( fromStore.classes ));
+    this.selectedClass$ = this.store.pipe( select( fromStore.selectedClass ));
+    this.selectedTimescale$ = this.store.pipe(
+      select( fromStore.selectedTimescale )
+    );
+    this.selectedRules$ = this.store.pipe( select( fromStore.selectedRules ));
+    this.selectedWidgets$ = this.store.pipe( select( fromStore.selectedWidgets ));
+
+    this.isGeneratingPVLiveLink$ = this.store.pipe(
+      select( fromStore.isGeneratingPVLiveLink )
+    );
+    this.isGeneratePVLiveLinkSuccess$ = this.store.pipe(
+      select( fromStore.isGeneratePVLiveLinkSuccess )
+    );
+    this.generatedLivePVLink$ = this.store.pipe(
+      select( fromStore.generatedLivePVLink )
+    );
   }
 
   ngOnInit (): void {
@@ -104,6 +131,10 @@ export class ProgdashViewPageComponent implements OnInit {
 
   onLaunchPVLive ( event: string[]) {
     this.store.dispatch( new fromStore.LaunchPVLive({ lessons: event }));
+  }
+
+  onGeneratePVLiveLinkHandler ( event: string[]) {
+    this.store.dispatch( new fromStore.GeneratePVLiveLink({ lessons: event }));
   }
 
   onCancelPVLive () {
@@ -145,5 +176,4 @@ export class ProgdashViewPageComponent implements OnInit {
   onHotPrintWidget ( payload ) {
     this.store.dispatch( new fromStore.HotPrintWidget( payload ));
   }
-
 }

@@ -29,3 +29,9 @@ export const isStartPrintReport = createSelector( _shared, fromDash.isStartPrint
 export const selectedRules = createSelector( _shared, fromDash.selectedRules );
 export const selectedWidgets = createSelector( _shared, fromDash.selectedWidgets );
 export const userInfo = createSelector( _shared, fromDash.userInfo );
+
+export const isGeneratingPVLiveLink = createSelector( _shared, fromDash.isGeneratingPVLiveLink );
+// tslint:disable-next-line:max-line-length
+export const isGeneratePVLiveLinkSuccess = createSelector( _shared, fromDash.isGeneratePVLiveLinkSuccess );
+export const generatedLivePVLink = createSelector( _shared, fromDash.generatedLivePVLink );
+

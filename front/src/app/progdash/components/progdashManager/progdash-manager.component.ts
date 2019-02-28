@@ -10,11 +10,12 @@ import {
   ElementRef
 } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { get } from 'lodash';
 
 import { UserDetailComponent } from '../../components';
 import { Modal } from '../../../shared/components';
+import { OpenPVLiveLinkComponent } from '../openPVLiveLink';
 
 /* tslint:disable component-selector  */
 @Component({
@@ -138,6 +139,7 @@ import { Modal } from '../../../shared/components';
 
           (checkRuleHandler)="checkRuleHandler.emit($event)"
           (launchPVLiveHandler)="launchPVLiveHandler.emit($event)"
+          (generatePVLiveLinkHandler)="generatePVLiveLinkHandler.emit($event)"
           (cancelPVLiveHandler)="cancelPVLiveHandler.emit($event)"
           (checkWidgetHandler)="checkWidgetHandler.emit($event)"
           (hoverWidgetTraceHandler)="hoverWidgetTraceHandler.emit($event)">
@@ -252,13 +254,16 @@ import { Modal } from '../../../shared/components';
     `,
   ],
 })
-export class ProgdashManagerComponent implements AfterContentInit {
+export class ProgdashManagerComponent implements AfterContentInit, OnInit, OnDestroy {
   @ViewChild( 'board' ) boardElRef: ElementRef;
 
   @Input() isDataLoaded;
   @Input() isProgTableOpened;
   @Input() isProgEvaluationOpened;
   @Input() isStartPrintReport;
+  @Input() isGeneratingPVLiveLink$ = new BehaviorSubject<boolean>( false );
+  @Input() isGeneratePVLiveLinkSuccess$ = new BehaviorSubject<boolean>( false );
+  @Input() generatedLivePVLink$ = new BehaviorSubject<string>( '' );
 
   @Input() selectedClass;
   @Input() selectedTimescale;
@@ -274,6 +279,7 @@ export class ProgdashManagerComponent implements AfterContentInit {
 
   @Output() checkRuleHandler = new EventEmitter();
   @Output() launchPVLiveHandler = new EventEmitter();
+  @Output() generatePVLiveLinkHandler = new EventEmitter();
   @Output() cancelPVLiveHandler = new EventEmitter();
 
   @Output() startPrintReportHandler = new EventEmitter();
@@ -299,7 +305,42 @@ export class ProgdashManagerComponent implements AfterContentInit {
   isProgTableCompare = true;
   isProgTableFilter = true;
 
+  pvLiveModalData = {
+      component: OpenPVLiveLinkComponent,
+      link: '',
+      isGenerateLinkSuccess: false,
+      cancelPVLiveHandler: this.cancelPVLiveHandler,
+  };
+  lauchSupPV1: Subscription;
+  lauchSupPV2: Subscription;
+
   constructor ( public dialog: MatDialog ) {}
+
+  ngOnInit () {
+    this.lauchSupPV1 = this.isGeneratingPVLiveLink$
+      .subscribe( isGeneratingPVLiveLink => {
+        if ( isGeneratingPVLiveLink ) {
+          this.dialog.open( Modal  , {
+            width: '60vw',
+            height: '50vh',
+            data: this.pvLiveModalData,
+          });
+        }
+    });
+
+    this.lauchSupPV2 = this.isGeneratePVLiveLinkSuccess$
+      .subscribe( _ => {
+        if ( this.isGeneratePVLiveLinkSuccess ) {
+          this.pvLiveModalData.isGenerateLinkSuccess = this.isGeneratePVLiveLinkSuccess;
+          this.pvLiveModalData.link = this.generatedLivePVLink;
+        }
+    });
+  }
+
+  ngOnDestroy () {
+    this.lauchSupPV1.unsubscribe();
+    this.lauchSupPV2.unsubscribe();
+  }
 
   ngAfterContentInit () {
     this.boardWidth = this.boardElRef.nativeElement.offsetWidth - this.marginOffset;
@@ -374,6 +415,33 @@ export class ProgdashManagerComponent implements AfterContentInit {
 
   get classes () {
     return this.classes$.getValue();
+  }
+
+  @Input()
+  set isGeneratingPVLiveLink ( value ) {
+    this.isGeneratingPVLiveLink$.next( value );
+  }
+
+  get isGeneratingPVLiveLink () {
+    return this.isGeneratingPVLiveLink$.getValue();
+  }
+
+  @Input()
+  set generatedLivePVLink ( value ) {
+    this.generatedLivePVLink$.next( value );
+  }
+
+  get generatedLivePVLink () {
+    return this.generatedLivePVLink$.getValue();
+  }
+
+  @Input()
+  set isGeneratePVLiveLinkSuccess ( value ) {
+    this.isGeneratePVLiveLinkSuccess$.next( value );
+  }
+
+  get isGeneratePVLiveLinkSuccess () {
+    return this.isGeneratePVLiveLinkSuccess$.getValue();
   }
 
   get _userListData () {

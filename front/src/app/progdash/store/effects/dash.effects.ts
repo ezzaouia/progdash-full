@@ -36,6 +36,9 @@ import {
   LoadGroupDataSuccess,
   LoadGroupDataFailure,
   Empty,
+  GeneratePVLiveLink,
+  GeneratePVLiveLinkSuccess,
+  GeneratePVLiveLinkFailure,
 } from '../actions';
 import { Router } from '@angular/router';
 import * as html2pdf from 'html2pdf.js';
@@ -123,16 +126,36 @@ export class DashEffects {
   //   map( data => new RunDataPrepComplete( data ))
   // );
 
-    @Effect({ dispatch: false })
-    launchPVLive$: Observable<String> = this.actions$.pipe(
-        ofType<LaunchPVLive>( DashActionTypes.LaunchPVLive ),
-        switchMap(( action: LaunchPVLive ) => {
-            return this.teacherService.getLink( action.payload.lessons );
-        }),
-        tap(( url: String ) => this.router.navigate(
-            [ '/externalPVRedirect', { externalUrl: url } ],
-            { skipLocationChange: true }
-        )));
+  @Effect({ dispatch: false })
+  launchPVLive$: Observable<String> = this.actions$.pipe(
+      ofType<LaunchPVLive>( DashActionTypes.LaunchPVLive ),
+      switchMap(( action: LaunchPVLive ) => {
+          return this.teacherService.getLink( action.payload.lessons );
+
+      }),
+      tap(( url: String ) => this.router.navigate(
+          [ '/externalPVRedirect', { externalUrl: url } ],
+          { skipLocationChange: true }
+      ))
+  );
+
+  @Effect()
+  generatePVLiveLink$: Observable<Action> = this.actions$.pipe(
+      ofType<GeneratePVLiveLink>( DashActionTypes.GeneratePVLiveLink ),
+      switchMap( action => {
+          return this.teacherService
+          .getLink( action.payload.lessons )
+          .pipe(
+            delay( 1000 ),
+            map(( payload: string ) => {
+              return new GeneratePVLiveLinkSuccess( payload );
+            }),
+            catchError( err => {
+              return of( new GeneratePVLiveLinkFailure( err ));
+            })
+          );
+      })
+  );
 
   @Effect({ dispatch: false })
   startPrintReport$: Observable<Action> = this.actions$.pipe(

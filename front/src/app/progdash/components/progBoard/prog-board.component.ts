@@ -62,7 +62,7 @@ enum Timescale {
           mat-raised-button
           matTooltipPosition="above"
           matTooltip="Lancer le mode présentiel avec les règles sélectionnées"
-          (click)="onLaunchPVLive()">
+          (click)="onGeneratePVLiveLinkLive()">
             <mat-icon
               class="back-icon"
               aria-label="open_in_new">
@@ -112,6 +112,7 @@ export class ProgBoardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @Output() checkRuleHandler = new EventEmitter();
   @Output() launchPVLiveHandler = new EventEmitter();
+  @Output() generatePVLiveLinkHandler = new EventEmitter();
   @Output() cancelPVLiveHandler = new EventEmitter();
   @Output() checkWidgetHandler = new EventEmitter();
   @Output() hoverWidgetTraceHandler = new EventEmitter();
@@ -324,8 +325,8 @@ export class ProgBoardComponent implements OnInit, OnDestroy, AfterViewInit {
     //  this.boardGrid.push({});
   }
 
-  onLaunchPVLive () {
-    this.launchPVLiveHandler.emit(this.selectedRules$.getValue());
+  onGeneratePVLiveLinkLive () {
+    this.generatePVLiveLinkHandler.emit( this.selectedRules$.getValue());
   }
 
   @Input()

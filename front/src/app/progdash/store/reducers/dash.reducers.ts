@@ -4,6 +4,9 @@ import { DashActionsUnion, DashActionTypes, LoadUserInfo } from '../actions';
 import { modulesDataAttr } from '../utils/data-prep.utils';
 
 export interface State {
+  isGeneratePVLiveLinkSuccess: boolean;
+  isGeneratingPVLiveLink: boolean;
+  generatedLivePVLink: string;
   isDataLoaded: boolean;
   isProgTableOpened: boolean;
   isProgEvaluationOpened: boolean;
@@ -19,6 +22,9 @@ export interface State {
 }
 
 const initialState: State = {
+  isGeneratePVLiveLinkSuccess: false,
+  isGeneratingPVLiveLink: false,
+  generatedLivePVLink: null,
   isDataLoaded: false,
   isProgTableOpened: false,
   isProgEvaluationOpened: false,
@@ -29,7 +35,7 @@ const initialState: State = {
   selectedRules: [],
   isStartPrintReport: false,
   selectedWidgets: [],
-  areaId: null, // 39422
+  areaId: 39422,
   userId: null,
 };
 
@@ -210,6 +216,41 @@ export function reducers (
       return {
         ...state,
         selectedRules: [],
+        generatedLivePVLink: null,
+        isGeneratePVLiveLinkSuccess: false,
+        isGeneratingPVLiveLink: false,
+      };
+    }
+
+    case DashActionTypes.LaunchPVLive: {
+      return {
+        ...state,
+        isGeneratePVLiveLinkSuccess: false,
+        generatedLivePVLink: null,
+      };
+    }
+
+    case DashActionTypes.GeneratePVLiveLink: {
+      return {
+        ...state,
+        isGeneratingPVLiveLink: true,
+      };
+    }
+
+    case DashActionTypes.GeneratePVLiveLinkSuccess: {
+      return {
+        ...state,
+        generatedLivePVLink: action.payload,
+        isGeneratePVLiveLinkSuccess: true,
+      };
+    }
+
+    case DashActionTypes.GeneratePVLiveLinkFailure: {
+      return {
+        ...state,
+        isGeneratePVLiveLinkSuccess: false,
+        isGeneratingPVLiveLink: false,
+        generatedLivePVLink: null,
       };
     }
 
@@ -322,3 +363,7 @@ export const isStartPrintReport = ( state: State ) => state.isStartPrintReport;
 export const selectedRules = ( state: State ) => state.selectedRules;
 export const selectedWidgets = ( state: State ) => state.selectedWidgets;
 export const userInfo = ( state: State ) => ({ userId: state.userId, areaId: state.areaId });
+
+export const isGeneratePVLiveLinkSuccess = ( state: State ) => state.isGeneratePVLiveLinkSuccess;
+export const isGeneratingPVLiveLink = ( state: State ) => state.isGeneratingPVLiveLink;
+export const generatedLivePVLink = ( state: State ) => state.generatedLivePVLink;

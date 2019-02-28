@@ -15,6 +15,7 @@ import { ClassManagerComponent } from './classManager';
 import { ProgTableComponent } from './progTable';
 import { UserTimelineWidgetComponent } from './userTimelineWidget';
 import { ProgEvaluationComponent } from './progEvaluation';
+import { OpenPVLiveLinkComponent } from './openPVLiveLink';
 import { ProgdashViewPageComponent } from '../containers';
 import { FormatAttrPipe, MathAbsPipe, FormatSumdPipe } from '../pipes';
 
@@ -37,6 +38,7 @@ export const fromComponents: any[] = [
   UserTimelineWidgetComponent,
   ProgdashViewPageComponent,
   ProgEvaluationComponent,
+  OpenPVLiveLinkComponent,
   FormatAttrPipe,
   MathAbsPipe,
   FormatSumdPipe,
@@ -50,6 +52,7 @@ export const fromEntryComponents: any[] = [
   TopNRulesWidgetComponent,
   TopNUsersWidgetComponent,
   UserTimelineWidgetComponent,
+  OpenPVLiveLinkComponent,
 ];
 
 export * from './classManager';
@@ -58,3 +61,4 @@ export * from './infoWidget';
 export * from './timelineWidget';
 export * from './topNRulesWidget';
 export * from './topNUsersWidget';
+export * from './openPVLiveLink';
