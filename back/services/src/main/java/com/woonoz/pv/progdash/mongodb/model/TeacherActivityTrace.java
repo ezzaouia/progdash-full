@@ -1,8 +1,8 @@
 package com.woonoz.pv.progdash.mongodb.model;
 
 import java.util.Date;
-import java.util.Map;
 
+import org.bson.types.Binary;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -35,9 +35,11 @@ public class TeacherActivityTrace {
 
 	public int areaId;
 
-	public byte[] file;
+	// WARN : we do not want to use GridFS to store files because our files are less than 16 MB and we currently upload/update the file atomically, no need to update/search through part of the files
+	// use Binary type instead of bytes to avoid map conversion errors
+	public Binary file;
 
-	public TeacherActivityTrace(Object payload, int teacherId, String actionType, String sessionId, int areaId, byte[] file, Date clientTimestamp){
+	public TeacherActivityTrace(Object payload, int teacherId, String actionType, String sessionId, int areaId, Binary file, Date clientTimestamp) {
 		this.payload = payload;
 		this.teacherId = teacherId;
 		this.actionType = actionType;
@@ -47,7 +49,7 @@ public class TeacherActivityTrace {
 		this.clientTimestamp = clientTimestamp;
 	}
 
-	public TeacherActivityTrace(String id, Object payload, int teacherId, String actionType, String sessionId, int areaId, byte[] file, Date clientTimestamp){
+	public TeacherActivityTrace(String id, Object payload, int teacherId, String actionType, String sessionId, int areaId, Binary file, Date clientTimestamp) {
 		this.id = id;
 		this.payload = payload;
 		this.teacherId = teacherId;

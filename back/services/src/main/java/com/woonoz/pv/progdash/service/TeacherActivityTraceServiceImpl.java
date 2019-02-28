@@ -2,6 +2,8 @@ package com.woonoz.pv.progdash.service;
 
 import javax.inject.Inject;
 
+import org.bson.BsonBinarySubType;
+import org.bson.types.Binary;
 import org.springframework.stereotype.Service;
 
 import com.woonoz.pv.progdash.dto.TeacherActivityTraceDto;
@@ -24,7 +26,8 @@ public class TeacherActivityTraceServiceImpl implements TeacherActivityTraceServ
 										teacherActivityTraceDto.getActionType(),
 										teacherActivityTraceDto.getSessionId(),
 										teacherActivityTraceDto.getAreaId(),
-										file,
+				file != null ? new Binary(BsonBinarySubType.BINARY, file) : null,
 										teacherActivityTraceDto.getClientTimestamp());
 	}
 }
+
