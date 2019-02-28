@@ -18,7 +18,7 @@ public class MonitoringController implements WoonozJerseyController {
 	@GET
 	@Path("check")
 	@Produces(MediaType.TEXT_PLAIN)
-	public String getCoucou() {
+	public String check() {
 		return "OK";
 	}
 }
