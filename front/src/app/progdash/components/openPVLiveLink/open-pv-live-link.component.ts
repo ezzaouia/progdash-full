@@ -97,7 +97,8 @@ export class OpenPVLiveLinkComponent implements OnInit {
     this.dialogRef.close();
   }
 
-  onCloseClick (): void {
+  onCloseClick ( $event ): void {
+    this.cancelPVLiveHandler.emit( $event );
     this.dialogRef.close();
   }
 }
