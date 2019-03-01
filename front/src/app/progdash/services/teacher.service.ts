@@ -10,7 +10,7 @@ export class TeacherService {
     constructor ( private http: HttpClient ) {
     }
 
-    public getLink ( lessons: string[]) {
+    public getLink ({ lessons, userInfo }) {
         const httpOptions = {
             headers: new HttpHeaders({
               'X-Requested-With':  'XMLHttpRequest',
@@ -20,10 +20,11 @@ export class TeacherService {
 
         const body = new HttpParams();
         for ( const l of lessons ) {
-          body.set( 'lessons[]', l );
+          body.set( 'chapters[]', l );
         }
 
-        const pathApi = API_URL + '/fr/sphere/pv/enseignant/lien';
+        const pathApi = API_URL +
+            `/services-pjv/rest/manager/area/${userInfo.areaId}/teacher/module/url`;
 
         return this.http
             .post<{status: String, data: String}>( pathApi, body.toString(), httpOptions )

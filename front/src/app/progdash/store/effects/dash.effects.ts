@@ -142,9 +142,10 @@ export class DashEffects {
   @Effect()
   generatePVLiveLink$: Observable<Action> = this.actions$.pipe(
       ofType<GeneratePVLiveLink>( DashActionTypes.GeneratePVLiveLink ),
-      switchMap( action => {
+      withLatestFrom( this.store.pipe( select( fromStore.userInfo ))),
+      switchMap(([ action, userInfo ]) => {
           return this.teacherService
-          .getLink( action.payload.lessons )
+          .getLink({ lessons: action.payload.lessons, userInfo  })
           .pipe(
             delay( 1000 ),
             map(( payload: string ) => {
