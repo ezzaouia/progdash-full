@@ -129,8 +129,9 @@ export class DashEffects {
   @Effect({ dispatch: false })
   launchPVLive$: Observable<String> = this.actions$.pipe(
       ofType<LaunchPVLive>( DashActionTypes.LaunchPVLive ),
-      switchMap(( action: LaunchPVLive ) => {
-          return this.teacherService.getLink( action.payload.lessons );
+      withLatestFrom( this.store.pipe( select( fromStore.userInfo ))),
+      switchMap(([ action, userInfo ]) => {
+          return this.teacherService.getLink({ lessons: action.payload.lessons, userInfo });
 
       }),
       tap(( url: String ) => this.router.navigate(
