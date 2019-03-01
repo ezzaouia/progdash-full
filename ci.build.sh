@@ -5,8 +5,8 @@ SCRIPT_PATH=$(cd `dirname $0` && pwd)
 # if empty will be latest
 
 if [ ! -z "$1" ]
-  then
-  export DOCKER_TAG=$1
+then
+    export DOCKER_TAG=$1
 fi
 
 if [ -z $DOCKER_TAG ]
@@ -22,3 +22,5 @@ fi
 find $SCRIPT_PATH/back/webservices/target -name webservices-*-spring-boot.jar| xargs -I % cp % $SCRIPT_PATH/docker/jar/webservices.jar
 
 docker-compose --project-directory . --file docker/docker-compose.yml --file docker/docker-compose.packaging.yml build --parallel
+
+exit 0
