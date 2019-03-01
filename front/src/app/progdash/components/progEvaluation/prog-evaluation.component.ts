@@ -123,7 +123,7 @@ export class ProgEvaluationComponent
         topBottom: 0,
       },
       evaluationName: {
-        name: 'Evaluation',
+        name: 'Évaluation',
         histo: 'categorical',
         encoding: 'CAT',
         width: 120,
@@ -168,7 +168,8 @@ export class ProgEvaluationComponent
   }
 
   timeFormatter ( time ) {
-    return moment.duration( time, 'minutes' ).format( 'h[h]mm[min]' );
+    // replace mins in min because the moment add the letter 's' automatic.
+    return moment.duration( time, 'minutes' ).format( 'h [h] mm [min]' ).replace("mins", "min");
   }
 
   markFormatter ( mark ) {

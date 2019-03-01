@@ -142,7 +142,7 @@ import { omit } from '@ngrx/store/src/utils';
       </cdk-row>
     </cdk-table>
 
-    <mat-paginator [pageSize]="20" [pageSizeOptions]="[10, 20, 30]" showFirstLastButtons></mat-paginator>
+    <mat-paginator [pageSize]="40" [pageSizeOptions]="[10, 20, 30, 40]" showFirstLastButtons></mat-paginator>
 
     `,
   styles: [ `
@@ -309,6 +309,13 @@ export class CdkTableViewComponent implements AfterViewInit, OnInit, OnDestroy {
         this.dataSource.sort = this.sort;
 
         this.dataSource.paginator = this.paginator;
+        /* translate to french.*/
+        this.dataSource.paginator._intl.itemsPerPageLabel = 'Nombre d\'élements par page :';
+        this.dataSource.paginator._intl.getRangeLabel = this.getRangeLabel.bind(this) ;
+        this.dataSource.paginator._intl.firstPageLabel = 'Première page' ;
+        this.dataSource.paginator._intl.lastPageLabel = 'Dernière page';
+        this.dataSource.paginator._intl.nextPageLabel = 'Page suivante';
+        this.dataSource.paginator._intl.previousPageLabel = 'Page précédente';
 
         this.dataSource.filterPredicate = this.filterPredicate.bind( this );
 
@@ -332,7 +339,7 @@ export class CdkTableViewComponent implements AfterViewInit, OnInit, OnDestroy {
         this.handleHighlight( h );
       });
   }
-
+  
   ngOnDestroy (): void {
     this.dataSub.unsubscribe();
     this.modeSub.unsubscribe();
@@ -574,6 +581,10 @@ export class CdkTableViewComponent implements AfterViewInit, OnInit, OnDestroy {
       },
     };
   }
+
+  private  getRangeLabel = (page: number, pageSize: number, length: number) => {
+    return ((page * pageSize) + 1) + ' - ' + ((page * pageSize) + pageSize) + ' sur ' + length;
+  };
 
   get viewportHeight () {
     return ( window.innerHeight -

@@ -77,6 +77,7 @@ import { Component, OnInit, Input, EventEmitter } from '@angular/core';
     .item-sum {
       font-size: 14px;
       font-weight: 500;
+      white-space: nowrap;
     }
   ` ],
 })

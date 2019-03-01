@@ -154,7 +154,7 @@ export class ProgTableComponent implements OnInit, OnDestroy, AfterContentInit {
         topBottom: 0,
       },
       lastModule: {
-        name: 'Module Atteint',
+        name: 'Module atteint',
         histo: 'categorical',
         encoding: 'CAT',
         width: 100,
@@ -162,7 +162,7 @@ export class ProgTableComponent implements OnInit, OnDestroy, AfterContentInit {
         color: get( this.modulesData, 'forColor' ),
       },
       'lastConnection': {
-        name: 'Dernière Connexion',
+        name: 'Dernière connexion',
         histo: '',
         formatter: this.lastConnectionFormatter,
         encoding: 'STRING',
@@ -170,14 +170,14 @@ export class ProgTableComponent implements OnInit, OnDestroy, AfterContentInit {
         topBottom: 0,
       },
       'connectionsNbr': {
-        name: 'Nbr. Connexions',
+        name: 'Nbr. connexions',
         histo: 'ordinal',
         encoding: 'BAR',
         width: 80,
         topBottom: 0,
       },
       'initialEval': {
-        name: 'Eval. Initiale',
+        name: 'Éval. Initiale',
         histo: 'ordinal',
         encoding: 'BAR',
         width: 80,
@@ -242,7 +242,8 @@ export class ProgTableComponent implements OnInit, OnDestroy, AfterContentInit {
   }
 
   timeFormatter ( time ) {
-    return moment.duration( time, 'minutes' ).format( 'h[h]mm[min]' );
+    // replace mins in min because the moment add the letter 's' automatic.
+    return moment.duration( time, 'minutes' ).format( 'h [h] mm [min]' ).replace("mins", "min");
   }
 
   lastConnectionFormatter ( date ) {
