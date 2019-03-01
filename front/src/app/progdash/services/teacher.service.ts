@@ -18,16 +18,18 @@ export class TeacherService {
             }),
         };
 
-        const body = new HttpParams();
+        // const body = new HttpParams();
+        const formData = new FormData();
+
         for ( const l of lessons ) {
-          body.set( 'chapters[]', l );
+          formData.append( 'chapters[]',  l );
         }
 
         const pathApi = API_URL +
             `/services-pjv/rest/manager/area/${userInfo.areaId}/teacher/module/url`;
 
         return this.http
-            .post<{status: String, data: String}>( pathApi, body.toString(), httpOptions )
+            .post<{status: String, data: String}>( pathApi, formData )
             .pipe(
                 map( response => {
                     if ( response.status === 'error' ) {
