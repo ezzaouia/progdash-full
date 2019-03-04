@@ -83,13 +83,14 @@ enum Timescale {
   styles: [ `
       :host {
         display: block;
-        height: 100vh;
+        height: calc(100vh - 46px);
         width: 100%;
       }
       gridster {
         background: #eee;
         box-sizing: border-box;
         width: 100vw; /*calc(100vw - 300px);*/
+        overflow-x: hidden !important;
       }
       .pv-launcher {
         position: fixed;
