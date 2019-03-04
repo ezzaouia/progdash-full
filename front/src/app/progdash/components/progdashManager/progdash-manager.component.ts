@@ -54,7 +54,7 @@ import { OpenPVLiveLinkComponent } from '../openPVLiveLink';
             mat-button
             [matMenuTriggerFor]="className"
             yPosition="below">
-            <span *ngIf="!selectedClass">
+            <span *ngIf="!selectedClass.name">
                 Sélectionnez une classe
             </span>
             <span class="class-name">{{ selectedClass ? selectedClass.name : '' }}</span>
@@ -142,7 +142,8 @@ import { OpenPVLiveLinkComponent } from '../openPVLiveLink';
           (generatePVLiveLinkHandler)="generatePVLiveLinkHandler.emit($event)"
           (cancelPVLiveHandler)="cancelPVLiveHandler.emit($event)"
           (checkWidgetHandler)="checkWidgetHandler.emit($event)"
-          (hoverWidgetTraceHandler)="hoverWidgetTraceHandler.emit($event)">
+          (hoverWidgetTraceHandler)="hoverWidgetTraceHandler.emit($event)"
+          (moreRuleClickHandler)="moreRuleClickHandler.emit($event)">
         </ProgBoard>
 
         <ProgTable
@@ -200,11 +201,12 @@ import { OpenPVLiveLinkComponent } from '../openPVLiveLink';
         align-items: center;
         margin: 0 5px;
       }
-      .class-name {
-        font-size: 19px;
+      .class-picker span {
+        color: #2196f3;
         font-family: "Roboto Mono", monospace;
+        font-size: 19px;
         font-weight: 600;
-        color: cornflowerblue;
+        letter-spacing: 0px;
       }
       .sidenav {
         display: flex;
@@ -292,6 +294,7 @@ export class ProgdashManagerComponent implements AfterContentInit, OnInit, OnDes
   @Output() filterColumnTraceHandler = new EventEmitter();
   @Output() openUserDialogTraceHandler = new EventEmitter();
   @Output() hoverWidgetTraceHandler = new EventEmitter();
+  @Output() moreRuleClickHandler = new EventEmitter();
 
   classes$ = new BehaviorSubject<any>({
     byId: {},

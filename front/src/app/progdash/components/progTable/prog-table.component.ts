@@ -213,19 +213,9 @@ export class ProgTableComponent implements OnInit, OnDestroy, AfterContentInit {
         name: '',
         histo: '',
         encoding: 'NG',
-        width: 50,
+        width: 35,
         topBottom: 0,
       },
-      // 'progData.day': {
-      //   name: 'Progression',
-      //   histo: '',
-      //   encoding: 'LINE',
-      //   width: 70,
-      //   topBottom: 0,
-      //   xkey: 'date',
-      //   ykey: 'sumscore',
-      //   scaleType: 'time',
-      // },
     };
 
   }

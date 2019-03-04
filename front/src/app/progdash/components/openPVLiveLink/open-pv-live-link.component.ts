@@ -12,7 +12,7 @@ import { MatDialogRef } from '@angular/material';
         <button
           class="fab-button mat-32"
           mat-stroked-button
-          (click)="onCloseClick()">
+          (click)="onCloseClick( $event )">
             <mat-icon aria-label="menu">close</mat-icon>
         </button>
       </div>
@@ -30,7 +30,7 @@ import { MatDialogRef } from '@angular/material';
             open_in_new
         </mat-icon>
         <span>
-          <a target="_blank" href="{{link}}" (click)="onNavigate()">
+          <a target="_blank" href="{{link}}" (click)="onNavigate( $event )">
             Lancez le mode présentiel
           </a>
         </span>

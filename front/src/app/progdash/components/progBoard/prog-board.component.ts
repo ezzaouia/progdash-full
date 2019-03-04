@@ -117,6 +117,7 @@ export class ProgBoardComponent implements OnInit, OnDestroy, AfterViewInit {
   @Output() cancelPVLiveHandler = new EventEmitter();
   @Output() checkWidgetHandler = new EventEmitter();
   @Output() hoverWidgetTraceHandler = new EventEmitter();
+  @Output() moreRuleClickHandler = new EventEmitter();
 
   boardOptions: GridsterConfig;
   boardGrid: any; // Array<GridsterItem>;
@@ -221,7 +222,7 @@ export class ProgBoardComponent implements OnInit, OnDestroy, AfterViewInit {
         grid: { cols: 3, rows: 6, y: 7, x: 3 },
         component: TopNUsersWidgetComponent,
         data: {
-          title: 'Meilleurs temps',
+          title: 'Meilleurs engagement',
         },
       },
       'topNUsers.help': {
@@ -242,7 +243,7 @@ export class ProgBoardComponent implements OnInit, OnDestroy, AfterViewInit {
         grid: { cols: 4, rows: 6, y: 13, x: 0 },
         component: TopNRulesWidgetComponent,
         data: {
-          title: 'Règles en cours d’apprentissage',
+          title: 'Les règles les plus difficiles en cours d’apprentissage ',
           checkRuleHandler: this.checkRuleHandler,
         },
       },
@@ -250,7 +251,7 @@ export class ProgBoardComponent implements OnInit, OnDestroy, AfterViewInit {
         grid: { cols: 4, rows: 6, y: 13, x: 4 },
         component: TopNRulesWidgetComponent,
         data: {
-          title: 'Règles acquises',
+          title: 'Les règles acquises les plus difficiles',
           checkRuleHandler: this.checkRuleHandler,
         },
       },
@@ -258,7 +259,7 @@ export class ProgBoardComponent implements OnInit, OnDestroy, AfterViewInit {
         grid: { cols: 4, rows: 6, y: 13, x: 8 },
         component: TopNRulesWidgetComponent,
         data: {
-          title: 'Règles sues initialement',
+          title: 'Exemples de règles sues initialement',
           checkRuleHandler: this.checkRuleHandler,
         },
       },
@@ -297,6 +298,7 @@ export class ProgBoardComponent implements OnInit, OnDestroy, AfterViewInit {
             timescale: this.selectedTimescale,
             isStartPrintReport: this.isStartPrintReport,
             checkWidgetHandler: this.checkWidgetHandler,
+            moreRuleClickHandler: this.moreRuleClickHandler,
             selectedWidgets: this.selectedWidgets,
             selectedRules: this.selectedRules,
             isPVLive: true,

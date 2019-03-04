@@ -54,7 +54,8 @@ export class TraceEffects {
       DashActionTypes.FilterColumn,
 
       // User dialog
-      DashActionTypes.OpenUserDialog
+      DashActionTypes.OpenUserDialog,
+      DashActionTypes.MoreRuleClick
       // ...,
       // ...,
       // ...,
