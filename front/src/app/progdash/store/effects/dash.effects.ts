@@ -163,12 +163,19 @@ export class DashEffects {
   startPrintReport$: Observable<Action> = this.actions$.pipe(
     ofType<StartPrintReport>( DashActionTypes.StartPrintReport ),
     withLatestFrom( this.store.pipe( select( fromStore.selectedClass ))),
-    map(([ _ , selectedClass ]) => {
+    withLatestFrom( this.store.pipe( select( fromStore.selectedTimescale ))),
+    map(([ [ _, selectedClass ], timescale ]) => ({ selectedClass, timescale })),
+    map(({ selectedClass, timescale }) => {
       this.tmpPdfHeader.innerHTML = `
         <header>
-          <span class="title">Suivi Voltaire</span>
+          <div class="logo">
+            <img src="assets/icon/logo_pv_quadri_hd.jpg" alt="">
+            <span>Suivi Voltaire</span>
+          </div>
           <span class="separator"></span>
           <span>${get( selectedClass, 'name', 'N/A' )}</span>
+          <span class="fill"></span>
+          <span>${timescale === 'lastWeek' ? '7 derniers jours' : '30 derniers jours' }</span>
           <span class="fill"></span>
           <span>${ moment().format( 'LLLL' )}</span>
         </header>
@@ -330,7 +337,9 @@ export class DashEffects {
   hotPrintWidget$: Observable<Action> = this.actions$.pipe(
     ofType<HotPrintWidget>( DashActionTypes.HotPrintWidget ),
     withLatestFrom( this.store.pipe( select( fromStore.selectedClass ))),
-    map(([ action , selectedClass ]) => {
+    withLatestFrom( this.store.pipe( select( fromStore.selectedTimescale ))),
+    map(([ [ action, selectedClass ], timescale ]) => ({ action, selectedClass, timescale })),
+    map(({ action, selectedClass, timescale }) => {
       const widgetId = action.payload;
       const widgetEl = document.getElementById( widgetId );
       const cloneEl = widgetEl.cloneNode( true );
@@ -346,11 +355,16 @@ export class DashEffects {
       const hack = document.createElement( 'div' );
       hack.innerHTML = `
         <header>
-          <span class="title">Suivi Voltaire</span>
+          <div class="logo">
+            <img src="assets/icon/logo_pv_quadri_hd.jpg" alt="">
+            <span>Suivi Voltaire</span>
+          </div>
           <span class="separator"></span>
           <span>${get( selectedClass, 'name', 'N/A' )}</span>
           <span class="fill"></span>
-          <span>${ moment().format( 'LLLL' )}</span>
+          <span>${timescale === 'lastWeek' ? '7 derniers jours' : '30 derniers jours' }</span>
+          <span class="fill"></span>
+          <span>${moment().format( 'LLLL' )}</span>
         </header>
       `;
 

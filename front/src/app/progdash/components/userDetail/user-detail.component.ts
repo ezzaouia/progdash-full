@@ -29,14 +29,14 @@ import { TopNRulesWidgetComponent } from '../topNRulesWidget';
       <span class="fill"></span>
 
       <button
-        class="fab-button mat-32"
+        class="fab-button mat-32 skip-print"
         mat-button
         (click)="hotPrintWidgetHandler.emit( 'learner-report' )">
           <mat-icon>print</mat-icon>
       </button>
 
       <button
-        class="fab-button mat-32"
+        class="fab-button mat-32 skip-print"
         mat-stroked-button
         (click)="onCloseClick()">
           <mat-icon aria-label="menu">close</mat-icon>

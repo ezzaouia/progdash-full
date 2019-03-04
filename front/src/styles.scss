@@ -188,6 +188,18 @@ progtable {
   .separator:after {
     content: "- Classe :";
   }
+  .logo {
+    display: flex;
+    align-items: center;
+  }
+  .logo img {
+    width: 42px;
+    height: 42px;
+    margin-right: 12px;
+  }
+  span {
+    margin-left: 5px;
+  }
 }
 
 #pdf-container {
