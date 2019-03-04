@@ -35,7 +35,7 @@ const initialState: State = {
   selectedRules: [],
   isStartPrintReport: false,
   selectedWidgets: [],
-  areaId: 39422,
+  areaId: null,
   userId: null,
 };
 

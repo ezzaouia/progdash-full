@@ -213,19 +213,9 @@ export class ProgTableComponent implements OnInit, OnDestroy, AfterContentInit {
         name: '',
         histo: '',
         encoding: 'NG',
-        width: 50,
+        width: 35,
         topBottom: 0,
       },
-      // 'progData.day': {
-      //   name: 'Progression',
-      //   histo: '',
-      //   encoding: 'LINE',
-      //   width: 70,
-      //   topBottom: 0,
-      //   xkey: 'date',
-      //   ykey: 'sumscore',
-      //   scaleType: 'time',
-      // },
     };
 
   }
@@ -243,11 +233,12 @@ export class ProgTableComponent implements OnInit, OnDestroy, AfterContentInit {
 
   timeFormatter ( time ) {
     // replace mins in min because the moment add the letter 's' automatic.
-    return moment.duration( time, 'minutes' ).format( 'h [h] mm [min]' ).replace("mins", "min");
+    return moment.duration( time, 'minutes' ).format( 'h [h] mm [min]' ).replace( 'mins', 'min' );
   }
 
   lastConnectionFormatter ( date ) {
-    return moment( date ).fromNow();
+    const d = moment( date );
+    return d.isValid() ? d.fromNow() : '';
   }
 
 }

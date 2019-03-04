@@ -47,7 +47,8 @@ import * as fromStore from '../../store';
       (sortColumnTraceHandler)="onSortColumnTrace($event)"
       (filterColumnTraceHandler)="onFilterColumnTrace($event)"
       (openUserDialogTraceHandler)="onOpenUserDialogTrace($event)"
-      (hoverWidgetTraceHandler)="onHoverWidgetTrace($event)">
+      (hoverWidgetTraceHandler)="onHoverWidgetTrace($event)"
+      (moreRuleClickHandler)="onMoreRuleClickHandler($event)">
     </ProgdashManager>
   `,
 })
@@ -175,5 +176,9 @@ export class ProgdashViewPageComponent implements OnInit {
 
   onHotPrintWidget ( payload ) {
     this.store.dispatch( new fromStore.HotPrintWidget( payload ));
+  }
+
+  onMoreRuleClickHandler ( payload ) {
+    this.store.dispatch( new fromStore.MoreRuleClick( payload ));
   }
 }

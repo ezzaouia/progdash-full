@@ -31,6 +31,7 @@ import { MatCheckboxChange } from '@angular/material';
                     class="checkbox"
                     matTooltipPosition="above"
                     matTooltip="Sélectionnez la règle pour le mode présentiel"
+                    [disabled]="isStartPrintReport"
                     [checked]="selectedRules.includes( item.id )"
                     (change)="onRuleChecked($event, item.id)">
                   </mat-checkbox>
@@ -39,6 +40,18 @@ import { MatCheckboxChange } from '@angular/material';
               <mat-divider></mat-divider>
           </div>
         </mat-list>
+
+        <div class="more-rules">
+          <button
+            mat-stroked-button
+            matTooltipPosition="above"
+            [matTooltipShowDelay]="1500"
+            matTooltip="Fonctionnalité en cours de développement"
+            (click)="moreRuleClickHandler.emit( id )">
+              <mat-icon aria-label="menu">add</mat-icon>
+              Plus de règles
+          </button>
+        </div>
       </mat-card-content>
     </mat-card>
   `,
@@ -81,6 +94,12 @@ import { MatCheckboxChange } from '@angular/material';
     .item-detail {
       margin-left: auto;
     }
+    .more-rules {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 5px;
+    }
   ` ],
 })
 export class TopNRulesWidgetComponent implements OnInit {
@@ -93,6 +112,7 @@ export class TopNRulesWidgetComponent implements OnInit {
   @Input() isStartPrintReport;
   @Input() checkRuleHandler = new EventEmitter<{ isChecked: boolean; ruleId: string }>();
   @Input() checkWidgetHandler = new EventEmitter<{ isChecked: boolean; widgetId: string }>();
+  @Input() moreRuleClickHandler = new EventEmitter();
   @Input() selectedWidgets: string[];
   @Input() selectedRules: string[];
 

@@ -38,6 +38,9 @@ import { Component, OnInit, Input } from '@angular/core';
       height: calc(100vh - 46px);
       margin-top: 46px;
     }
+    mat-drawer-content {
+      overflow: hidden;
+    }
     .sidenav {
       width: 0px; /* 300px;*/
       height: 100vh;

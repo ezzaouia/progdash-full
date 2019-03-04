@@ -47,10 +47,17 @@ export enum DashActionTypes {
   FilterColumn = '[Dash] Filter Column',
   OpenUserDialog = '[Dash] Open User Dialog',
   HoverWidget = '[Dash] Hover Widget',
+  MoreRuleClick = '[Dash] More Rule Click',
 }
 
 export class Empty implements Action {
   readonly type = DashActionTypes.Empty;
+}
+
+export class MoreRuleClick implements Action {
+  readonly type = DashActionTypes.MoreRuleClick;
+
+  constructor ( public payload: any  ) {}
 }
 
 export class LoadData implements Action {
@@ -271,4 +278,5 @@ export type DashActionsUnion =
   | Empty
   | GeneratePVLiveLink
   | GeneratePVLiveLinkFailure
-  | GeneratePVLiveLinkSuccess;
+  | GeneratePVLiveLinkSuccess
+  | MoreRuleClick;
