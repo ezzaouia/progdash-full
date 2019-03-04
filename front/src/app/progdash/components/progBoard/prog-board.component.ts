@@ -222,7 +222,7 @@ export class ProgBoardComponent implements OnInit, OnDestroy, AfterViewInit {
         grid: { cols: 3, rows: 6, y: 7, x: 3 },
         component: TopNUsersWidgetComponent,
         data: {
-          title: 'Meilleurs engagement',
+          title: 'Meilleurs engagements',
         },
       },
       'topNUsers.help': {
@@ -243,7 +243,7 @@ export class ProgBoardComponent implements OnInit, OnDestroy, AfterViewInit {
         grid: { cols: 4, rows: 6, y: 13, x: 0 },
         component: TopNRulesWidgetComponent,
         data: {
-          title: 'Les règles les plus difficiles en cours d’apprentissage ',
+          title: 'Les règles les plus difficiles en cours d’apprentissage',
           checkRuleHandler: this.checkRuleHandler,
         },
       },
