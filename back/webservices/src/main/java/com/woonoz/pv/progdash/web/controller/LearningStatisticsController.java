@@ -40,7 +40,7 @@ public class LearningStatisticsController implements WoonozJerseyController {
 	@Inject private ProgdashAuthenticationContextProvider authenticationContext;
 	@Inject private LearningStatisticsService learningStatisticsService;
 
-	private static final int NB_USERS_LIMIT = 100;
+	private static final int NB_USERS_LIMIT = 110;
 
 	@GET
 	@Path("user/{userId}/session")
