@@ -31,6 +31,7 @@ import { MatCheckboxChange } from '@angular/material';
                     class="checkbox"
                     matTooltipPosition="above"
                     matTooltip="Sélectionnez la règle pour le mode présentiel"
+                    [disabled]="isStartPrintReport"
                     [checked]="selectedRules.includes( item.id )"
                     (change)="onRuleChecked($event, item.id)">
                   </mat-checkbox>
