@@ -12,17 +12,17 @@ if ( environment.production ) {
 
 const bootstrap = () => platformBrowserDynamic().bootstrapModule( AppModule );
 
-// if ( environment.production ) {
-//   if ( window ) {
-//     window.console.groupCollapsed = () => {};
-//     window.console.groupEnd = () => {};
-//     window.console.info = () => {};
-//     window.console.log = () => {};
-//     window.console.debug = () => {};
-//     window.console.error = () => {};
-//     window.console.trace = () => {};
-//   }
-// }
+if ( environment.production ) {
+  if ( window ) {
+    window.console.groupCollapsed = () => {};
+    window.console.groupEnd = () => {};
+    window.console.info = () => {};
+    window.console.log = () => {};
+    window.console.debug = () => {};
+    window.console.error = () => {};
+    window.console.trace = () => {};
+  }
+}
 
 if ( environment.hmr ) {
   if ( module[ 'hot' ]) {

@@ -42,15 +42,15 @@ export class HomePageComponent implements OnInit {
 
   errorLandingHandler () {
     // workaround https://github.com/angular/material2/issues/5268
-    // setTimeout(() => {
-    //   this.dialog.open( Modal, {
-    //     width: '50vw',
-    //     height: '50vh',
-    //     disableClose: true,
-    //     data: {
-    //       component: ErrorLandingComponent,
-    //     },
-    //   });
-    // }, 0 );
+    setTimeout(() => {
+      this.dialog.open( Modal, {
+        width: '50vw',
+        height: '50vh',
+        disableClose: true,
+        data: {
+          component: ErrorLandingComponent,
+        },
+      });
+    }, 0 );
   }
 }
