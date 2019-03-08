@@ -1,11 +1,22 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, AfterContentInit, AfterViewInit } from '@angular/core';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import {
+  Component,
+  OnInit,
+  Input,
+  Output,
+  EventEmitter,
+  OnDestroy,
+  AfterContentInit
+} from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 import { values, map, get } from 'lodash';
 import * as moment from 'moment';
 import 'moment-duration-format';
 moment.locale( 'fr' );
 
-import { initialEvalCatColors, moduleCatColors } from '../../../utils/chart.util';
+import {
+  initialEvalCatColors,
+  moduleCatColors
+} from '../../../utils/chart.util';
 import { PrintWidgetComponent } from '../../../shared/components';
 
 @Component({
@@ -70,52 +81,53 @@ import { PrintWidgetComponent } from '../../../shared/components';
 
   </div>
   `,
-  styles: [ `
-    :host {
-      display: flex;
-      align-items: flex-start;
-      width: 100vw;
-      height: 100%;
-    }
-    .container {
-      display: flex;
-      margin-left: auto;
-      margin-right: auto;
-      padding: 3px;
-      box-sizing: border-box;
-    }
-    .widget-card {
-      padding: 0px;
-      margin: 3px;
-      box-sizing: border-box;
-    }
-    mat-card-content {
-      padding: 12px 0px;
-      width: calc(100% - 12px);
-      height: 90%;
-    }
-    mat-card-header {
-      padding: 0px 12px;
-      box-sizing: border-box;
-    }
-    .widget-content {
-      width: 100%;
-      height: 100%;
-    }
-    .table-widget {
-      width: 70vw;
-      height: calc(100vh - 58px);
-    }
-    .line-widget {
-      width: 30vw;
-      height: calc(100vh - 58px);
-      padding: 12px 0px;
-      box-sizing: border-box;
-    }
-  ` ],
+  styles: [
+    `
+      :host {
+        display: flex;
+        align-items: flex-start;
+        width: 100vw;
+        height: 100%;
+      }
+      .container {
+        display: flex;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 3px;
+        box-sizing: border-box;
+      }
+      .widget-card {
+        padding: 0px;
+        margin: 3px;
+        box-sizing: border-box;
+      }
+      mat-card-content {
+        padding: 12px 0px;
+        width: calc(100% - 12px);
+        height: 90%;
+      }
+      mat-card-header {
+        padding: 0px 12px;
+        box-sizing: border-box;
+      }
+      .widget-content {
+        width: 100%;
+        height: 100%;
+      }
+      .table-widget {
+        width: 70vw;
+        height: calc(100vh - 58px);
+      }
+      .line-widget {
+        width: 30vw;
+        height: calc(100vh - 58px);
+        padding: 12px 0px;
+        box-sizing: border-box;
+      }
+    `,
+  ],
 })
 export class ProgTableComponent implements OnInit, OnDestroy, AfterContentInit {
-
   @Input() isStartPrintReport;
   @Input() progTableMode;
   @Input() selectedWidgets: string[];
@@ -145,6 +157,7 @@ export class ProgTableComponent implements OnInit, OnDestroy, AfterContentInit {
         encoding: 'NG',
         width: 24,
         topBottom: 0,
+        filter: 0,
       },
       fullName: {
         name: 'Apprenant',
@@ -152,6 +165,7 @@ export class ProgTableComponent implements OnInit, OnDestroy, AfterContentInit {
         encoding: 'STRING',
         width: 100,
         topBottom: 0,
+        filter: 0,
       },
       lastModule: {
         name: 'Module atteint',
@@ -161,22 +175,23 @@ export class ProgTableComponent implements OnInit, OnDestroy, AfterContentInit {
         topBottom: 0,
         color: get( this.modulesData, 'forColor' ),
       },
-      'lastConnection': {
+      lastConnection: {
         name: 'Dernière connexion',
         histo: '',
         formatter: this.lastConnectionFormatter,
         encoding: 'STRING',
         width: 100,
         topBottom: 0,
+        filter: '',
       },
-      'connectionsNbr': {
+      connectionsNbr: {
         name: 'Nbr. connexions',
         histo: 'ordinal',
         encoding: 'BAR',
         width: 80,
         topBottom: 0,
       },
-      'initialEval': {
+      initialEval: {
         name: 'Éval. Initiale',
         histo: 'ordinal',
         encoding: 'BAR',
@@ -191,7 +206,7 @@ export class ProgTableComponent implements OnInit, OnDestroy, AfterContentInit {
         width: 80,
         topBottom: 0,
       },
-      'time': {
+      time: {
         name: 'Temps cumulé',
         // hint: 'time.format',
         formatter: this.timeFormatter,
@@ -209,15 +224,15 @@ export class ProgTableComponent implements OnInit, OnDestroy, AfterContentInit {
         width: 80,
         topBottom: 0,
       },
-      'print': {
+      print: {
         name: '',
         histo: '',
         encoding: 'NG',
         width: 35,
         topBottom: 0,
+        filter: 0,
       },
     };
-
   }
 
   ngOnDestroy (): void {}
@@ -233,12 +248,14 @@ export class ProgTableComponent implements OnInit, OnDestroy, AfterContentInit {
 
   timeFormatter ( time ) {
     // replace mins in min because the moment add the letter 's' automatic.
-    return moment.duration( time, 'minutes' ).format( 'h [h] mm [min]' ).replace( 'mins', 'min' );
+    return moment
+      .duration( time, 'minutes' )
+      .format( 'h [h] mm [min]' )
+      .replace( 'mins', 'min' );
   }
 
   lastConnectionFormatter ( date ) {
     const d = moment( date );
     return d.isValid() ? d.fromNow() : '';
   }
-
 }

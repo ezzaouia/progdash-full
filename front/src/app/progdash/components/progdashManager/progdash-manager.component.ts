@@ -27,6 +27,7 @@ import { OpenPVLiveLinkComponent } from '../openPVLiveLink';
           <!-- mat-icon aria-label="menu">graphic_eq</mat-icon -->
           <img src="assets/icon/voltaire-logo.jpg" alt="">
           <span>Suivi Voltaire</span>
+          <mat-icon svgIcon="sort-alpha-down"></mat-icon>
         </div>
 
 
@@ -55,7 +56,7 @@ import { OpenPVLiveLinkComponent } from '../openPVLiveLink';
             [matMenuTriggerFor]="className"
             yPosition="below">
             <span *ngIf="!selectedClass.name">
-                Sélectionnez une classe
+                Sélectionner une classe
             </span>
             <span class="class-name">{{ selectedClass ? selectedClass.name : '' }}</span>
               <mat-icon>arrow_drop_down</mat-icon>
@@ -120,7 +121,10 @@ import { OpenPVLiveLinkComponent } from '../openPVLiveLink';
       </mat-menu>
 
       <mat-menu #more="matMenu">
-        <MoreMenu></MoreMenu>
+        <MoreMenu
+          (navigateToSuiviStatsHandler)="navigateToSuiviStatsHandler.emit()"
+          (signOutHandler)="signOutHandler.emit()">
+        </MoreMenu>
       </mat-menu>
 
       <div #board class="board">
@@ -295,6 +299,8 @@ export class ProgdashManagerComponent implements AfterContentInit, OnInit, OnDes
   @Output() openUserDialogTraceHandler = new EventEmitter();
   @Output() hoverWidgetTraceHandler = new EventEmitter();
   @Output() moreRuleClickHandler = new EventEmitter();
+  @Output() signOutHandler = new EventEmitter();
+  @Output() navigateToSuiviStatsHandler = new EventEmitter();
 
   classes$ = new BehaviorSubject<any>({
     byId: {},
@@ -323,11 +329,15 @@ export class ProgdashManagerComponent implements AfterContentInit, OnInit, OnDes
     this.lauchSupPV1 = this.isGeneratingPVLiveLink$
       .subscribe( isGeneratingPVLiveLink => {
         if ( isGeneratingPVLiveLink ) {
-          this.dialog.open( Modal  , {
-            width: '60vw',
-            height: '50vh',
-            data: this.pvLiveModalData,
-          });
+          setTimeout(() => {
+            // workaround https://github.com/angular/material2/issues/5268
+            this.dialog.open( Modal  , {
+              width: '60vw',
+              height: '50vh',
+              data: this.pvLiveModalData,
+            });
+          }, 0 );
+
         }
     });
 
@@ -374,19 +384,22 @@ export class ProgdashManagerComponent implements AfterContentInit, OnInit, OnDes
   }
 
   handleUserMoreMenuClick ({ user, /*action*/ }) {
-    this.dialog.open( Modal, {
-      width: '70vw',
-      height: '100vh',
-      data: {
-        user,
-        component: UserDetailComponent,
-        modulesData: ( this.selectedClass ?
-          ( this.classes.byId[this.selectedClass.id] ?
-            this.classes.byId[this.selectedClass.id].modules : []) : []),
-        hoverWidgetTraceHandler: this.hoverWidgetTraceHandler,
-        hotPrintWidgetHandler: this.hotPrintWidgetHandler,
-      },
-    });
+    // workaround https://github.com/angular/material2/issues/5268
+    setTimeout(() => {
+      this.dialog.open( Modal, {
+        width: '95vw',
+        height: '100vh',
+        data: {
+          user,
+          component: UserDetailComponent,
+          modulesData: ( this.selectedClass ?
+            ( this.classes.byId[this.selectedClass.id] ?
+              this.classes.byId[this.selectedClass.id].modules : []) : []),
+          hoverWidgetTraceHandler: this.hoverWidgetTraceHandler,
+          hotPrintWidgetHandler: this.hotPrintWidgetHandler,
+        },
+      });
+    }, 0 );
 
     // Trace purpose
     this.openUserDialogTraceHandler.emit( user );

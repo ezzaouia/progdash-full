@@ -115,7 +115,7 @@ export const ChartFormat = {
           format: dayFormatTime,
           parse: dayParseTime,
           xTick: {
-            [ChartLayout.Unified]: timeWeek.every( 5 ),
+            [ChartLayout.Unified]: timeWeek.every( 15 ),
             [ChartLayout.Faceted]: timeWeek.every( 5 ),
             [ChartLayout.Segmented]: timeWeek.every( 12 ),
           },

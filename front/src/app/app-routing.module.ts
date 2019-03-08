@@ -2,7 +2,12 @@ import { NgModule, InjectionToken } from '@angular/core';
 import { RouterModule, Routes, ActivatedRouteSnapshot } from '@angular/router';
 
 import { environment } from '../environments/environment';
-import { NotFoundComponent, HomePageComponent, ErrorComponent } from './shared/components';
+import {
+  NotFoundPageComponent,
+  HomePageComponent,
+  ErrorPageComponent,
+  UnauthorizedPageComponent
+} from './shared/components';
 
 const externalUrlProvider = new InjectionToken( 'externalUrlRedirectResolver' );
 
@@ -23,22 +28,26 @@ export const AppRoutes: Routes = [
       {
         path: 'externalPVRedirect',
         canActivate: [ externalUrlProvider ],
-        component: NotFoundComponent,
+        component: NotFoundPageComponent,
       },
       {
         path: 'externalSuiviStatsRedirect',
         canActivate: [ externalUrlProvider ],
-        component: NotFoundComponent,
+        component: NotFoundPageComponent,
+      },
+      {
+        path: 'unauthorized',
+        component: UnauthorizedPageComponent,
       },
     ],
   },
   {
     path: 'error',
-    component: ErrorComponent,
+    component: ErrorPageComponent,
   },
   {
     path: '**',
-    component: NotFoundComponent,
+    component: NotFoundPageComponent,
   },
 ];
 
@@ -47,12 +56,9 @@ export const AppRoutes: Routes = [
     {
       provide: externalUrlProvider,
       useValue: ( route: ActivatedRouteSnapshot ) => {
-        console.log( ' ====> [window.open] Start' );
         const externalUrl = route.paramMap.get( 'externalUrl' );
         const isSelf = route.paramMap.get( 'isSelf' );
-        console.log( ' ====> Ready get params', externalUrl, isSelf );
         window.open( externalUrl, isSelf ? '_self' : '_blank' );
-        console.log( ' ====> [window.open] Fire', externalUrl, isSelf );
       },
     },
   ],
@@ -64,4 +70,4 @@ export const AppRoutes: Routes = [
   ],
   exports: [ RouterModule ],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

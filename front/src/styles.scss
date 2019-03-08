@@ -60,6 +60,18 @@ svg {
   .histo-filter-axis-x {
     font: 400 10.2px / 1.2 sans-serif;
   }
+
+  .hists-shadow--el:hover,
+  .hists-ink--el:hover {
+    cursor: pointer;
+  }
+  .first-head:hover,
+  .second-head:hover {
+    cursor: grab;
+  }
+  .slider line {
+    cursor: grab;
+  }
 }
 
 .user-label {
@@ -106,8 +118,8 @@ svg {
 }
 
 .mat-18 {
-  width: 18px;
-  height: 18px;
+  width: 18px !important;
+  height: 18px !important;
   line-height: 24px !important;
   min-width: 18px !important;
   font-size: 18px;

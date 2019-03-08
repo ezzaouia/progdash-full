@@ -81,7 +81,7 @@ import { TopNRulesWidgetComponent } from '../topNRulesWidget';
       #learner-report {
         display: flex;
         flex-direction: column;
-        height: 100vh;
+        height: 100%;
       }
       .header {
         display: flex;
@@ -163,21 +163,21 @@ export class UserDetailComponent implements OnInit, AfterContentInit {
         grid: { cols: 4, rows: 6, y: 7, x: 0 },
         component: TopNRulesWidgetComponent,
         data: {
-          title: 'Règles en cours d’apprentissage',
+          title: 'Les règles les plus difficiles en cours d’apprentissage',
         },
       },
       'topNRules.acquired': {
         grid: { cols: 4, rows: 6, y: 7, x: 4 },
         component: TopNRulesWidgetComponent,
         data: {
-          title: 'Règles Acquises',
+          title: 'Les règles acquises les plus difficiles',
         },
       },
       'topNRules.known': {
         grid: { cols: 4, rows: 6, y: 7, x: 8 },
         component: TopNRulesWidgetComponent,
         data: {
-          title: 'Règles sues initialement',
+          title: 'Exemples de règles sues initialement',
         },
       },
     };

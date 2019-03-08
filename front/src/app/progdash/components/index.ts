@@ -57,6 +57,7 @@ export const fromEntryComponents: any[] = [
 
 export * from './classManager';
 export * from './userDetail';
+export * from '../containers';
 export * from './infoWidget';
 export * from './timelineWidget';
 export * from './topNRulesWidget';
