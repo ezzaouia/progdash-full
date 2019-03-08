@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { UserService } from '../../services';
 import { Router } from '@angular/router';
 import { environment } from '../../../../environments/environment';
@@ -7,11 +7,11 @@ import { environment } from '../../../../environments/environment';
 @Component({
   selector: 'MoreMenu',
   template: `
-    <button mat-menu-item (click)="signOut()">
+    <button mat-menu-item (click)="signOutHandler.emit()">
       <mat-icon>power_settings_new</mat-icon>
       Déconnexion
     </button>
-    <button mat-menu-item (click)="goToStatistic()">
+    <button mat-menu-item (click)="navigateToSuiviStatsHandler.emit()">
       <mat-icon>arrow_back</mat-icon>
       Retour au portail
     </button>
@@ -23,38 +23,11 @@ import { environment } from '../../../../environments/environment';
 })
 export class MoreMenuComponent implements OnInit {
 
-  constructor ( private userService: UserService, private router: Router ) { }
+  @Output() signOutHandler = new EventEmitter();
+  @Output() navigateToSuiviStatsHandler = new EventEmitter();
+
+  constructor () { }
 
   ngOnInit (): void { }
 
-  signOut () {
-    const externalUrl = `${environment.SUIVI_STATS_URL}/guard/logout`;
-    console.log( ' ====> signOut externalSuiviStatsRedirect',
-      environment.SUIVI_STATS_URL, externalUrl );
-
-    this.router.navigate([
-        '/externalSuiviStatsRedirect',
-        {
-          externalUrl, // `${environment.SUIVI_STATS_URL}/guard/logout'`,
-          isSelf : true,
-        } ],
-      { skipLocationChange: false }
-    );
-  }
-
-  goToStatistic () {
-    const areaId = this.userService.getAreaId();
-    const externalUrl = `${environment.SUIVI_STATS_URL}/sphere/${areaId}/statistiques`;
-    console.log( ' ====> goToStatistic externalSuiviStatsRedirect',
-      environment.SUIVI_STATS_URL, areaId, externalUrl );
-
-    this.router.navigate([
-        '/externalSuiviStatsRedirect',
-        {
-          externalUrl,
-          isSelf : true,
-        } ],
-      { skipLocationChange: false }
-    );
-  }
 }

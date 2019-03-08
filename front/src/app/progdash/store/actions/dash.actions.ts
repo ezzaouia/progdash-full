@@ -41,6 +41,9 @@ export enum DashActionTypes {
   PrintReportSuccess = '[Dash] Print Report Success',
   PrintReportFailure = '[Dash] Print Report Failure',
   Empty = '[Dash] Empty',
+  NavigateToHome = '[Dash] Navigate To Home',
+  NavigateToSuiviStats = '[Dash] Navigate Suivi Stats',
+  SignOut = '[Dash] Sign Out',
 
   // For tracing purpose
   SortColumn = '[Dash] Sort Column',
@@ -48,10 +51,31 @@ export enum DashActionTypes {
   OpenUserDialog = '[Dash] Open User Dialog',
   HoverWidget = '[Dash] Hover Widget',
   MoreRuleClick = '[Dash] More Rule Click',
+  GenericFailure = '[Dash] Generic Failure',
 }
 
 export class Empty implements Action {
   readonly type = DashActionTypes.Empty;
+}
+
+export class GenericFailure implements Action {
+  readonly type = DashActionTypes.GenericFailure;
+
+  constructor ( public payload: any  ) {}
+}
+
+export class NavigateToHome implements Action {
+  readonly type = DashActionTypes.NavigateToHome;
+  constructor ( public payload: any  ) {}
+}
+
+export class NavigateToSuiviStats implements Action {
+  readonly type = DashActionTypes.NavigateToSuiviStats;
+  constructor ( public payload: any  ) {}
+}
+
+export class SignOut implements Action {
+  readonly type = DashActionTypes.SignOut;
 }
 
 export class MoreRuleClick implements Action {
@@ -279,4 +303,8 @@ export type DashActionsUnion =
   | GeneratePVLiveLink
   | GeneratePVLiveLinkFailure
   | GeneratePVLiveLinkSuccess
-  | MoreRuleClick;
+  | MoreRuleClick
+  | NavigateToHome
+  | NavigateToSuiviStats
+  | SignOut
+  | GenericFailure;

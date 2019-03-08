@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CdkTableModule } from '@angular/cdk/table';
-import { DragDropModule } from '@angular/cdk/drag-drop';
 import {
   MatInputModule,
   MatCardModule,
@@ -28,6 +27,7 @@ import {
   MatGridListModule,
   MatDialogModule,
   MatProgressBarModule,
+  MatBadgeModule,
 } from '@angular/material';
 
 const MODULES = [
@@ -58,11 +58,13 @@ const MODULES = [
   MatGridListModule,
   MatDialogModule,
   MatProgressBarModule,
-  DragDropModule,
+  MatBadgeModule,
 ];
 
 @NgModule({
   imports: [ ...MODULES ],
   exports: [ ...MODULES ],
 })
-export class MaterialModule { }
+export class MaterialModule {
+
+}

@@ -48,7 +48,9 @@ import * as fromStore from '../../store';
       (filterColumnTraceHandler)="onFilterColumnTrace($event)"
       (openUserDialogTraceHandler)="onOpenUserDialogTrace($event)"
       (hoverWidgetTraceHandler)="onHoverWidgetTrace($event)"
-      (moreRuleClickHandler)="onMoreRuleClickHandler($event)">
+      (moreRuleClickHandler)="onMoreRuleClickHandler($event)"
+      (navigateToSuiviStatsHandler)="onNavigateToSuiviStats()"
+      (signOutHandler)="onSignOut()">
     </ProgdashManager>
   `,
 })
@@ -180,5 +182,13 @@ export class ProgdashViewPageComponent implements OnInit {
 
   onMoreRuleClickHandler ( payload ) {
     this.store.dispatch( new fromStore.MoreRuleClick( payload ));
+  }
+
+  onNavigateToSuiviStats () {
+    this.store.dispatch( new fromStore.NavigateToSuiviStats({ from: 'menuPage' }));
+  }
+
+  onSignOut () {
+    this.store.dispatch( new fromStore.SignOut());
   }
 }

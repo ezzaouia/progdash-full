@@ -1,80 +1,75 @@
 import { Injectable, Injector } from '@angular/core';
-import {
-  Location,
-  LocationStrategy,
-  PathLocationStrategy
-} from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { LocationStrategy, PathLocationStrategy } from '@angular/common';
+import { v4 as uuid } from 'uuid';
 import { DeviceDetectorService } from 'ngx-device-detector';
-import {
-  MatSnackBar,
-  MatSnackBarHorizontalPosition,
-  MatSnackBarVerticalPosition
-} from '@angular/material';
-import { SnackNotifyComponent } from '../components/snackNotify';
+import { MatDialog } from '@angular/material';
+
+import { environment } from '../../../environments/environment';
+import { Modal, NoInternetComponent } from '../components';
 
 @Injectable()
 export class NotificationService {
+
+  private httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/json',
+        // 'Authorization': 'my-auth-token'
+      }),
+    };
+  private API_URL = environment.apiUrl;
+  private sessionId; // This is not the same session as for trace.
+
   constructor (
     private injector: Injector,
     private deviceService: DeviceDetectorService,
-    private snackBar: MatSnackBar
-  ) {}
-
-  notify ( ...args ) {
-    const horizontalPosition: MatSnackBarHorizontalPosition = 'center';
-    const verticalPosition: MatSnackBarVerticalPosition = 'top';
-
-    this.snackBar.openFromComponent( SnackNotifyComponent, {
-      duration: 2000,
-      horizontalPosition: horizontalPosition,
-      verticalPosition: verticalPosition,
-      data: { message: `Notify ${args.join( ' , ' )}`, htmClass: 'info' },
-    });
+    private http: HttpClient,
+    private route: ActivatedRoute,
+    private dialog: MatDialog
+  ) {
+    this.sessionId = uuid();
   }
 
-  notifyError ( message: string ) {
-    const horizontalPosition: MatSnackBarHorizontalPosition = 'center';
-    const verticalPosition: MatSnackBarVerticalPosition = 'top';
-
-    this.snackBar.openFromComponent( SnackNotifyComponent, {
-      duration: 2000,
-      horizontalPosition: horizontalPosition,
-      verticalPosition: verticalPosition,
-      data: { message, htmClass: 'error' },
-    });
+  notifyOffline () {
+    // workaround https://github.com/angular/material2/issues/5268
+    setTimeout(() => {
+      this.dialog.open( Modal, {
+        width: '50vw',
+        height: '50vh',
+        disableClose: true,
+        data: {
+          component: NoInternetComponent,
+          isOffline: true,
+        },
+      });
+    }, 0 );
   }
 
-  trace ( action ) {
-    const _action = this.addContextInfo( action );
-    console.groupCollapsed( '[ ** TRACE **]' );
-    console.table( _action );
-    console.groupEnd();
-    // TODO
-    // Sent To Server
-
+  error ( message, actionType? ) {
+    // the goal here is to only track the error
+    this.createAudit( message, actionType );
   }
 
-  error ( error, originError? ) {
-    console.log( '============== errorerror', error );
+  public createAudit ( error, actionType? ) {
+    const payload = { error: error, context: this.getContextInfo( actionType ) };
+    console.log( '[createAudit]', payload );
+    return this.http
+      .post<any>( this.API_URL + '/audit/error', payload, this.httpOptions )
+      .subscribe();
   }
 
-  /**
-   * Add context to a normal the trace.
-   *
-   * User Id
-   * Time
-   * Session id
-   * Browser info
-   * Location
-   */
-  addContextInfo ( data ) {
+ /**
+ * Add needed context info to a trace OR error
+ */
+  private getContextInfo ( actionType ? ) {
     const device = this.deviceService.getDeviceInfo();
-    const appId = 'TODO_APP';
-    const user = 'TODO_USER';
-    const time = new Date().getTime();
-    const id = `${appId}-${user}-${time}`;
-    const location = this.injector.get( LocationStrategy );
-    const url = location instanceof PathLocationStrategy ? location.path() : '';
-    return { ...data, appId, user, time, id, location, url, device };
+    const teacherId =  this.route.snapshot.queryParamMap.get( 'user' );
+    const areaId = this.route.snapshot.queryParamMap.get( 'area' );
+    const sessionId = this.sessionId;
+    const clientTimestamp = new Date().getTime();
+    // maybe not as much important for now as we have only one route
+    const url = window.location.href;
+    return { teacherId, areaId, sessionId, clientTimestamp, url, device, actionType };
   }
 }

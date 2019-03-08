@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { tap, throttleTime } from 'rxjs/operators';
+import { tap, throttleTime, catchError, switchMap, concatMap } from 'rxjs/operators';
 import { Action } from '@ngrx/store';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 
 import { DashActionTypes } from '../actions';
 import { TraceService } from '../../services/trace.service';
-
+import { ErrorsService } from '../../../shared/services';
+import { GenericFailure } from '../actions';
 /**
  * Effect to collecte all traces (users' interactions)
  * needed for the experiment.
@@ -19,28 +20,30 @@ import { TraceService } from '../../services/trace.service';
 export class TraceEffects {
   constructor (
     private actions$: Actions,
-    private traceService: TraceService
+    private traceService: TraceService,
+    private errorService: ErrorsService
   ) {}
 
   @Effect({ dispatch: false })
   TraceActions$: Observable<Action> = this.actions$.pipe(
     ofType(
       // DATA
-      DashActionTypes.LoadData,
-      DashActionTypes.LoadDataSuccess,
-      DashActionTypes.RunDataPrepComplete,
+      DashActionTypes.LoadGroupData,
+      DashActionTypes.LoadGroupsData,
 
       // VIEWS
       DashActionTypes.SelectClass,
       DashActionTypes.SelectTimescale,
       DashActionTypes.OpenProgTable,
       DashActionTypes.OpenProgBoard,
+      DashActionTypes.OpenProgEvaluation,
 
       // PRINT REPORT
       DashActionTypes.StartPrintReport,
       DashActionTypes.ClosePrintReport,
       DashActionTypes.CheckWidget,
       DashActionTypes.PrintReport,
+      DashActionTypes.HotPrintWidget,
       DashActionTypes.PrintReportSuccess,
       DashActionTypes.PrintReportFailure,
 
@@ -55,7 +58,13 @@ export class TraceEffects {
 
       // User dialog
       DashActionTypes.OpenUserDialog,
-      DashActionTypes.MoreRuleClick
+      DashActionTypes.MoreRuleClick,
+
+      // page view
+      DashActionTypes.LoadUserInfo,
+      DashActionTypes.NavigateToHome,
+      DashActionTypes.NavigateToSuiviStats,
+      DashActionTypes.SignOut
       // ...,
       // ...,
       // ...,
@@ -65,6 +74,9 @@ export class TraceEffects {
       console.log( '***TRACE***', action );
 
       this.traceService.createTrace( action );
+    }),
+    catchError( err => {
+      return of( new GenericFailure( err ));
     })
   );
 
@@ -76,6 +88,25 @@ export class TraceEffects {
       console.log( '***TRACE***', action );
 
       this.traceService.createTrace( action );
+    }),
+    catchError( err => {
+      return of( new GenericFailure( err ));
     })
   );
+
+  @Effect({ dispatch: false })
+  ErrorsActions$: Observable<{payload?: any; type: string}> = this.actions$.pipe(
+    ofType(
+      DashActionTypes.LoadGroupsDataFailure,
+      DashActionTypes.LoadGroupDataFailure,
+      DashActionTypes.PrintReportFailure,
+      DashActionTypes.GeneratePVLiveLinkFailure,
+      DashActionTypes.GenericFailure
+    ),
+    tap( action => {
+      console.log( '***ERROR***', action );
+      this.errorService.log( action.payload, action.type );
+    })
+  );
+
 }

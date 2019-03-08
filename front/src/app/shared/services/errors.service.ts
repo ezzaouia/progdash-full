@@ -8,11 +8,11 @@ import { NotificationService } from './notification.service';
 export class ErrorsService {
   constructor ( private notificationService: NotificationService ) {}
 
-  log ( error ) {
-    this.notificationService.error( error );
+  log ( error, actionType? ) {
+    this.notificationService.error( this.prettify( error ),  actionType );
   }
 
-  addContextInfo ( error ) {
+  prettify ( error ) {
     const name = error.name || null;
     const status = error.status || null;
     const message = error.message || error.toString();

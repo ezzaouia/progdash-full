@@ -9,10 +9,11 @@ import {
   EventEmitter,
 } from '@angular/core';
 import { BehaviorSubject, merge } from 'rxjs';
-import { size, map, countBy, each, flatMap } from 'lodash';
+import { size, map, countBy, each, flatMap, toNumber, round } from 'lodash';
 import { scaleLinear, histogram, extent, max, select } from 'd3';
 import * as moment from 'moment';
 import 'moment-duration-format';
+import { debounceTime } from 'rxjs/operators';
 moment.locale( 'fr' );
 
 /* tslint:disable component-selector  */
@@ -100,13 +101,14 @@ export class HistogramChartComponent implements OnInit, OnDestroy {
     } else if ( this.type === 'ordinal' ) {
       this.datum = this.buildOrdinalDatum( this.data, this.xScale, this.ykey );
     } else {
-      select( this.elRef.nativeElement )
-        .remove();
-        return;
+      select( this.elRef.nativeElement ).remove();
+      return;
     }
 
-    if ( this.ykey === 'time.sum' ) {
+    if ( this.ykey === 'time' ) {
       this.format = this.timeFormat;
+    } else {
+      this.format = this.numberFormat;
     }
 
     this.xRange = [ this.margin, this.width - this.margin ];
@@ -171,7 +173,12 @@ export class HistogramChartComponent implements OnInit, OnDestroy {
   }
 
   timeFormat ( time ) {
-    return moment.duration( time, 'seconds' ).format( 'h[h]mm[m]' );
+    return moment.duration( time, 'minutes' ).format( 'h:mm' );
+  }
+
+  numberFormat ( val ) {
+    const v = toNumber( val );
+    return isNaN( v ) ? '' : v;
   }
 
   // @Input()
