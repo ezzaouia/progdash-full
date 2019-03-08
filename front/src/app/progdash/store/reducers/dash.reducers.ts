@@ -31,7 +31,7 @@ const initialState: State = {
   isLoading: false,
   classes: { allIds: [], byId: {} },
   selectedClass: {},
-  selectedTimescale: 'lastWeek',
+  selectedTimescale: 'lastMonth',
   selectedRules: [],
   isStartPrintReport: false,
   selectedWidgets: [],
@@ -51,6 +51,23 @@ export function reducers (
           userId: ( action as LoadUserInfo ).payload.userId,
       };
     }
+
+    case DashActionTypes.NavigateToHome: {
+      return {
+        ...state,
+        selectedClass: {},
+        isStartPrintReport: false,
+        isGeneratePVLiveLinkSuccess: false,
+        isGeneratingPVLiveLink: false,
+        generatedLivePVLink: null,
+        isDataLoaded: false,
+        isProgTableOpened: false,
+        isProgEvaluationOpened: false,
+        selectedRules: [],
+        selectedWidgets: [],
+      };
+    }
+
     case DashActionTypes.LoadData: {
       return {
         ...state,
@@ -254,6 +271,13 @@ export function reducers (
       };
     }
 
+    case DashActionTypes.GenericFailure: {
+      return {
+        ...state,
+        isLoading: false,
+      };
+    }
+
     case DashActionTypes.StartPrintReport: {
       return {
         ...state,
@@ -341,7 +365,7 @@ export function reducers (
         ...state,
         selectedWidgets: [],
         isStartPrintReport: false,
-        isLoading: true,
+        isLoading: false,
       };
     }
 

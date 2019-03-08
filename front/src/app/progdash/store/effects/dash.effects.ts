@@ -16,6 +16,7 @@ import { saveAs } from 'file-saver';
 import * as moment from 'moment';
 moment.locale( 'fr' );
 
+import { environment } from '../../../../environments/environment';
 import { ProgdashDataService } from '../../services';
 import { TeacherService } from '../../services';
 import {
@@ -39,6 +40,10 @@ import {
   GeneratePVLiveLink,
   GeneratePVLiveLinkSuccess,
   GeneratePVLiveLinkFailure,
+  NavigateToHome,
+  NavigateToSuiviStats,
+  SignOut,
+  GenericFailure,
 } from '../actions';
 import { Router } from '@angular/router';
 import * as html2pdf from 'html2pdf.js';
@@ -119,13 +124,9 @@ export class DashEffects {
     })
   );
 
-  // @Effect()
-  // runDataPrep$: Observable<Action> = this.actions$.pipe(
-  //   ofType<LoadDataSuccess>( DashActionTypes.LoadDataSuccess ),
-  //   map( action => dataPrep( action.payload )),
-  //   map( data => new RunDataPrepComplete( data ))
-  // );
-
+  /**
+   * @deprecated
+   */
   @Effect({ dispatch: false })
   launchPVLive$: Observable<String> = this.actions$.pipe(
       ofType<LaunchPVLive>( DashActionTypes.LaunchPVLive ),
@@ -169,7 +170,7 @@ export class DashEffects {
       this.tmpPdfHeader.innerHTML = `
         <header>
           <div class="logo">
-            <img src="assets/icon/logo_pv_quadri_hd.jpg" alt="">
+            <img src="assets/icon/voltaire-logo.jpg" alt="">
             <span>Suivi Voltaire</span>
           </div>
           <span class="separator"></span>
@@ -182,6 +183,9 @@ export class DashEffects {
       `;
       this.tmpPdfContainer.innerHTML = '';
       return null;
+    }),
+    catchError( err => {
+      return of( new GenericFailure( err ));
     })
   );
 
@@ -298,7 +302,10 @@ export class DashEffects {
         }
         return null;
       }
-    )
+    ),
+    catchError( err => {
+      return of( new GenericFailure( err ));
+    })
   );
 
   @Effect()
@@ -310,6 +317,7 @@ export class DashEffects {
     }),
     delay( 1000 ),
     switchMap(() => {
+
       const promise = html2pdf()
         .from( this.tmpPdfReport )
         .set({
@@ -317,7 +325,6 @@ export class DashEffects {
           pagebreak: { mode: [ 'avoid-all' ] },
           jsPDF: { format: 'letter' },
         });
-
       return from(
         promise.toPdf().output( 'blob' ) // .save()
       ).pipe(
@@ -327,7 +334,7 @@ export class DashEffects {
         }),
         map( blob => new PrintReportSuccess({ blob })),
         catchError( err => {
-          return of( new PrintReportFailure( 'Print_Pdf_Report_Failure' ));
+          return of( new PrintReportFailure( err ));
         })
       );
     })
@@ -356,7 +363,7 @@ export class DashEffects {
       hack.innerHTML = `
         <header>
           <div class="logo">
-            <img src="assets/icon/logo_pv_quadri_hd.jpg" alt="">
+            <img src="assets/icon/voltaire-logo.jpg" alt="">
             <span>Suivi Voltaire</span>
           </div>
           <span class="separator"></span>
@@ -404,7 +411,7 @@ export class DashEffects {
         }),
         map( blob => new PrintReportSuccess({ blob })),
         catchError( err => {
-          return of( new PrintReportFailure( 'Print_Pdf_Report_Failure' ));
+          return of( new PrintReportFailure( err ));
         })
       );
     })
@@ -417,6 +424,9 @@ export class DashEffects {
       this.tmpPdfReport.setAttribute( 'style', `display: none;` );
       this.tmpPdfContainer.innerHTML = '';
       this.tmpPdfHeader.innerHTML = '';
+    }),
+    catchError( err => {
+      return of( new GenericFailure( err ));
     })
   );
 
@@ -427,6 +437,62 @@ export class DashEffects {
       this.tmpPdfReport.setAttribute( 'style', `display: none;` );
       this.tmpPdfContainer.innerHTML = '';
       this.tmpPdfHeader.innerHTML = '';
+    }),
+    catchError( err => {
+      return of( new GenericFailure( err ));
     })
   );
+
+  @Effect({ dispatch: false })
+  navigateToHome$: Observable<any> = this.actions$.pipe(
+      ofType<NavigateToHome>( DashActionTypes.NavigateToHome ),
+      withLatestFrom( this.store.pipe( select( fromStore.userInfo ))),
+      tap(([ _, userInfo ]) => {
+        this.router.navigate(
+          [ '/suivi' ],
+          { queryParams: { area: userInfo.areaId, user: userInfo.userId } }
+        );
+      }),
+      catchError( err => {
+        return of( new GenericFailure( err ));
+      })
+  );
+
+  @Effect({ dispatch: false })
+  navigateToSuiviStats$: Observable<any> = this.actions$.pipe(
+      ofType<NavigateToSuiviStats>( DashActionTypes.NavigateToSuiviStats ),
+      withLatestFrom( this.store.pipe( select( fromStore.userInfo ))),
+      tap(([ _, userInfo ]) => {
+        this.router.navigate([
+          '/externalSuiviStatsRedirect',
+          {
+            externalUrl: `${environment.SUIVI_STATS_URL}/sphere/${userInfo.areaId}/statistiques`,
+            isSelf : true,
+          } ],
+          { skipLocationChange: false }
+        );
+      }),
+      catchError( err => {
+        return of( new GenericFailure( err ));
+      })
+  );
+
+  @Effect({ dispatch: false })
+  signOut$: Observable<any> = this.actions$.pipe(
+      ofType<SignOut>( DashActionTypes.SignOut ),
+      tap(() => {
+        this.router.navigate([
+          '/externalSuiviStatsRedirect',
+          {
+            externalUrl: `${environment.SUIVI_STATS_URL}/guard/logout`,
+            isSelf : true,
+          } ],
+          { skipLocationChange: false }
+        );
+      }),
+      catchError( err => {
+        return of( new GenericFailure( err ));
+      })
+  );
+
 }

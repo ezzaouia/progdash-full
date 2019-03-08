@@ -59,6 +59,7 @@ import { MatDialogRef } from '@angular/material';
       height: 100px;
       display: flex;
       align-items: center;
+      justify-content: center;
       margin-bottom: 24px;
     }
     .info p {

@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, EventEmitter } from '@angular/core';
 import { MatCheckboxChange } from '@angular/material';
+import { size } from 'lodash';
 
 /* tslint:disable component-selector  */
 @Component({
@@ -41,11 +42,13 @@ import { MatCheckboxChange } from '@angular/material';
           </div>
         </mat-list>
 
-        <div class="more-rules">
+        <div
+          class="more-rules"
+          *ngIf="isData">
           <button
             mat-stroked-button
             matTooltipPosition="above"
-            [matTooltipShowDelay]="1500"
+            [matTooltipShowDelay]="2000"
             matTooltip="Fonctionnalité en cours de développement"
             (click)="moreRuleClickHandler.emit( id )">
               <mat-icon aria-label="menu">add</mat-icon>
@@ -66,6 +69,9 @@ import { MatCheckboxChange } from '@angular/material';
       height: 100%;
       box-sizing: border-box;
       padding: 12px;
+    }
+    mat-card-header {
+      height: 24px;
     }
     mat-card-content {
       padding: 12px 0px;
@@ -123,6 +129,10 @@ export class TopNRulesWidgetComponent implements OnInit {
 
   onRuleChecked ({ checked: isChecked }: MatCheckboxChange,  ruleId: string ) {
     this.checkRuleHandler.emit({ isChecked, ruleId });
+  }
+
+  get isData () {
+    return size( this.data ) > 0;
   }
 
 }

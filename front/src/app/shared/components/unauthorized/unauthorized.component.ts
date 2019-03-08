@@ -1,16 +1,13 @@
 import { Component, Output, EventEmitter } from '@angular/core';
-import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-notfound',
+  selector: 'app-unauthorized',
   template: `
     <div class="container">
       <h1 class="big-title">Oups !</h1>
-      <p>La page que vous recherchez semble introuvable.</p>
-      <p>Voici quelques liens utiles à la place :</p>
+      <p>Afin d’accèder au tableau de bord, merci de passer par le portail de suivi.</p>
       <div class="links">
-        <button mat-button (click)="onNavigateToHome()">Page d'accueil</button>
-        <button mat-button (click)="onNavigateToSuiviStats()">Portail de suivi</button>
+        <button mat-button (click)="onSignOut()">Portail de suivi</button>
       </div>
     </div>
   `,
@@ -36,18 +33,13 @@ import { Router } from '@angular/router';
     }
     ` ],
 })
-export class NotFoundComponent {
+export class UnauthorizedComponent {
 
-  @Output() navigateToHomeHandler = new EventEmitter();
-  @Output() navigateToSuiviStatsHandler = new EventEmitter();
+  @Output() signOutHandler = new EventEmitter();
 
   constructor () { }
 
-  onNavigateToHome () {
-    this.navigateToHomeHandler.emit();
-  }
-
-  onNavigateToSuiviStats () {
-    this.navigateToSuiviStatsHandler.emit();
+  onSignOut () {
+    this.signOutHandler.emit();
   }
 }

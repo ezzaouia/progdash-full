@@ -41,7 +41,8 @@ import { omit } from '@ngrx/store/src/utils';
         <cdk-header-cell
           [ngStyle]="{
               'width.px': columns[col].width,
-              display: columns[col].header ? 'initial' : 'none'
+              display: (columns[col].header ?
+                  (((col === 'print') && !isStartPrintReport) ? 'none' : 'initial' ): 'none')
             }"
           *cdkHeaderCellDef>
           <div class="header-title">
@@ -50,6 +51,7 @@ import { omit } from '@ngrx/store/src/utils';
               *ngIf="col !== 'print' && col !== 'moremenu'"
               class="mat-icon-button mat-24">
               <mat-icon
+                matTooltip="Cliquer pour trier"
                 class="sort-mat-icon"
                 [ngClass]="{
                   'sort-asc' : (sort.active === col) && (sort.direction === 'asc'),
@@ -72,7 +74,11 @@ import { omit } from '@ngrx/store/src/utils';
           </div>
           <div
             class="header-filter"
-            *ngIf="options.filter">
+            *ngIf="columns[col].histo">
+              <img
+                class="mat-12"
+                matTooltip="Cliquer sur le graphique en bas pour filtrer"
+                src="assets/icon/filter-solid.svg" alt="">
               <HistogramChart
                 [data]="data"
                 [ykey]="col"
@@ -142,7 +148,11 @@ import { omit } from '@ngrx/store/src/utils';
       </cdk-row>
     </cdk-table>
 
-    <mat-paginator [pageSize]="40" [pageSizeOptions]="[10, 20, 30, 40]" showFirstLastButtons></mat-paginator>
+    <mat-paginator
+      [pageSize]="40"
+      [pageSizeOptions]="[10, 20, 30, 40]"
+      showFirstLastButtons>
+    </mat-paginator>
 
     `,
   styles: [ `
@@ -167,6 +177,12 @@ import { omit } from '@ngrx/store/src/utils';
     font-weight: 600 !important;
     // padding: 6px 6px 0 6px;
   }
+  .header-filter {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
   .cdk-row {
     display: flex;
     border: 1px solid transparent;
@@ -187,7 +203,8 @@ import { omit } from '@ngrx/store/src/utils';
   }
   .header-title {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
+    justify-content: space-evenly;
     height: 45px;
   }
   .table-icon-button {
@@ -260,6 +277,7 @@ export class CdkTableViewComponent implements AfterViewInit, OnInit, OnDestroy {
 
   highlight: Highlight = { id: '' };
 
+  startSort = 'desc';
   dataSub: Subscription;
   modeSub: Subscription;
   filterSub: Subscription;
@@ -311,7 +329,7 @@ export class CdkTableViewComponent implements AfterViewInit, OnInit, OnDestroy {
         this.dataSource.paginator = this.paginator;
         /* translate to french.*/
         this.dataSource.paginator._intl.itemsPerPageLabel = 'Nombre d\'élements par page :';
-        this.dataSource.paginator._intl.getRangeLabel = this.getRangeLabel.bind(this) ;
+        this.dataSource.paginator._intl.getRangeLabel = this.getRangeLabel.bind( this ) ;
         this.dataSource.paginator._intl.firstPageLabel = 'Première page' ;
         this.dataSource.paginator._intl.lastPageLabel = 'Dernière page';
         this.dataSource.paginator._intl.nextPageLabel = 'Page suivante';
@@ -339,7 +357,7 @@ export class CdkTableViewComponent implements AfterViewInit, OnInit, OnDestroy {
         this.handleHighlight( h );
       });
   }
-  
+
   ngOnDestroy (): void {
     this.dataSub.unsubscribe();
     this.modeSub.unsubscribe();
@@ -390,7 +408,8 @@ export class CdkTableViewComponent implements AfterViewInit, OnInit, OnDestroy {
 
   onSortByColumn ( columnName ) {
     this.sort.sort( <MatSortable>({ id: columnName, start: 'desc' }));
-    this.sortColumnTraceHandler.emit({ columnName, sort: 'TODO asc / desc '  });
+    this.sortColumnTraceHandler.emit({ columnName, sort: this.startSort  });
+    this.startSort = this.startSort === 'desc' ? 'asc' : 'desc';
   }
 
   onChangeTopBottom ( columnName ) {
@@ -582,9 +601,9 @@ export class CdkTableViewComponent implements AfterViewInit, OnInit, OnDestroy {
     };
   }
 
-  private  getRangeLabel = (page: number, pageSize: number, length: number) => {
-    return ((page * pageSize) + 1) + ' - ' + ((page * pageSize) + pageSize) + ' sur ' + length;
-  };
+  private  getRangeLabel = ( page: number, pageSize: number, length: number ) => {
+    return (( page * pageSize ) + 1 ) + ' - ' + (( page * pageSize ) + pageSize ) + ' sur ' + length;
+  }
 
   get viewportHeight () {
     return ( window.innerHeight -

@@ -2,6 +2,7 @@ import { ErrorHandler, Injectable, Injector } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 
+import { environment } from '../../../environments/environment';
 import { NotificationService } from './notification.service';
 import { ErrorsService } from './errors.service';
 
@@ -24,18 +25,28 @@ export class ErrorsHandler implements ErrorHandler {
       // Server or connection error happened
       if ( !navigator.onLine ) {
         // Handle offline error
-        return notificationService.notify( 'No Internet Connection' );
+        notificationService.notifyOffline();
+      } else if (( error.status === 401 ) || ( error.status === 403 )) {
+
+        router.navigate([ '/unauthorized' ]);
+
+        // router.navigate([
+        //   '/externalSuiviStatsRedirect',
+        //   {
+        //     externalUrl: `${environment.SUIVI_STATS_URL}/guard/logout'`,
+        //     isSelf : true,
+        //   } ],
+        //   { skipLocationChange: false }
+        // );
       } else {
-        // Handle Http Error (error.status === 403, 404...)
-        errorsService.log( error );
-        // return notificationService.notify( `${error.status} - ${error.message}` );
+        // http errors
+        // router.navigate([ '/error' ]);
       }
     } else {
-      // Handle Client Error (Angular Error, ReferenceError...)
-      errorsService.log( error );
-      // router.navigate([ '/error' ], { queryParams: { error: error } });
+      // app errors
+      // noop
     }
     // Log the error anyway
-    console.error( 'It happens: ', error );
+    errorsService.log( error );
   }
 }

@@ -39,6 +39,7 @@
     "d3": "5.7.0",
     "error-stack-parser": "2.0.2",
     "es6-promise": "4.2.6",
+    "faker": "^4.1.0",
     "file-saver": "2.0.0",
     "html2canvas": "1.0.0-alpha.12",
     "html2pdf.js": "0.9.1",

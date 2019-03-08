@@ -50,6 +50,9 @@ import { Component, OnInit, Input, EventEmitter } from '@angular/core';
       padding: 12px;
       box-sizing: border-box;
     }
+    mat-card-header {
+      height: 24px;
+    }
     mat-card-content {
       padding: 12px 0px;
       height: 80%;
