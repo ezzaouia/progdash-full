@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Fri Oct 21 17:05:47 CEST 2016-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.woonoz.pv.progdash.dao.mapper.AreaGroupMapper">
+
+	<select id="getGroups" resultType="com.woonoz.pv.progdash.dao.dbo.GroupDbo">
+		SELECT wg.id_groupe  id,
+		       wg.nom_groupe name,
+		       count(*)      nbUsers
+		FROM woonoz_groupe wg
+			     JOIN woonoz_groupe_membre wgm ON wgm.id_groupe = wg.id_groupe
+		WHERE id_groupe_p = #{areaId}
+		GROUP BY wg.id_groupe;
+	</select>
+
+	<select id="countAreaUsers" resultType="java.lang.Integer">
+		SELECT COUNT(*)
+		FROM woonoz_groupe_p_membre
+		WHERE id_groupe_p = #{areaId}
+		  AND user_role = 'learner';
+	</select>
+
+	<select id="getUniverseId" resultType="java.lang.Integer">
+		SELECT id_univers
+		FROM woonoz_groupe_p
+		WHERE id_groupe_p = #{areaId}
+	</select>
+
+</mapper>

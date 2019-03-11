@@ -1,0 +1,15 @@
+# mariadb
+progdash.datasource.url=jdbc:mysql://${MYSQL_HOST}:${MYSQL_PORT}/${MYSQL_DB}
+progdash.datasource.username=${MYSQL_USER}
+progdash.datasource.password=${MYSQL_PASS}
+
+# mongodb
+spring.data.mongodb.host=${MONGO_HOST}
+spring.data.mongodb.port=${MONGO_PORT}
+spring.data.mongodb.database=${MONGO_PROGDASH_DB}
+spring.data.mongodb.username=${MONGO_PROGDASH_USER}
+spring.data.mongodb.password=${MONGO_PROGDASH_PASS}
+
+# logs
+progdash.logs.folder=/opt/progdash/logs
+progdash.log.general.level=${LOG_GENERAL_LEVEL}

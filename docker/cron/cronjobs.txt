@@ -1,0 +1,7 @@
+# Attention: bien toujours avoir une newline en fin de ce fichier
+# m h  dom mon dow   command
+MAILTO=""
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+# cron backup mongodb
+0 0 * * * . /home/woonoz/.env && /scripts/backup-mongodb.sh 2>&1 | tee /logs/cron_backup-mongodb.sh.log

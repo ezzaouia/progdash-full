@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Fri Oct 21 17:05:47 CEST 2016-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.woonoz.pv.progdash.dao.mapper.InsightStatisticsMapper">
+
+	<select id="sumKeypoints" resultType="float">
+		SELECT IFNULL(SUM(max_weight), 0)
+		FROM (
+			SELECT
+			       wgpm.id_membre   as user_id,
+			       ukps.keypoint_id as keypoint_id,
+			       ukps.max_weight as max_weight
+			FROM woonoz_groupe_p_membre wgpm
+			<if test="groupId != null">
+			  JOIN woonoz_groupe_membre wgm ON wgm.id_membre = wgpm.id_membre AND wgm.id_groupe = #{groupId}
+			</if>
+			  JOIN user_keypoint_state ukps ON ukps.user_id = wgpm.id_membre
+			  JOIN learning_group_reference lgr ON lgr.learning_group_id_reference = ukps.keypoint_id
+			  JOIN learning_session ls ON ls.user_id = wgpm.id_membre AND ls.mode = 'learn'
+			  JOIN module_element me ON me.module_id = ls.learning_activity_id AND me.chapter_id = lgr.learning_group_id
+			WHERE wgpm.id_groupe_p = #{areaId}
+			  AND wgpm.user_role = 'learner'
+			  AND ls.start_date > #{startDate}
+			  AND #{endDate} > ls.start_date
+			GROUP BY user_id, keypoint_id
+		) list_keypoints;
+	</select>
+
+	<select id="avgTrainingTime" resultType="float">
+		SELECT AVG(IFNULL(user_training, 0)) / 60 avgTrainingTime
+		FROM (
+			SELECT wm.id_membre, SUM(IFNULL(ls.time_spent_on, 0)) user_training
+			FROM woonoz_groupe_p_membre wgpm_active
+			<if test="groupId != null">
+			  JOIN woonoz_groupe_membre wgm ON wgm.id_membre = wgpm_active.id_membre AND wgm.id_groupe = #{groupId}
+			</if>
+			  JOIN woonoz_membre wm ON wm.id_membre = wgpm_active.id_membre
+			  JOIN learning_session ls ON ls.user_id = wm.id_membre
+			WHERE wgpm_active.id_groupe_p = #{areaId}
+			  AND wgpm_active.user_role= 'learner'
+			  AND ls.mode = 'learn'
+			  AND ls.time_spent_on IS NOT NULL
+			  AND ls.start_date > #{startDate}
+			  AND #{endDate} > ls.start_date
+			GROUP BY ls.user_id
+		) active_users_training
+		RIGHT JOIN woonoz_groupe_p_membre wgpm_all ON wgpm_all.id_membre = active_users_training.id_membre
+		WHERE wgpm_all.id_groupe_p = #{areaId}
+		  AND wgpm_all.user_role= 'learner';
+	</select>
+
+	<select id="countActiveUsers" resultType="int">
+		SELECT COUNT(*) active_users
+		FROM (
+		  SELECT wm.id_membre, COUNT(ls.id) nb_sessions
+		  FROM woonoz_groupe_p_membre wgpm_active
+		  <if test="groupId != null">
+		    JOIN woonoz_groupe_membre wgm ON wgm.id_membre = wgpm_active.id_membre AND wgm.id_groupe = #{groupId}
+		  </if>
+		    JOIN woonoz_membre wm ON wm.id_membre = wgpm_active.id_membre
+		    JOIN learning_session ls ON ls.user_id = wm.id_membre
+		  WHERE wgpm_active.id_groupe_p = #{areaId}
+		    AND wgpm_active.user_role= 'learner'
+		    AND ls.mode = 'learn'
+		    AND ls.time_spent_on IS NOT NULL
+			AND ls.start_date > #{startDate}
+			AND #{endDate} > ls.start_date
+		  GROUP BY ls.user_id
+		) nb_sessions_per_user
+		WHERE nb_sessions >= #{nbExpectedConnections};
+	</select>
+
+	<select id="getConnectionsChart" resultType="com.woonoz.pv.progdash.dao.dbo.SessionOnDateDbo">
+		SELECT
+		       calender.session_date date,
+		       sumConnectionsPerDate.nb_sessions nbSessions
+		FROM (
+			SELECT DATE(cal.date) as session_date
+			FROM (
+				SELECT SUBDATE(#{endDate}, INTERVAL #{nbDays} DAY) + INTERVAL xc DAY AS date
+				FROM (
+					SELECT @xi := @xi + 1 as xc
+					FROM (
+					  SELECT 1
+					  UNION SELECT 2
+					  UNION SELECT 3
+					  UNION SELECT 4) xc1,
+					(
+					  SELECT 1
+					  UNION SELECT 2
+					  UNION SELECT 3
+					  UNION SELECT 4) xc2,
+					(
+					  SELECT 1
+					  UNION SELECT 2
+					  UNION SELECT 3
+					  UNION SELECT 4) xc3,
+					(
+					  SELECT 1
+					  UNION SELECT 2
+					  UNION SELECT 3
+					  UNION SELECT 4) xc4,
+					(SELECT @xi := -1) xc0
+				) xxc1
+			) AS cal
+			WHERE #{endDate} > cal.date
+		) as calender
+		LEFT JOIN (
+			SELECT
+			       COUNT(ls.id)        nb_sessions,
+			       date(ls.start_date) session_date
+			FROM woonoz_groupe_p_membre wgpm_active
+			<if test="groupId != null">
+			  JOIN woonoz_groupe_membre wgm ON wgm.id_membre = wgpm_active.id_membre AND wgm.id_groupe = #{groupId}
+			</if>
+			  JOIN woonoz_membre wm ON wm.id_membre = wgpm_active.id_membre
+			  JOIN learning_session ls ON ls.user_id = wm.id_membre
+			WHERE wgpm_active.id_groupe_p = #{areaId}
+			  AND wgpm_active.user_role = 'learner'
+			  AND ls.mode = 'learn'
+			  AND ls.time_spent_on IS NOT NULL
+			  AND date(ls.start_date) >= DATE_ADD(#{endDate}, INTERVAL - #{nbDays} - 1 DAY)
+			  AND #{endDate} > date(ls.start_date)
+			GROUP BY date(ls.start_date)
+		) AS sumConnectionsPerDate ON sumConnectionsPerDate.session_date = calender.session_date;
+	</select>
+
+	<resultMap id="usersTrainingTime" type="com.woonoz.pv.progdash.dao.dbo.UserTrainingTimeDbo">
+		<constructor>
+			<idArg column="userId" javaType="int"/>
+			<arg column="totalTrainingTime" javaType="float"/>
+		</constructor>
+	</resultMap>
+
+	<select id="getTopTrainingTime" resultMap="usersTrainingTime">
+		SELECT
+		       wgpm.id_membre userId,
+		       SUM(IFNULL(ls.time_spent_on, 0)) / 60 totalTrainingTime
+		FROM woonoz_groupe_p_membre wgpm
+			<if test="groupId != null">
+				JOIN woonoz_groupe_membre wgm ON wgm.id_membre = wgpm.id_membre AND wgm.id_groupe = #{groupId}
+			</if>
+		  LEFT JOIN learning_session ls
+		    	ON ls.user_id = wgpm.id_membre
+				AND ls.mode = 'learn'
+				AND ls.time_spent_on IS NOT NULL
+				AND ls.start_date > #{startDate}
+				AND #{endDate} > ls.start_date
+		WHERE wgpm.id_groupe_p = #{areaId}
+		    AND wgpm.user_role= 'learner'
+		GROUP BY wgpm.id_membre
+		ORDER BY totalTrainingTime <if test="!ascendantOrder"> DESC </if>
+		<if test="nbForTop != null"> LIMIT #{nbForTop} </if>;
+	</select>
+
+</mapper>

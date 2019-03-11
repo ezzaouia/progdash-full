@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+	<springProperty scope="context" name="logs_folder" source="progdash.logs.folder"/>
+	<springProperty scope="context" name="log_general_level" source="progdash.log.general.level"/>
+	<springProperty scope="context" name="profile" source="spring.profiles.active"/>
+
+	<property name="LOGS" value="${logs_folder}" />
+
+	<!-- Filtered elements are defined into a property in order to be used by many layouts. -->
+	<!-- They're alphabetically sorted. -->
+	<property name="filteredFromStackTrace" value="
+		java.lang.Thread,
+		java.util.concurrent.ThreadPoolExecutor,
+		org.apache.catalina,
+		org.apache.coyote,
+		org.apache.tomcat,
+		org.glassfish.jersey,
+		org.springframework.web.filter,
+		com.woonoz.pv.progdash.web.monitoring.LoggerMethodInterceptor,
+	" />
+
+	<property name="pattern" value="%d %-5level [%mdc{principal}] %logger{20} %thread - %msg%n%rEx{full, ${filteredFromStackTrace}}" />
+
+	<!-- Console -->
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<!-- encoders are assigned the type
+			 ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
+		<encoder>
+			<pattern>${pattern}</pattern>
+		</encoder>
+	</appender>
+
+	<!-- Log file for all users -->
+	<appender name="USERS-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOGS}/progdash.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOGS}/progdash.%d.log.gz</fileNamePattern>
+			<maxHistory>20</maxHistory>
+		</rollingPolicy>
+		<encoder>
+			<pattern>${pattern}</pattern>
+		</encoder>
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>${log_general_level}</level>
+		</filter>
+	</appender>
+
+	<!-- Log file for jersey features -->
+	<appender name="JERSEY-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOGS}/progdash-jersey.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOGS}/progdash-jersey.%d.log.gz</fileNamePattern>
+			<maxHistory>20</maxHistory>
+		</rollingPolicy>
+		<encoder>
+			<pattern>${pattern}</pattern>
+		</encoder>
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>${log_general_level}</level>
+		</filter>
+	</appender>
+
+	<if condition='property("profile").contains("dev")'>
+		<then>
+			<logger name="com.woonoz.pv.progdash" level="DEBUG">
+				<appender-ref ref="STDOUT" />
+			</logger>
+			<logger name="org.glassfish.jersey.logging.LoggingFeature" level="DEBUG">
+				<appender-ref ref="STDOUT" />
+			</logger>
+
+			<root level="DEBUG">
+				<appender-ref ref="STDOUT" />
+			</root>
+		</then>
+		<else>
+			<logger name="com.woonoz.pv.progdash" level="${log_general_level}">
+				<appender-ref ref="USERS-FILE" />
+			</logger>
+			<logger name="org.glassfish.jersey.logging.LoggingFeature" level="${log_general_level}">
+				<appender-ref ref="JERSEY-FILE" />
+			</logger>
+
+			<root level="${log_general_level}">
+				<appender-ref ref="USERS-FILE" />
+				<appender-ref ref="JERSEY-FILE" />
+			</root>
+		</else>
+	</if>
+
+</configuration>

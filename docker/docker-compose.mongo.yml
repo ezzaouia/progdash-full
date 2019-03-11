@@ -1,0 +1,23 @@
+version: '2'
+
+services:
+  mongodb:
+    image: mongo:3.4.19-jessie
+    environment:
+      TZ: Europe/Paris
+    volumes:
+      - progdash-mongo-data:/data/db
+      - progdash-mongo-config:/data/configdb
+      - ./docker/scripts/mongo/init-mongo.sh:/docker-entrypoint-initdb.d/init-mongo.sh:ro
+    ports:
+      - 27017:27017
+
+  mongoadmin:
+    ports:
+      - 8081:8081
+
+volumes:
+  progdash-mongo-data:
+    driver: local
+  progdash-mongo-config:
+    driver: local
