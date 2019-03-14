@@ -44,7 +44,6 @@ import {
 import * as moment from 'moment';
 import 'moment-duration-format';
 moment.locale( 'fr' );
-import { Chance } from 'chance';
 
 export const dayFormatTime = timeFormat( '%d/%m/\'%y' );
 export const weekFormatTime = timeFormat( '%V/%m/\'%y' );
@@ -53,7 +52,6 @@ export const dayParseTime = timeParse( '%d/%m/\'%y' );
 export const weekParseTime = timeParse( '%V/%m/\'%y' );
 export const monthParseTime = timeParse( '%m/\'%y' );
 
-const chance = new Chance();
 
 export const cast = d => ({
   ...d,
@@ -176,11 +174,11 @@ const progDataMapper = item => {
 export const usersAttr = ( item ): any => {
   const time = timeMapper( item );
   const score = scoreMapper( item );
-  const firstName = chance.first() /*flow(
+  const firstName = 'Random Name '/*flow(
     firstf,
     getf( 'first_name' )
     )( item )*/;
-  const lastName = chance.last() /*flow(
+  const lastName = 'Random Name ' /*flow(
     firstf,
     getf( 'last_name' )
     )( item )*/;
