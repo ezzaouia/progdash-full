@@ -6,8 +6,6 @@ export const environment = {
   production: false,
   loglevel: 4,
   hmr: false,
-  apiUrl: 'http://woonoz.api-url',
-  pvApiUrl: 'http://woonoz.pv.api-url',
   API_URL: 'http://192.168.0.12:8080',
   SUIVI_STATS_URL: 'https://statistiques.projet-voltaire.fr',
 };

@@ -27,7 +27,6 @@ import { OpenPVLiveLinkComponent } from '../openPVLiveLink';
           <!-- mat-icon aria-label="menu">graphic_eq</mat-icon -->
           <img src="assets/icon/voltaire-logo.jpg" alt="">
           <span>Suivi Voltaire</span>
-          <mat-icon svgIcon="sort-alpha-down"></mat-icon>
         </div>
 
 

@@ -4,7 +4,6 @@ import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { join, map as mapl } from 'lodash';
 
-const API_URL = environment.SUIVI_STATS_URL;
 @Injectable()
 export class TeacherService {
   constructor ( private http: HttpClient ) {}
@@ -19,7 +18,7 @@ export class TeacherService {
     const lessonsMap = mapl( lessons, l => `chapters=${l}` );
     const url = join( lessonsMap, '&' );
 
-    const pathApi = API_URL +
+    const pathApi = environment.SUIVI_STATS_URL +
         `/services-pjv/rest/manager/area/${userInfo.areaId}/teacher/module/url`;
 
     return this.http

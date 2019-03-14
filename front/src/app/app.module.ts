@@ -11,7 +11,6 @@ import { SharedModule } from './shared';
 import { RootComponent } from './shared/components';
 import { AppRoutingModule } from './app-routing.module';
 
-import { InMemoryMockDataService } from './shared/services';
 import { TableModule } from './table';
 
 @NgModule({
@@ -20,10 +19,6 @@ import { TableModule } from './table';
     BrowserAnimationsModule,
 
     HttpClientModule,
-    HttpClientInMemoryWebApiModule.forRoot(
-      InMemoryMockDataService,
-      { delay: 1000 }
-    ),
     DeviceDetectorModule.forRoot(),
 
     AppStoreModule,

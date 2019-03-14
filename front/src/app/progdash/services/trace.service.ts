@@ -1,13 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { v4 as uuid } from 'uuid';
-import { Action } from '@ngrx/store';
-import { isObject, mapKeys, replace, isString } from 'lodash';
 
 import { UserService } from './user.service';
 import { environment } from '../../../environments/environment';
 
-const API_URL = environment.apiUrl;
 @Injectable()
 export class TraceService {
   private sessionId: String;
@@ -43,7 +40,7 @@ export class TraceService {
     }
 
     return this.newHttp
-      .post<any>( API_URL + '/teacher/trace', formData )
+      .post<any>( environment.API_URL + '/teacher/trace', formData )
       .subscribe(() => {}); // mandatory to trigger post
   }
 
