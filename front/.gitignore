@@ -40,3 +40,4 @@ Thumbs.db
 log.txt
 
 /src/assets/data/*
+proxy.conf.json
