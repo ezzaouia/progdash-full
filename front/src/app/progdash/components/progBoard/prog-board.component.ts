@@ -118,6 +118,7 @@ export class ProgBoardComponent implements OnInit, OnDestroy, AfterViewInit {
   @Output() checkWidgetHandler = new EventEmitter();
   @Output() hoverWidgetTraceHandler = new EventEmitter();
   @Output() moreRuleClickHandler = new EventEmitter();
+  @Output() openProgTableHandler = new EventEmitter();
 
   boardOptions: GridsterConfig;
   boardGrid: any; // Array<GridsterItem>;
@@ -216,6 +217,7 @@ export class ProgBoardComponent implements OnInit, OnDestroy, AfterViewInit {
         component: TopNUsersWidgetComponent,
         data: {
           title: 'Meilleurs scores',
+          openProgTableHandler: this.openProgTableHandler,
         },
       },
       'topNUsers.time': {
@@ -223,6 +225,7 @@ export class ProgBoardComponent implements OnInit, OnDestroy, AfterViewInit {
         component: TopNUsersWidgetComponent,
         data: {
           title: 'Meilleurs engagements',
+          openProgTableHandler: this.openProgTableHandler,
         },
       },
       'topNUsers.help': {
@@ -230,6 +233,7 @@ export class ProgBoardComponent implements OnInit, OnDestroy, AfterViewInit {
         component: TopNUsersWidgetComponent,
         data: {
           title: 'Besoin d\'aide',
+          openProgTableHandler: this.openProgTableHandler,
         },
       },
       'topNUsers.dropout': {
@@ -237,6 +241,7 @@ export class ProgBoardComponent implements OnInit, OnDestroy, AfterViewInit {
         component: TopNUsersWidgetComponent,
         data: {
           title: 'Manque de pratique',
+          openProgTableHandler: this.openProgTableHandler,
         },
       },
       'topNRules.focused': {

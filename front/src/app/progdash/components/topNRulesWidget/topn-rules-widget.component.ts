@@ -41,21 +41,20 @@ import { size } from 'lodash';
               <mat-divider></mat-divider>
           </div>
         </mat-list>
-
-        <div
-          class="more-rules"
-          *ngIf="isData">
-          <button
-            mat-stroked-button
-            matTooltipPosition="above"
-            [matTooltipShowDelay]="2000"
-            matTooltip="Fonctionnalité en cours de développement"
-            (click)="moreRuleClickHandler.emit( id )">
-              <mat-icon aria-label="menu">add</mat-icon>
-              Plus de règles
-          </button>
-        </div>
       </mat-card-content>
+
+      <mat-card-actions
+        class="actions"
+        *ngIf="isData">
+          <button
+          mat-stroked-button
+          matTooltipPosition="above"
+          [matTooltipShowDelay]="2000"
+          matTooltip="Fonctionnalité en cours de développement"
+          (click)="moreRuleClickHandler.emit( id )">
+            Plus de règles
+        </button>
+      </mat-card-actions>
     </mat-card>
   `,
   styles: [ `
@@ -71,11 +70,11 @@ import { size } from 'lodash';
       padding: 12px;
     }
     mat-card-header {
-      height: 24px;
+      height: 18px;
     }
     mat-card-content {
       padding: 12px 0px;
-      height: 80%;
+      height: 75%;
     }
     .title {
       margin: 12px;
@@ -100,11 +99,10 @@ import { size } from 'lodash';
     .item-detail {
       margin-left: auto;
     }
-    .more-rules {
+    .actions {
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-top: 5px;
     }
   ` ],
 })

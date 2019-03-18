@@ -92,7 +92,7 @@ export class TimelineWidgetComponent implements AfterViewInit, OnDestroy {
   width;
   height = 200;
   barWidth = 20;
-  margin = { topBottom: 20, leftRight: 20 };
+  margin = { topBottom: 20, leftRight: 70 };
   xScale = scaleBand();
   yScale = scaleLinear();
 
@@ -185,7 +185,7 @@ export class TimelineWidgetComponent implements AfterViewInit, OnDestroy {
       .attr( 'class', 'text-label middle' )
       .attr( 'x', this.xScale.bandwidth() / 2 + barWidth / 2 )
       .attr( 'y', d => this.yScale( get( d, 'count' )) - 8 )
-      .attr( 'font-size', 20 )
+      .attr( 'font-size', 18 )
       .attr( 'font-family', 'sans-serif' );
 
     group.exit().remove();
@@ -205,7 +205,7 @@ export class TimelineWidgetComponent implements AfterViewInit, OnDestroy {
       .append( 'g' )
       .classed( 'grid', true )
       .merge( group )
-      .attr( 'transform', ( d, _ ) => `translate(${ this.xScale( get ( d, 'date' )) }, 0)` );
+      .attr( 'transform', ( d, _ ) => `translate(${ this.xScale( get ( d, 'date' )) - 20 }, 0)` );
 
     enter.append( 'line' );
     enter.append( 'text' );
@@ -241,8 +241,8 @@ export class TimelineWidgetComponent implements AfterViewInit, OnDestroy {
       .select( 'text' )
       .attr( 'y', -20 )
       .classed( 'text-label', true )
-      .attr( 'transform', `translate(2, ${this.height - this.margin.topBottom + 15 })` )
-      .attr( 'font-size', 20 )
+      .attr( 'transform', `translate(2, ${this.height - this.margin.topBottom + 10 })` )
+      .attr( 'font-size', 18 )
       .attr( 'font-family', 'sans-serif' )
       .text(( d, i ) => {
         const text = moment( get( d, 'date' )).format( 'ddd DD/MM/YY' );

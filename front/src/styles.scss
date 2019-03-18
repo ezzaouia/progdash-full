@@ -26,6 +26,10 @@ body {
   user-select: none;
 }
 
+.mat-card-header-text {
+  margin: 0 !important;
+}
+
 svg {
   .axis,
   .text-label {

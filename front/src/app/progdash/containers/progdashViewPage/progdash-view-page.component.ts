@@ -29,7 +29,7 @@ import * as fromStore from '../../store';
 
       (selectClassHandler)="onSelectClass($event)"
       (timescaleHandler)="onTimescaleChange($event)"
-      (openProgTableHandler)="onOpenProgTable()"
+      (openProgTableHandler)="onOpenProgTable($event)"
       (openProgEvaluationHandler)="onOpenProgEvaluation()"
       (openProgBoardHandler)="onOpenProgBoard()"
 
@@ -116,8 +116,8 @@ export class ProgdashViewPageComponent implements OnInit {
     this.store.dispatch( new fromStore.SelectClass( className ));
   }
 
-  onOpenProgTable () {
-    this.store.dispatch( new fromStore.OpenProgTable( ));
+  onOpenProgTable ({ id }) {
+    this.store.dispatch( new fromStore.OpenProgTable( id ));
   }
 
   onOpenProgBoard () {

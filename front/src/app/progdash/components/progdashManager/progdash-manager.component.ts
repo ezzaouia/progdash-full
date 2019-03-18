@@ -65,7 +65,7 @@ import { OpenPVLiveLinkComponent } from '../openPVLiveLink';
         <button
           mat-button
           [disabled]="!selectedClass.name"
-          (click)="openProgTableHandler.emit($event)">
+          (click)="openProgTableHandler.emit({ id: 'call-to-action-btn' })">
           <mat-icon aria-label="menu">multiline_chart</mat-icon>
           Détails
         </button>
@@ -146,7 +146,8 @@ import { OpenPVLiveLinkComponent } from '../openPVLiveLink';
           (cancelPVLiveHandler)="cancelPVLiveHandler.emit($event)"
           (checkWidgetHandler)="checkWidgetHandler.emit($event)"
           (hoverWidgetTraceHandler)="hoverWidgetTraceHandler.emit($event)"
-          (moreRuleClickHandler)="moreRuleClickHandler.emit($event)">
+          (moreRuleClickHandler)="moreRuleClickHandler.emit($event)"
+          (openProgTableHandler)="openProgTableHandler.emit($event)">
         </ProgBoard>
 
         <ProgTable

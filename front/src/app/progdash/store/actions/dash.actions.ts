@@ -150,6 +150,8 @@ export class SelectClass implements Action {
 
 export class OpenProgTable implements Action {
   readonly type = DashActionTypes.OpenProgTable;
+
+  constructor ( public payload ?: any ) {}
 }
 
 export class OpenProgBoard implements Action {
