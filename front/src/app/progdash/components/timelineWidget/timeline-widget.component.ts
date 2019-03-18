@@ -230,6 +230,8 @@ export class TimelineWidgetComponent implements AfterViewInit, OnDestroy {
       .select( 'text' )
       .attr( 'y', -20 )
       .classed( 'text-label', true )
+      .attr( 'font-size', 16 )
+      .attr( 'font-family', 'sans-serif' )
       .text(( d, i ) => {
         const text = moment( get( d, 'date' )).format( 'ddd DD/MM/YY' );
         if ( this.timescale !== 'lastWeek' ) {

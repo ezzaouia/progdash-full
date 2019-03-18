@@ -175,7 +175,6 @@ import { omit } from '@ngrx/store/src/utils';
     justify-content: space-around;
     align-items: flex-start;
     font-weight: 600 !important;
-    // padding: 6px 6px 0 6px;
   }
   .header-filter {
     display: flex;
@@ -187,7 +186,6 @@ import { omit } from '@ngrx/store/src/utils';
     display: flex;
     border: 1px solid transparent;
     justify-content: space-around;
-    padding: 0 6px;
     width: 100%;
     box-sizing: border-box;
   }
@@ -199,7 +197,7 @@ import { omit } from '@ngrx/store/src/utils';
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 0 6px;
+    margin: 0 3px;
   }
   .header-title {
     display: flex;

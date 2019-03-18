@@ -111,15 +111,17 @@ export class AxisComponent implements OnInit, OnDestroy {
         .ease( easeLinear )
         .call( this.axis );
 
-      if ( this.xRotate ) {
+      // if ( this.xRotate ) {
         axis
           .selectAll( '.axis-x text' )
           .attr( 'y', 0 )
           .attr( 'x', -9 )
           .attr( 'dy', -9 )
-          .attr( 'transform', `rotate(${this.xRotate})` )
+          .attr( 'transform', 'rotate(-20) translate(-30, 30)' )
+          .attr( 'font-size', 13 )
+          .attr( 'font-family', 'sans-serif' )
           .style( 'text-anchor', 'start' );
-      }
+      // }
     } catch ( error ) { }
   }
 

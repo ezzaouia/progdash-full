@@ -1,4 +1,4 @@
-import { timeParse, timeFormat, timeWeek, timeMonth, interpolateCool, interpolateRdYlGn } from 'd3';
+import { timeParse, timeFormat, timeWeek, timeMonth, interpolateRdYlGn } from 'd3';
 
 export const dayFormatTime = timeFormat( '%d/%m/\'%y' );
 export const weekFormatTime = timeFormat( '%V/%m/\'%y' );

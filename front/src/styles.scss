@@ -29,7 +29,6 @@ body {
 svg {
   .axis,
   .text-label {
-    font: 300 12px / 1.2 sans-serif;
     shape-rendering: crispEdges;
     path {
       stroke: #777;
@@ -45,16 +44,11 @@ svg {
   }
 
   .axis-label {
-    font: 500 14px / 1.2 sans-serif;
     text-anchor: middle;
   }
 
   .middle {
     text-anchor: middle;
-  }
-
-  .axis-x text {
-    transform: rotate(-20deg) translate(-30px, -10px);
   }
 
   .histo-filter-axis-x {

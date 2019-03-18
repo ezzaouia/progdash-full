@@ -115,11 +115,11 @@ import { PrintWidgetComponent } from '../../../shared/components';
         height: 100%;
       }
       .table-widget {
-        width: 70vw;
+        width: 65vw;
         height: calc(100vh - 58px);
       }
       .line-widget {
-        width: 30vw;
+        width: 35vw;
         height: calc(100vh - 58px);
         padding: 12px 0px;
         box-sizing: border-box;

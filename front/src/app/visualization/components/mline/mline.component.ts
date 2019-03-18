@@ -166,8 +166,8 @@ export class MlineComponent implements OnInit, OnDestroy {
           s( get( d, 'rSumOfTopRules' ) - get( d, 'nbrOfRules' ) / 2 )
         }) translate(-25, 15)`
       )
-      .style( 'font-size', 11 )
-      .style( 'font-weight', 450 )
+      .attr( 'font-size', 11 )
+      .attr( 'font-family', 'sans-serif' )
       .text( d => truncate(
         get ( d, 'key' ),
         { 'length': 10, omission: '.' }) + ` (${get( d, 'nbrOfRules' )})`
