@@ -74,11 +74,8 @@ import { omit } from '@ngrx/store/src/utils';
           </div>
           <div
             class="header-filter"
+            matTooltip="Cliquer sur une barre pour activer/désactiver un filtre"
             *ngIf="columns[col].histo">
-              <img
-                class="mat-12"
-                matTooltip="Cliquer sur le graphique en bas pour filtrer"
-                src="assets/icon/filter-solid.svg" alt="">
               <HistogramChart
                 [data]="data"
                 [ykey]="col"
