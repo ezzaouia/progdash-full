@@ -88,7 +88,7 @@ export class DashEffects {
         .pipe(
           map( payload => new LoadGroupsDataSuccess( payload )),
           catchError( err => {
-            return of( new LoadGroupDataFailure( err ));
+            return of( new LoadGroupsDataFailure( err ));
           })
         );
     })

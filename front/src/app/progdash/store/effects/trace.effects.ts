@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { tap, throttleTime, catchError, switchMap, concatMap } from 'rxjs/operators';
+import { tap, throttleTime, catchError } from 'rxjs/operators';
 import { Action } from '@ngrx/store';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 
@@ -8,6 +8,7 @@ import { DashActionTypes } from '../actions';
 import { TraceService } from '../../services/trace.service';
 import { ErrorsService } from '../../../shared/services';
 import { GenericFailure } from '../actions';
+
 /**
  * Effect to collecte all traces (users' interactions)
  * needed for the experiment.
@@ -45,7 +46,6 @@ export class TraceEffects {
       DashActionTypes.PrintReport,
       DashActionTypes.HotPrintWidget,
       DashActionTypes.PrintReportSuccess,
-      DashActionTypes.PrintReportFailure,
 
       // PV LIVE
       DashActionTypes.CheckRule,
