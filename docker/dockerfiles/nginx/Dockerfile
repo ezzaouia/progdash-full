@@ -33,4 +33,4 @@ COPY ./docker/etc/nginx/snippets /etc/nginx/snippets
 COPY ./docker/etc/nginx/conf.d /etc/nginx/conf.d
 COPY ./docker/etc/nginx/nginx.conf /etc/nginx/nginx.conf
 
-COPY --from=builder /app/dist/angular-pvstats /var/www/html/suivi
+COPY --from=builder /app/dist/progdash /var/www/html/suivi
