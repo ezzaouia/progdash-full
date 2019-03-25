@@ -75,7 +75,7 @@ moment.locale( 'fr' );
       }
       mat-card-content {
         padding: 12px 0px;
-        width: 100%;
+        width: 700px !important;
         height: 100%;
       }
       mat-card-header {
@@ -87,7 +87,7 @@ moment.locale( 'fr' );
         height: 100%;
       }
       .table-widget {
-        width: 100%;
+        width: 700px;
         //height: 100vh;
       }
     `,
@@ -169,7 +169,7 @@ export class ProgEvaluationComponent
 
   timeFormatter ( time ) {
     // replace mins in min because the moment add the letter 's' automatic.
-    return moment.duration( time, 'minutes' ).format( 'h [h] mm [min]' ).replace("mins", "min");
+    return moment.duration( time, 'minutes' ).format( 'h [h] mm [min]' ).replace( 'mins', 'min' );
   }
 
   markFormatter ( mark ) {
