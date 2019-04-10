@@ -23,6 +23,9 @@ import {
   each,
   concat,
   filter,
+  slice,
+  split,
+  join
  } from 'lodash';
 import { RowTableMode } from '../tableViewManager';
 import { scaleOrdinal } from 'd3';
@@ -94,7 +97,6 @@ import { omit } from '@ngrx/store/src/utils';
             'display': ((col === 'print') && !isStartPrintReport) ? 'none' : 'initial'
           }"
           *cdkCellDef="let element;">
-          <mat-divider class="table-row-divider"></mat-divider>
 
           <button
             *ngIf="(col === 'moremenu')"
@@ -122,6 +124,7 @@ import { omit } from '@ngrx/store/src/utils';
             [keys]="columns[col].keys"
             [hint]="columns[col].hint|| col"
             [compositeHint]="columns[col].compositeHint || null"
+            [subHint]="columns[col].subHint || null"
             [formatter]="columns[col].formatter || null"
             [options]="columns[col]"
             [mode]="innerRowMode[element.id] || mode"
@@ -181,14 +184,15 @@ import { omit } from '@ngrx/store/src/utils';
   }
   .cdk-row {
     display: flex;
-    border: 1px solid transparent;
     justify-content: space-around;
     width: 100%;
-    box-sizing: border-box;
+    // border: 1px solid transparent;
+    // box-sizing: border-box;
   }
   .cdk-cell {
     // width: 100px;
     padding: 0 1px;
+    border-bottom: 1px solid #ccc;
   }
   .cdk-header-cell {
     display: flex;
@@ -293,6 +297,9 @@ export class CdkTableViewComponent implements AfterViewInit, OnInit, OnDestroy {
   ngAfterViewInit () {
     this.dataSource.sortingDataAccessor = ( row, col ) => {
       switch ( col ) {
+        case 'fullName': {
+          return join( slice( split( get( row, col ), ' ' ), -1 ), ' ' );
+        }
         default: {
           return get( row, col );
         }
@@ -313,6 +320,9 @@ export class CdkTableViewComponent implements AfterViewInit, OnInit, OnDestroy {
         this.dataSource = new MatTableDataSource( this.data );
         this.dataSource.sortingDataAccessor = ( row, col ) => {
           switch ( col ) {
+            case 'fullName': {
+              return join( slice( split( get( row, col ), ' ' ), -1 ), ' ' );
+            }
             default: {
               return get( row, col );
             }
