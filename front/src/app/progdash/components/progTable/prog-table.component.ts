@@ -8,7 +8,7 @@ import {
   AfterContentInit
 } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { values, map, get } from 'lodash';
+import { round, get, divide } from 'lodash';
 import * as moment from 'moment';
 import 'moment-duration-format';
 moment.locale( 'fr' );
@@ -32,12 +32,21 @@ import { PrintWidgetComponent } from '../../../shared/components';
       (mouseenter)="hoverWidgetTraceHandler.emit({event: 'mouseenter',id: 'table-view'})"
       (mouseleave)="hoverWidgetTraceHandler.emit({event: 'mouseleave',id: 'table-view'})">
       <mat-card-header>
+        <span class="fill"></span>
         <PrintWidget
           *ngIf="isStartPrintReport"
           [widgetId]="'table-view'"
           [checked]="selectedWidgets.includes('table-view')"
           (checkWidgetHandler)="checkWidgetHandler.emit($event)">
         </PrintWidget>
+        <button
+          mat-button
+          (click)="exportTableToCsvHandler.emit({
+            tableName: 'details', data: userListData
+          })">
+            <mat-icon class="mat-24" aria-label="cloud_download">cloud_download</mat-icon>
+            <span class="csv-export">Export CSV</span>
+        </button>
       </mat-card-header>
       <mat-card-content>
         <TableViewManager
@@ -65,6 +74,15 @@ import { PrintWidgetComponent } from '../../../shared/components';
       (mouseleave)="hoverWidgetTraceHandler.emit({event: 'mouseleave',id: 'table-view'})">
       <mat-card-header>
         <mat-card-title>Progression dans le temps</mat-card-title>
+        <mat-card-subtitle *ngIf="modulesData.isHasSupProAndSup">
+          <div class="info">
+            <mat-icon class="mat-24">info</mat-icon>
+            <span>
+              <span class="highlight">Supérieur</span> est équivalent à
+              <span class="highlight">Pro</span> + <span class="highlight">Pont Supé.</span>
+            </span>
+          </div>
+        </mat-card-subtitle>
       </mat-card-header>
       <mat-card-content #lineWidget>
         <MlineChart
@@ -124,6 +142,27 @@ import { PrintWidgetComponent } from '../../../shared/components';
         padding: 12px 0px;
         box-sizing: border-box;
       }
+      .info {
+        display: flex;
+        align-items: center;
+      }
+      .highlight {
+        background: #eee;
+        font-weight: 300;
+        display: inline-block;
+        padding: 0 6px;
+        border-radius: 10px;
+        font-style: italic;
+      }
+      .export-btn {
+        height: 24px;
+        line-height: 24px;
+      }
+      .csv-export {
+        display: inline-block;
+        margin-left: 5px;
+        font-size: smaller;
+      }
     `,
   ],
 })
@@ -138,6 +177,7 @@ export class ProgTableComponent implements OnInit, OnDestroy, AfterContentInit {
   @Output() filterColumnTraceHandler = new EventEmitter();
   @Output() hoverWidgetTraceHandler = new EventEmitter();
   @Output() userMoreMenuHandler = new EventEmitter();
+  @Output() exportTableToCsvHandler = new EventEmitter();
 
   userListData$ = new BehaviorSubject<any>({});
 
@@ -163,17 +203,28 @@ export class ProgTableComponent implements OnInit, OnDestroy, AfterContentInit {
         name: 'Apprenant',
         histo: '',
         encoding: 'STRING',
-        width: 100,
+        width: 110,
         topBottom: 0,
         filter: 0,
       },
-      lastModule: {
-        name: 'Module atteint',
-        histo: 'categorical',
-        encoding: 'CAT',
-        width: 100,
+      'score.sum': {
+        name: 'Score',
+        histo: 'ordinal',
+        encoding: 'BAR',
+        // hint: 'score.format',
+        compositeHint: [ 'score.sum', 'score.count' ],
+        subHint: this.scoreSubHint.bind( null, 'score' ),
+        width: 90,
         topBottom: 0,
-        color: get( this.modulesData, 'forColor' ),
+      },
+      time: {
+        name: 'Temps cumulé',
+        // hint: 'time.format',
+        formatter: this.timeFormatter,
+        histo: 'ordinal',
+        encoding: 'BAR',
+        width: 80,
+        topBottom: 0,
       },
       lastConnection: {
         name: 'Dernière connexion',
@@ -201,28 +252,19 @@ export class ProgTableComponent implements OnInit, OnDestroy, AfterContentInit {
       'initialLevel.sum': {
         name: 'Règles sues initialement',
         compositeHint: [ 'initialLevel.sum', 'initialLevel.count' ],
+        subHint: this.scoreSubHint.bind( null, 'initialLevel' ),
         histo: 'ordinal',
         encoding: 'BAR',
-        width: 80,
+        width: 90,
         topBottom: 0,
       },
-      time: {
-        name: 'Temps cumulé',
-        // hint: 'time.format',
-        formatter: this.timeFormatter,
-        histo: 'ordinal',
-        encoding: 'BAR',
-        width: 80,
+      lastModule: {
+        name: 'Module atteint',
+        histo: 'categorical',
+        encoding: 'CAT',
+        width: 100,
         topBottom: 0,
-      },
-      'score.sum': {
-        name: 'Score',
-        histo: 'ordinal',
-        encoding: 'BAR',
-        // hint: 'score.format',
-        compositeHint: [ 'score.sum', 'score.count' ],
-        width: 80,
-        topBottom: 0,
+        color: get( this.modulesData, 'forColor' ),
       },
       print: {
         name: '',
@@ -257,5 +299,10 @@ export class ProgTableComponent implements OnInit, OnDestroy, AfterContentInit {
   lastConnectionFormatter ( date ) {
     const d = moment( date );
     return d.isValid() ? d.fromNow() : '';
+  }
+
+  scoreSubHint ( key, data ) {
+    const d = divide( get( data, `${key}.sum`, 0 ), get( data, `${key}.count` )) * 100;
+    return isNaN( d ) ? '0%' : round( d ) + '%';
   }
 }

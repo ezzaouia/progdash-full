@@ -150,21 +150,18 @@ svg {
 }
 
 // Mode fixed Prog Table
-progtable {
+progtable,
+progevaluation {
   position: fixed;
   .container {
     overflow: hidden;
     .cdk-header-row {
       position: sticky;
-      top: -6px;
+      top: 0px;
       left: 6px;
       background: rgba(255, 255, 255, 0.95);
       box-shadow: 2px 0px 5px rgba(17, 17, 17, 0.06);
       z-index: 1;
-    }
-    .table-row-divider {
-      background: #eee;
-      position: initial !important;
     }
   }
 }

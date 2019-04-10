@@ -139,7 +139,7 @@ export function reducers (
             [group.id]: {
               users: keyBy( get( data, 'users', []), ( o: any ) => o.id ),
               insights: get( data, 'insights', {}),
-              evaluations: get( data, 'evaluations', []) ,
+              evaluations: get( data, 'evaluations', []),
               modules: modulesDataAttr ( get( data, 'modules', [])),
               pulledAt: new Date(),
             },
@@ -365,6 +365,21 @@ export function reducers (
         ...state,
         selectedWidgets: [],
         isStartPrintReport: false,
+        isLoading: false,
+      };
+    }
+
+    case DashActionTypes.ExportTableToCsv: {
+      return {
+        ...state,
+        isLoading: true,
+      };
+    }
+
+    case DashActionTypes.ExportTableToCsvSuccess:
+    case DashActionTypes.ExportTableToCsvFailure: {
+      return {
+        ...state,
         isLoading: false,
       };
     }

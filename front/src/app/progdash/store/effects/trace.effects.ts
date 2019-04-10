@@ -64,8 +64,11 @@ export class TraceEffects {
       DashActionTypes.LoadUserInfo,
       DashActionTypes.NavigateToHome,
       DashActionTypes.NavigateToSuiviStats,
-      DashActionTypes.SignOut
-      // ...,
+      DashActionTypes.SignOut,
+
+      // Export CSV,
+      DashActionTypes.ExportTableToCsv,
+      DashActionTypes.ExportTableToCsvSuccess
       // ...,
       // ...,
       // ...,
@@ -86,7 +89,6 @@ export class TraceEffects {
     throttleTime( 5 * 60 * 1000 ),
     tap( action => {
       console.log( '***TRACE***', action );
-
       this.traceService.createTrace( action );
     }),
     catchError( err => {
@@ -95,13 +97,14 @@ export class TraceEffects {
   );
 
   @Effect({ dispatch: false })
-  ErrorsActions$: Observable<{payload?: any; type: string}> = this.actions$.pipe(
+  ErrorsActions$: Observable<any> = this.actions$.pipe(
     ofType(
       DashActionTypes.LoadGroupsDataFailure,
       DashActionTypes.LoadGroupDataFailure,
       DashActionTypes.PrintReportFailure,
       DashActionTypes.GeneratePVLiveLinkFailure,
-      DashActionTypes.GenericFailure
+      DashActionTypes.GenericFailure,
+      DashActionTypes.ExportTableToCsvFailure
     ),
     tap( action => {
       console.log( '***ERROR***', action );

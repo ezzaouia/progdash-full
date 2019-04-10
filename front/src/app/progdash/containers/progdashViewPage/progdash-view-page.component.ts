@@ -50,7 +50,8 @@ import * as fromStore from '../../store';
       (hoverWidgetTraceHandler)="onHoverWidgetTrace($event)"
       (moreRuleClickHandler)="onMoreRuleClickHandler($event)"
       (navigateToSuiviStatsHandler)="onNavigateToSuiviStats()"
-      (signOutHandler)="onSignOut()">
+      (signOutHandler)="onSignOut()"
+      (exportTableToCsvHandler)="onExportTableToCsv($event)">
     </ProgdashManager>
   `,
 })
@@ -190,5 +191,9 @@ export class ProgdashViewPageComponent implements OnInit {
 
   onSignOut () {
     this.store.dispatch( new fromStore.SignOut());
+  }
+
+  onExportTableToCsv ({ tableName, data }) {
+    this.store.dispatch( new fromStore.ExportTableToCsv({ tableName, data }));
   }
 }

@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { Observable, from, of } from 'rxjs';
 import { get } from 'lodash';
 import {
@@ -11,10 +12,11 @@ import {
 } from 'rxjs/operators';
 import { select, Action, Store } from '@ngrx/store';
 import { Actions, Effect, ofType } from '@ngrx/effects';
-import { startsWith, filter, size } from 'lodash';
+import { startsWith, filter, size, values, join } from 'lodash';
 import { saveAs } from 'file-saver';
 import * as moment from 'moment';
 moment.locale( 'fr' );
+import * as converter from 'json-2-csv';
 
 import { environment } from '../../../../environments/environment';
 import { ProgdashDataService } from '../../services';
@@ -44,12 +46,15 @@ import {
   NavigateToSuiviStats,
   SignOut,
   GenericFailure,
+  ExportTableToCsv,
+  ExportTableToCsvSuccess,
+  ExportTableToCsvFailure,
 } from '../actions';
-import { Router } from '@angular/router';
 import * as html2pdf from 'html2pdf.js';
 
 import * as fromStore from '..';
 import { a4WidgetsStyles, copyComputedStyle } from '../../utils/html2pdf.utils';
+import { tableCsvExportOptions } from '../utils/data-prep.utils';
 
 @Injectable()
 export class DashEffects {
@@ -493,6 +498,35 @@ export class DashEffects {
       catchError( err => {
         return of( new GenericFailure( err ));
       })
+  );
+
+  @Effect()
+  exportTableToCsv$: Observable<Action> = this.actions$.pipe(
+    ofType<ExportTableToCsv>( DashActionTypes.ExportTableToCsv ),
+    delay( 1000 ),
+    switchMap( action => {
+      const { data, tableName } = action.payload;
+      const dataValues = tableName === 'details' ? values( data ) : data;
+      if ( !dataValues || !tableName ) {
+        throw new Error( 'dataValues or tableName is null!' );
+      }
+
+      const { options, header } = tableCsvExportOptions( tableName );
+      const promise = converter.json2csvAsync( dataValues, options );
+      return from( promise )
+      .pipe(
+        map(( csv: any ) => {
+          csv = join( header, ',' ) + '\r\n' + csv;
+          const blob = new Blob([ csv ], { type: 'text/csv' });
+          saveAs( blob, 'export-' + tableName + '-' + +new Date() + '.csv' );
+          return blob;
+        }),
+        map( blob => new ExportTableToCsvSuccess({ tableName, blob })),
+        catchError( err => {
+          return of( new ExportTableToCsvFailure( err ));
+        })
+      );
+    })
   );
 
 }

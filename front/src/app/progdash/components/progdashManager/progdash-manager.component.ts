@@ -166,7 +166,8 @@ import { OpenPVLiveLinkComponent } from '../openPVLiveLink';
           (sortColumnTraceHandler)="sortColumnTraceHandler.emit($event)"
           (filterColumnTraceHandler)="filterColumnTraceHandler.emit($event)"
           (hoverWidgetTraceHandler)="hoverWidgetTraceHandler.emit($event)"
-          (userMoreMenuHandler)="handleUserMoreMenuClick($event)">
+          (userMoreMenuHandler)="handleUserMoreMenuClick($event)"
+          (exportTableToCsvHandler)="exportTableToCsvHandler.emit($event)">
         </ProgTable>
 
         <ProgEvaluation
@@ -181,7 +182,8 @@ import { OpenPVLiveLinkComponent } from '../openPVLiveLink';
 
           (sortColumnTraceHandler)="sortColumnTraceHandler.emit($event)"
           (filterColumnTraceHandler)="filterColumnTraceHandler.emit($event)"
-          (hoverWidgetTraceHandler)="hoverWidgetTraceHandler.emit($event)">
+          (hoverWidgetTraceHandler)="hoverWidgetTraceHandler.emit($event)"
+          (exportTableToCsvHandler)="exportTableToCsvHandler.emit($event)">
         </ProgEvaluation>
 
       </div>
@@ -301,6 +303,7 @@ export class ProgdashManagerComponent implements AfterContentInit, OnInit, OnDes
   @Output() moreRuleClickHandler = new EventEmitter();
   @Output() signOutHandler = new EventEmitter();
   @Output() navigateToSuiviStatsHandler = new EventEmitter();
+  @Output() exportTableToCsvHandler = new EventEmitter();
 
   classes$ = new BehaviorSubject<any>({
     byId: {},
