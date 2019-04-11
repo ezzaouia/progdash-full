@@ -18,7 +18,10 @@ echo "export MONGO_PROGDASH_USER='${MONGO_PROGDASH_USER}'" >> /home/woonoz/.env
 echo "export MONGO_PROGDASH_PASS='${MONGO_PROGDASH_PASS}'" >> /home/woonoz/.env
 
 echo ":: Cron job install"
-crontab -u woonoz /tmp/cronjobs.txt
-rm -rf /tmp/cronjobs.txt
+if [ -e /tmp/cronjobs.txt ];
+then
+    crontab -u woonoz /tmp/cronjobs.txt
+    rm -rf /tmp/cronjobs.txt
+fi
 
 echo ":: All done folks"
