@@ -170,7 +170,7 @@ export class ProgTableComponent implements OnInit, OnDestroy, AfterContentInit {
   @Input() isStartPrintReport;
   @Input() progTableMode;
   @Input() selectedWidgets: string[];
-  @Input() modulesData: {}[];
+  @Input() modulesData: any;
 
   @Output() checkWidgetHandler = new EventEmitter();
   @Output() sortColumnTraceHandler = new EventEmitter();
