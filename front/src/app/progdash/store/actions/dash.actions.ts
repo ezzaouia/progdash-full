@@ -284,7 +284,7 @@ export class ExportTableToCsv implements Action {
 export class ExportTableToCsvSuccess implements Action {
   readonly type = DashActionTypes.ExportTableToCsvSuccess;
 
-  constructor ( public payload: string ) {}
+  constructor ( public payload: any ) {}
 }
 
 export type DashActionsUnion =
