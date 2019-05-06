@@ -517,8 +517,8 @@ export class DashEffects {
       .pipe(
         map(( csv: any ) => {
           csv = join( header, ',' ) + '\r\n' + csv;
-          const blob = new Blob([ csv ], { type: 'text/csv' });
-          saveAs( blob, 'export-' + tableName + '-' + +new Date() + '.csv' );
+          const blob = new Blob([ '\uFEFF' + csv ], { type: 'text/csv;charset=utf-8' });
+          saveAs( blob, 'export-' + tableName + '-' + +new Date() + '.csv', { autoBOM: true });
           return blob;
         }),
         map( blob => new ExportTableToCsvSuccess({ tableName, blob })),
