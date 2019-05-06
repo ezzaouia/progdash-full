@@ -321,6 +321,8 @@ export class ProgdashManagerComponent implements AfterContentInit, OnInit, OnDes
       component: OpenPVLiveLinkComponent,
       link: '',
       isGenerateLinkSuccess: false,
+      selectedRules: [],
+      launchPVLiveHandler: this.launchPVLiveHandler,
       cancelPVLiveHandler: this.cancelPVLiveHandler,
   };
   lauchSupPV1: Subscription;
@@ -348,6 +350,7 @@ export class ProgdashManagerComponent implements AfterContentInit, OnInit, OnDes
       .subscribe( _ => {
         if ( this.isGeneratePVLiveLinkSuccess ) {
           this.pvLiveModalData.isGenerateLinkSuccess = this.isGeneratePVLiveLinkSuccess;
+          this.pvLiveModalData.selectedRules = this.selectedRules;
           this.pvLiveModalData.link = this.generatedLivePVLink;
         }
     });
