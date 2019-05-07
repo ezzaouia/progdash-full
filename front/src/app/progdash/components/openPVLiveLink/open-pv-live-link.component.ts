@@ -87,14 +87,16 @@ export class OpenPVLiveLinkComponent implements OnInit {
 
   @Input() link = '';
   @Input() isGenerateLinkSuccess = false;
+  @Input() selectedRules = [];
+  @Output() launchPVLiveHandler = new EventEmitter();
   @Output() cancelPVLiveHandler = new EventEmitter();
 
   constructor ( public dialogRef: MatDialogRef<OpenPVLiveLinkComponent> ) {}
 
   ngOnInit (): void { }
 
-  onNavigate ( $event ) {
-    this.cancelPVLiveHandler.emit( $event );
+  onNavigate ( _ ) {
+    this.launchPVLiveHandler.emit( this.selectedRules );
     this.dialogRef.close();
   }
 
