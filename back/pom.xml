@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.woonoz.pv.progdash</groupId>
 	<artifactId>pv-progdash-parent</artifactId>
-	<version>1.0.5</version>
+	<version>1.0.6-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>PV Progdash statistiques webservices</name>
 
@@ -14,7 +14,7 @@
 
 	<scm>
 		<developerConnection>scm:git:ssh://git@bitbucket.org/FrancoisParet/progdash.git</developerConnection>
-		<tag>1.0.5</tag>
+		<tag>HEAD</tag>
 	</scm>
 
 	<properties>
