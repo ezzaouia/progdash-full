@@ -34,12 +34,10 @@ import { Component, OnInit, Input } from '@angular/core';
       box-sizing: border-box;
     }
     mat-card-content {
-      padding: 12px 0px;
-      width: calc(100% - 12px);
+      width: 100%;
       height: 90%;
     }
     mat-card-header {
-      padding: 0px 12px;
       box-sizing: border-box;
     }
     .line-widget {

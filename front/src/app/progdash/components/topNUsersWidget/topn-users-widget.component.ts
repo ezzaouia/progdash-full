@@ -1,4 +1,5 @@
 import { Component, OnInit, Input, EventEmitter } from '@angular/core';
+import { size } from 'lodash';
 
 /* tslint:disable component-selector  */
 @Component({
@@ -36,7 +37,18 @@ import { Component, OnInit, Input, EventEmitter } from '@angular/core';
         </div>
       </mat-list>
       </mat-card-content>
+
+      <mat-card-actions
+        class="actions">
+        <button
+          mat-stroked-button
+          (click)="openProgTableHandler.emit({ id: id })">
+            Plus de Détails
+        </button>
+      </mat-card-actions>
     </mat-card>
+
+
   `,
   styles: [ `
     :host {
@@ -51,11 +63,11 @@ import { Component, OnInit, Input, EventEmitter } from '@angular/core';
       box-sizing: border-box;
     }
     mat-card-header {
-      height: 24px;
+      height: 18px;
     }
     mat-card-content {
       padding: 12px 0px;
-      height: 80%;
+      height: 75%;
     }
     .title {
       margin: 12px;
@@ -82,6 +94,11 @@ import { Component, OnInit, Input, EventEmitter } from '@angular/core';
       font-weight: 500;
       white-space: nowrap;
     }
+    .actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
   ` ],
 })
 export class TopNUsersWidgetComponent implements OnInit {
@@ -94,10 +111,15 @@ export class TopNUsersWidgetComponent implements OnInit {
   @Input() users;
   @Input() isStartPrintReport;
   @Input() checkWidgetHandler = new EventEmitter<{ isChecked: boolean; widgetId: string }>();
+  @Input() openProgTableHandler = new EventEmitter();
   @Input() selectedWidgets: string[];
 
 
   constructor () { }
 
   ngOnInit (): void { }
+
+  get isData () {
+    return size( this.data ) > 0;
+  }
 }

@@ -92,7 +92,7 @@ export class TimelineWidgetComponent implements AfterViewInit, OnDestroy {
   width;
   height = 200;
   barWidth = 20;
-  margin = { topBottom: 30, leftRight: 50 };
+  margin = { topBottom: 20, leftRight: 70 };
   xScale = scaleBand();
   yScale = scaleLinear();
 
@@ -184,7 +184,9 @@ export class TimelineWidgetComponent implements AfterViewInit, OnDestroy {
       .text( d => get( d, 'count' ))
       .attr( 'class', 'text-label middle' )
       .attr( 'x', this.xScale.bandwidth() / 2 + barWidth / 2 )
-      .attr( 'y', d => this.yScale( get( d, 'count' )) - 5 );
+      .attr( 'y', d => this.yScale( get( d, 'count' )) - 8 )
+      .attr( 'font-size', 18 )
+      .attr( 'font-family', 'sans-serif' );
 
     group.exit().remove();
   }
@@ -203,7 +205,7 @@ export class TimelineWidgetComponent implements AfterViewInit, OnDestroy {
       .append( 'g' )
       .classed( 'grid', true )
       .merge( group )
-      .attr( 'transform', ( d, _ ) => `translate(${ this.xScale( get ( d, 'date' )) - 10 }, 0)` );
+      .attr( 'transform', ( d, _ ) => `translate(${ this.xScale( get ( d, 'date' )) - 20 }, 0)` );
 
     enter.append( 'line' );
     enter.append( 'text' );
@@ -211,12 +213,21 @@ export class TimelineWidgetComponent implements AfterViewInit, OnDestroy {
     enter
       .select( 'line' )
       .attr( 'y1', -20 )
-      .attr( 'y2', this.yScale.range()[0])
+      .attr( 'y2', ( d, _ ) => {
+        const text = moment( get( d, 'date' )).format( 'ddd DD/MM/YY' );
+        if ( this.timescale !== 'lastWeek' ) {
+          if ( startsWith ( text, 'lun.' )) {
+            return this.yScale.range()[0] + 20;
+          }
+        }
+        return this.yScale.range()[0];
+      })
+      .style( 'stroke-width', 2 )
       .style( 'stroke', ( d, i ) => {
         const stroke = '#777';
         const text = moment( get( d, 'date' )).format( 'ddd DD/MM/YY' );
         if ( this.timescale !== 'lastWeek' ) {
-          if ( startsWith( text, 'ven.' ) || startsWith ( text, 'lun.' )) {
+          if ( /*startsWith( text, 'ven.' ) ||*/ startsWith ( text, 'lun.' )) {
             return stroke;
           } else {
             return '#ccc5';
@@ -230,10 +241,13 @@ export class TimelineWidgetComponent implements AfterViewInit, OnDestroy {
       .select( 'text' )
       .attr( 'y', -20 )
       .classed( 'text-label', true )
+      .attr( 'transform', `translate(2, ${this.height - this.margin.topBottom + 10 })` )
+      .attr( 'font-size', 18 )
+      .attr( 'font-family', 'sans-serif' )
       .text(( d, i ) => {
         const text = moment( get( d, 'date' )).format( 'ddd DD/MM/YY' );
         if ( this.timescale !== 'lastWeek' ) {
-          if ( startsWith( text, 'ven.' ) || startsWith ( text, 'lun.' )) {
+          if ( startsWith ( text, 'lun.' )) {
             return text;
           } else {
             return null;

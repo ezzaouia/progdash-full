@@ -1,11 +1,10 @@
 {
   "/api": {
-    "target": "http://192.168.0.12:8080",
+    "target": "http://pre1.projet-voltaire.fr:3004",
     "secure": false,
     "pathRewrite": {
       "^/api": ""
     },
-    "changeOrigin": true,
-    "logLevel": "debug"
+    "changeOrigin": true
   }
 }

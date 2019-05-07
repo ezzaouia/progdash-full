@@ -58,10 +58,10 @@ enum CellChartEncoding {
         </div>
       </div>
       <span
-        class="span-text"
-        [ngStyle]="dataStyle"
+        class="span-text" [ngStyle]="dataStyle"
         *ngIf="options.encoding !== 'LINE'">
           {{ dataHint }}
+          <span class="sub-hint" *ngIf="dataSubHint">{{ dataSubHint }}</span>
       </span>
       <svg
         #svgRef
@@ -100,6 +100,13 @@ enum CellChartEncoding {
         display: flex;
         // opacity: 0.4;
       }
+      .sub-hint {
+        height: 14px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        display: inline-block;
+        padding: 0 3px;
+      }
     `,
   ],
 })
@@ -114,6 +121,7 @@ export class CellChartComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() hint?;
   @Input() formatter?;
   @Input() compositeHint?;
+  @Input() subHint?;
   @Input() isCompact ? = true;
   @Input() extent = [];
   @Input() color?;
@@ -355,7 +363,7 @@ export class CellChartComponent implements OnInit, OnDestroy, AfterViewInit {
     if ( this.compositeHint ) {
       info = '' + get( this.data, this.compositeHint[0], '' ) +
        '/' + get( this.data, this.compositeHint[1], '' );
-    } else { 
+    } else {
       info = get( this.data, this.hint || this.key );
     }
 
@@ -364,6 +372,10 @@ export class CellChartComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     return info;
+  }
+
+  get dataSubHint () {
+    return this.subHint ? this.subHint( this.data ) : null;
   }
 
   get styles () {

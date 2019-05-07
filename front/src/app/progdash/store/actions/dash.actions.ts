@@ -44,6 +44,9 @@ export enum DashActionTypes {
   NavigateToHome = '[Dash] Navigate To Home',
   NavigateToSuiviStats = '[Dash] Navigate Suivi Stats',
   SignOut = '[Dash] Sign Out',
+  ExportTableToCsv = '[Dash] Export Table To Csv',
+  ExportTableToCsvSuccess = '[Dash] Export Table To Csv Success',
+  ExportTableToCsvFailure = '[Dash] Export Table To Csv Failure',
 
   // For tracing purpose
   SortColumn = '[Dash] Sort Column',
@@ -62,6 +65,11 @@ export class GenericFailure implements Action {
   readonly type = DashActionTypes.GenericFailure;
 
   constructor ( public payload: any  ) {}
+}
+
+export class ExportTableToCsvFailure implements Action {
+  readonly type = DashActionTypes.ExportTableToCsvFailure;
+  constructor ( public payload: any ) {}
 }
 
 export class NavigateToHome implements Action {
@@ -150,6 +158,8 @@ export class SelectClass implements Action {
 
 export class OpenProgTable implements Action {
   readonly type = DashActionTypes.OpenProgTable;
+
+  constructor ( public payload ?: any ) {}
 }
 
 export class OpenProgBoard implements Action {
@@ -265,6 +275,18 @@ export class LoadUserInfo implements Action {
     constructor ( public payload: {userId: number, areaId: number}) {}
 }
 
+export class ExportTableToCsv implements Action {
+  readonly type = DashActionTypes.ExportTableToCsv;
+
+  constructor ( public payload: {tableName: string, data: Array<any>}) {}
+}
+
+export class ExportTableToCsvSuccess implements Action {
+  readonly type = DashActionTypes.ExportTableToCsvSuccess;
+
+  constructor ( public payload: any ) {}
+}
+
 export type DashActionsUnion =
   | LoadData
   | LoadDataSuccess
@@ -307,4 +329,7 @@ export type DashActionsUnion =
   | NavigateToHome
   | NavigateToSuiviStats
   | SignOut
+  | ExportTableToCsv
+  | ExportTableToCsvSuccess
+  | ExportTableToCsvFailure
   | GenericFailure;

@@ -163,14 +163,12 @@ export class HistogramComponent implements OnInit, OnDestroy {
   onClickCatAttr ( el, d, i ) {
     this.catFilter[d.key] = !!!this.catFilter[d.key];
     this.updateRangeFilterValues( this.ykey, this.catFilter[d.key] ? d.key : '' );
+    el.selectAll( `.hists-shadow--el` )
+     .style( 'stroke',  'none' );
+
     if ( this.catFilter[this.ykey]) {
       el.select( `.shadow-id--${i}` )
-        .style( 'stroke',  'blue' )
-        .style( 'stroke-width',  1 );
-    } else {
-      el.select( `.shadow-id--${i}` )
-        .style( 'stroke',  '#777' )
-        .style( 'stroke-width',  1 );
+        .style( 'stroke',  'blue' );
     }
   }
 

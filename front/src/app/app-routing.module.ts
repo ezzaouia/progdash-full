@@ -1,4 +1,4 @@
-import { NgModule, InjectionToken } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { RouterModule, Routes, ActivatedRouteSnapshot } from '@angular/router';
 
 import { environment } from '../environments/environment';
@@ -9,7 +9,6 @@ import {
   UnauthorizedPageComponent
 } from './shared/components';
 
-const externalUrlProvider = new InjectionToken( 'externalUrlRedirectResolver' );
 
 export const AppRoutes: Routes = [
   {
@@ -27,12 +26,12 @@ export const AppRoutes: Routes = [
       },
       {
         path: 'externalPVRedirect',
-        canActivate: [ externalUrlProvider ],
+        canActivate: [ 'externalUrlProvider' ],
         component: NotFoundPageComponent,
       },
       {
         path: 'externalSuiviStatsRedirect',
-        canActivate: [ externalUrlProvider ],
+        canActivate: [ 'externalUrlProvider' ],
         component: NotFoundPageComponent,
       },
       {
@@ -54,7 +53,7 @@ export const AppRoutes: Routes = [
 @NgModule({
   providers: [
     {
-      provide: externalUrlProvider,
+      provide: 'externalUrlProvider',
       useValue: ( route: ActivatedRouteSnapshot ) => {
         const externalUrl = route.paramMap.get( 'externalUrl' );
         const isSelf = route.paramMap.get( 'isSelf' );

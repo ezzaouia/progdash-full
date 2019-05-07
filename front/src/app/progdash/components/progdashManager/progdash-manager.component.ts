@@ -27,7 +27,6 @@ import { OpenPVLiveLinkComponent } from '../openPVLiveLink';
           <!-- mat-icon aria-label="menu">graphic_eq</mat-icon -->
           <img src="assets/icon/voltaire-logo.jpg" alt="">
           <span>Suivi Voltaire</span>
-          <mat-icon svgIcon="sort-alpha-down"></mat-icon>
         </div>
 
 
@@ -66,7 +65,7 @@ import { OpenPVLiveLinkComponent } from '../openPVLiveLink';
         <button
           mat-button
           [disabled]="!selectedClass.name"
-          (click)="openProgTableHandler.emit($event)">
+          (click)="openProgTableHandler.emit({ id: 'call-to-action-btn' })">
           <mat-icon aria-label="menu">multiline_chart</mat-icon>
           Détails
         </button>
@@ -147,7 +146,8 @@ import { OpenPVLiveLinkComponent } from '../openPVLiveLink';
           (cancelPVLiveHandler)="cancelPVLiveHandler.emit($event)"
           (checkWidgetHandler)="checkWidgetHandler.emit($event)"
           (hoverWidgetTraceHandler)="hoverWidgetTraceHandler.emit($event)"
-          (moreRuleClickHandler)="moreRuleClickHandler.emit($event)">
+          (moreRuleClickHandler)="moreRuleClickHandler.emit($event)"
+          (openProgTableHandler)="openProgTableHandler.emit($event)">
         </ProgBoard>
 
         <ProgTable
@@ -166,7 +166,8 @@ import { OpenPVLiveLinkComponent } from '../openPVLiveLink';
           (sortColumnTraceHandler)="sortColumnTraceHandler.emit($event)"
           (filterColumnTraceHandler)="filterColumnTraceHandler.emit($event)"
           (hoverWidgetTraceHandler)="hoverWidgetTraceHandler.emit($event)"
-          (userMoreMenuHandler)="handleUserMoreMenuClick($event)">
+          (userMoreMenuHandler)="handleUserMoreMenuClick($event)"
+          (exportTableToCsvHandler)="exportTableToCsvHandler.emit($event)">
         </ProgTable>
 
         <ProgEvaluation
@@ -181,7 +182,8 @@ import { OpenPVLiveLinkComponent } from '../openPVLiveLink';
 
           (sortColumnTraceHandler)="sortColumnTraceHandler.emit($event)"
           (filterColumnTraceHandler)="filterColumnTraceHandler.emit($event)"
-          (hoverWidgetTraceHandler)="hoverWidgetTraceHandler.emit($event)">
+          (hoverWidgetTraceHandler)="hoverWidgetTraceHandler.emit($event)"
+          (exportTableToCsvHandler)="exportTableToCsvHandler.emit($event)">
         </ProgEvaluation>
 
       </div>
@@ -301,6 +303,7 @@ export class ProgdashManagerComponent implements AfterContentInit, OnInit, OnDes
   @Output() moreRuleClickHandler = new EventEmitter();
   @Output() signOutHandler = new EventEmitter();
   @Output() navigateToSuiviStatsHandler = new EventEmitter();
+  @Output() exportTableToCsvHandler = new EventEmitter();
 
   classes$ = new BehaviorSubject<any>({
     byId: {},

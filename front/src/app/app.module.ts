@@ -1,7 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
-import { HttpClientInMemoryWebApiModule } from 'angular-in-memory-web-api';
 import { NgModule } from '@angular/core';
 import { Router } from '@angular/router';
 import { DeviceDetectorModule } from 'ngx-device-detector';
@@ -11,7 +10,6 @@ import { SharedModule } from './shared';
 import { RootComponent } from './shared/components';
 import { AppRoutingModule } from './app-routing.module';
 
-import { InMemoryMockDataService } from './shared/services';
 import { TableModule } from './table';
 
 @NgModule({
@@ -20,10 +18,6 @@ import { TableModule } from './table';
     BrowserAnimationsModule,
 
     HttpClientModule,
-    HttpClientInMemoryWebApiModule.forRoot(
-      InMemoryMockDataService,
-      { delay: 1000 }
-    ),
     DeviceDetectorModule.forRoot(),
 
     AppStoreModule,

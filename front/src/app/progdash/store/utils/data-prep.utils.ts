@@ -1,4 +1,4 @@
-import { scaleOrdinal, schemeCategory10 } from 'd3';
+import { scaleOrdinal, schemeCategory10 } from "d3";
 import {
   chain,
   mapValues,
@@ -10,13 +10,15 @@ import {
   orderBy,
   keys,
   maxBy,
-  keyBy
-} from 'lodash';
+  keyBy,
+  includes,
+  every
+} from "lodash";
 
 export const modulesDataAttr = modulesData => {
   // equivalent modules will not be displayed in same line
-  const routeWithMaxNbrOfModule = chain( modulesData )
-    .groupBy( 'routeId' )
+  const routeWithMaxNbrOfModule = chain(modulesData )
+    .groupBy("routeId")
     .mapValues( size )
     .value();
 
@@ -54,9 +56,8 @@ export const modulesDataAttr = modulesData => {
     forLine.push({ ...v, sSumOfTopRules });
   });
 
-  const colorScheme = scaleOrdinal( schemeCategory10 ).domain(
-    map( forLine, 'key' )
-  );
+  const colorDomain = map( forLine, 'key' );
+  const colorScheme = scaleOrdinal( schemeCategory10 ).domain( colorDomain );
   const forColor = mapValues( keyBy( forLine, 'key' ), ( _, key ) =>
     colorScheme( key )
   );
@@ -64,6 +65,9 @@ export const modulesDataAttr = modulesData => {
     .map( 'nbrOfRules' )
     .sum()
     .value();
+  const isHasSupProAndSup = every([ 'Supérieur', 'Pro', 'Pont supérieur' ], key =>
+    includes( colorDomain, key )
+  );
 
   return {
     all,
@@ -71,5 +75,70 @@ export const modulesDataAttr = modulesData => {
     forLine,
     forColor,
     displayedNbrOfRules, // only displyed modules
+    isHasSupProAndSup,
   };
+};
+
+export const tableCsvExportOptions = tableName => {
+  const opts = {
+    delimiter: {
+      wrap: '"', // Double Quote (") character
+      field: ',', // Comma field delimiter
+      eol: '\n', // Newline delimiter
+    },
+    prependHeader: false,
+    sortHeader: false,
+    excelBOM: true,
+    trimHeaderValues: true,
+    trimFieldValues: true,
+  };
+
+  switch ( tableName ) {
+    case 'details': {
+      return {
+        options: {
+          ...opts,
+          keys: [
+            'fullName',
+            'score.sum',
+            'score.count',
+            'time',
+            'lastConnection',
+            'connectionsNbr',
+            'initialEval',
+            'initialLevel.sum',
+            'lastModule',
+          ],
+        },
+        header: [
+          'Apprenant',
+          'Nbr. Règles Acquises',
+          'Total Règle',
+          'Temps Cumulé (min)',
+          'Date Dernière Connexion',
+          'Nbr. Connexions',
+          'Eval. Initiale',
+          'Nbr. Règles sues initialement',
+          'Module atteint',
+        ],
+      };
+    }
+    case 'evaluations': {
+      return {
+        options: {
+          ...opts,
+          keys: [ 'fullName', 'evaluationName', 'time', 'score', 'mark' ],
+        },
+        header: [
+          'Apprenant',
+          'Évaluation',
+          'Temps passé (min)',
+          'Score (%)',
+          'Note /20',
+        ],
+      };
+    }
+    default:
+      break;
+  }
 };

@@ -2,18 +2,14 @@ import { Component, OnInit, Input, OnDestroy, ViewChild, ElementRef } from '@ang
 import { BehaviorSubject, merge, of, from } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { flatMap, get } from 'lodash';
-import { scaleLinear, scaleTime, extent, scaleOrdinal, timeFormat, max, select } from 'd3';
+import { scaleLinear, scaleTime, extent, scaleOrdinal, max, select, timeMonth } from 'd3';
 import * as moment from 'moment';
 import 'moment-duration-format';
 moment.locale( 'fr' );
 
-import { ChartFormat, ChartTimeScale, colors } from '../../../utils/chart.util';
+import { ChartTimeScale, colors } from '../../../utils/chart.util';
 import { InteractionsService } from '../../../shared/services';
 
-enum FilterName {
-  currentLevel = 'sumscore',
-  timeSpent = 'sumtime',
-}
 
 /* tslint:disable component-selector  */
 @Component({
@@ -25,13 +21,13 @@ enum FilterName {
           class="no-select"
           preserveAspectRatio="xMidYMid meet">
         <g Axis
-            [position]="'top'"
+            [position]="'bottom'"
             [scale]="xScale"
-            [transform]="[ 30, margin ]"
+            [transform]="[30, height - margin]"
             [class]="'axis-x'"
             [ticks]="xTicks"
             [format]="xTicksFormat"
-            [xRotate]="-45"
+            [xRotate]="-20"
             [range]="xRange"
             [domain]="xDomain">
         </g>
@@ -136,51 +132,28 @@ export class MlineChartComponent implements OnInit, OnDestroy {
 
   updateHandler () {
 
-    this.xTicks = ChartFormat.axis.x.scale[this.timeScale]['xTick']['unified'];
-    this.yTicks = ChartFormat.axis.y.scale['yTick']['unified'];
-    this.timeParse = ChartFormat[this.timeScale].parse;
+    this.xTicks = timeMonth.every( 1 );
+    this.timeParse = this.momentTimeParse;
     this.xTicksFormat = this.momentTimeFormat;
-    // timeFormat( '%m/%b\'%y' );
+    const { yextent } = this.calExtent();
 
-    // filter by range.
-    // each( this.rangeFilter, ( range, col ) => {
-    //   if ( col && range && ( col ===  'currentLevel' || col === 'timeSpent' )) {
-    //     if ( range[1] !== Infinity ) {
-    //       data = filter ( data, ( d: any ) => {
-    //         const m = max( map( d.values, FilterName[col]));
-    //         return ( m >= range[0] && m <= range[1]);
-    //       });
-    //     }
-    //   }
-    // });
-
-    // if ( this.rangeFilter[1] !== Infinity ) {
-    //   data = filter ( data, ( d: any ) => {
-    //     const m = max( map( d.values, this.ykey ));
-    //     return ( m >= this.rangeFilter[0] && m <= this.rangeFilter[1]);
-    //   });
-    // }
-
-    const { xextent, yextent } = this.calExtent();
-
-    this.xDomain = xextent;
+    // DO NOT KEEP IT LIKE THAT: hard coded here for the experiment,
+    this.xDomain = [ new Date( '2018-08-25' ), new Date( '2019-06-15' ) ];
     this.yDomain = yextent;
-    // [
-    //   0,  this.rangeFilter[1] !== Infinity ? this.rangeFilter[1] : yextent[1],<wx
-    // ]; // yextent;
-
     this.xRange = [ this.margin, this.width - 30 - this.userLegendMargin ];
     this.yRange = [ this.height - this.margin, this.margin ];
 
     this.xScale.domain( this.xDomain );
-    // this.yScale.domain([ 0, get( this.modulesData, 'displayedNbrOfRules' ) ]);
-
     this.xScale.range( this.xRange );
     this.yScale.range( this.yRange );
   }
 
   momentTimeFormat ( d ) {
-    return moment( d, '%d/%m/\'%y' ).format( 'YYYY/MM/DD' );
+    return moment( d ).format( 'DD/MM/YY' );
+  }
+
+  momentTimeParse ( d ) {
+    return moment( d );
   }
 
   get rangeFilter () {

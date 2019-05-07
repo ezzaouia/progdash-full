@@ -1,7 +1,6 @@
 import { Injectable, Injector } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { LocationStrategy, PathLocationStrategy } from '@angular/common';
 import { v4 as uuid } from 'uuid';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { MatDialog } from '@angular/material';
@@ -18,7 +17,6 @@ export class NotificationService {
         // 'Authorization': 'my-auth-token'
       }),
     };
-  private API_URL = environment.apiUrl;
   private sessionId; // This is not the same session as for trace.
 
   constructor (
@@ -55,7 +53,7 @@ export class NotificationService {
     const payload = { error: error, context: this.getContextInfo( actionType ) };
     console.log( '[createAudit]', payload );
     return this.http
-      .post<any>( this.API_URL + '/audit/error', payload, this.httpOptions )
+      .post<any>( environment.API_URL + '/audit/error', payload, this.httpOptions )
       .subscribe();
   }
 
