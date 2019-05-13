@@ -10,7 +10,7 @@ echo ":: Dump mongodb"
 echo ":: clean older backup"
 if [ -f ${BACKUP_PATH}/${DUMP_FILENAME} ];
 then
-    find ${BACKUP_PATH} ! -name "${DUMP_FILENAME}" -type f -exec rm -f {} \;
+    find ${BACKUP_PATH} -name "*.gz" ! -name "${DUMP_FILENAME}" -type f -exec rm -f {} \;
 fi
 
 exit 0
