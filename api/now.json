@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "name": "json-server",
+  "builds": [{ "src": "index.js", "use": "@now/node-server" }],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "headers": { "Access-Control-Allow-Origin": "*" },
+      "dest": "/index.js"
+    }
+  ]
+}
